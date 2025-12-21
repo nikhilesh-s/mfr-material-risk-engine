@@ -11,3 +11,22 @@ Given material type and fire exposure parameters, output:
 - Resistance index (relative scale)
 
 This repository contains the Phase 0–1 model logic and prototype.
+
+## Project Structure
+
+- `/src` — Core ML logic and models
+- `/notebooks` — Experiments and prototyping
+- `/ui` — Frontend interface (bolt.new generated)
+
+The UI currently uses mocked inference outputs.
+ML–UI integration will occur in Phase 2.
+
+Test Separation
+
+Ask:
+
+Can UI run without ML? ✅
+
+Can ML notebook run without UI? ✅
+
+If yes → architecture is clean.
