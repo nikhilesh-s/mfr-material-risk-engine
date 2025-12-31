@@ -40,7 +40,26 @@ def predict_risk(
     model: RandomForestRegressor, example: Dict[str, float]
 ) -> Dict[str, object]:
     """Run inference for ``example`` and return UI-ready risk outputs."""
-    feature_frame = prepare_feature_frame(example)
+    # Support both raw input-style examples and cleaned feature rows.
+    synthetic_keys = {
+        "material_type",
+        "temperature_c",
+        "exposure_time_min",
+        "environment_factor",
+    }
+    example_payload = dict(example)
+
+    if synthetic_keys.issubset(example_payload.keys()):
+        feature_frame = prepare_feature_frame(example_payload)
+    else:
+        example_payload.pop("risk_score", None)
+        feature_frame = pd.DataFrame([example_payload])
+        if hasattr(model, "feature_names_in_"):
+            for col in model.feature_names_in_:
+                if col not in feature_frame.columns:
+                    feature_frame[col] = 0.0
+            feature_frame = feature_frame[list(model.feature_names_in_)]
+
     score = float(model.predict(feature_frame)[0])
     score = max(0.0, min(100.0, score))
     risk_score = int(round(score))
@@ -113,3 +132,26 @@ def train_risk_score_model(
     ).sort_values("importance", ascending=False)
 
     return model, metrics, importances
+
+
+def train_model(
+    df: pd.DataFrame, random_state: int = 42
+) -> Tuple[RandomForestRegressor, Dict[str, float]]:
+    """Train the proxy risk score model and return the fitted model with metrics."""
+    if "risk_score" in df.columns:
+        feature_cols = [col for col in df.columns if col != "risk_score"]
+        X = df[feature_cols]
+        y = df["risk_score"]
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.2, random_state=random_state
+        )
+        model = RandomForestRegressor(random_state=random_state)
+        model.fit(X_train, y_train)
+        metrics = {
+            "train_r2": model.score(X_train, y_train),
+            "test_r2": model.score(X_test, y_test),
+        }
+        return model, metrics
+
+    model, metrics, _ = train_risk_score_model(df, random_state=random_state)
+    return model, metrics
