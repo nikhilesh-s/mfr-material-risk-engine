@@ -4,3 +4,5 @@
 notebooks/.ipynb_checkpoints/
 ui/src/mfr-materials-risk-engine-bolt-ui/node_modules/
 ui/src/mfr-materials-risk-engine-bolt-ui/.env
+__pycache__/
+**/__pycache__/

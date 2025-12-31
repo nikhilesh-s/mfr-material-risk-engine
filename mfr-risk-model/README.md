@@ -12,6 +12,14 @@ Given material type and fire exposure parameters, output:
 
 This repository contains the Phase 0–1 model logic and prototype.
 
+## How It Works
+Raw fire property records are cleaned and normalized, categorical fields are
+encoded, and a lightweight proxy `risk_score` is computed from key thermal and
+specimen properties. A RandomForestRegressor is then trained to predict this
+proxy score, and inference returns risk score, class, and resistance index.
+
+Note: `risk_score` is a modeled proxy in Phase 1, not a ground-truth outcome.
+
 ## Project Structure
 
 - `/src` — Core ML logic and models
