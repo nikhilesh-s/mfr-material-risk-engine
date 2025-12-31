@@ -1,5 +1,11 @@
 {
   "name": "mfr-risk-ui",
   "version": "0.1.0",
-  "private": true
+  "private": true,
+  "scripts": {
+    "dev": "npm --prefix src/mfr-materials-risk-engine-bolt-ui run dev",
+    "start": "npm --prefix src/mfr-materials-risk-engine-bolt-ui run dev",
+    "build": "npm --prefix src/mfr-materials-risk-engine-bolt-ui run build",
+    "lint": "npm --prefix src/mfr-materials-risk-engine-bolt-ui run lint"
+  }
 }
