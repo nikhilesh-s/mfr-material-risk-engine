@@ -4,6 +4,8 @@ import { ChevronLeft, Calculator } from 'lucide-react';
 interface InputScreenProps {
   onBack: () => void;
   onAnalyze: (data: AssessmentInput) => void;
+  isLoading: boolean;
+  errorMessage: string | null;
 }
 
 export interface AssessmentInput {
@@ -13,7 +15,12 @@ export interface AssessmentInput {
   environment: string;
 }
 
-export default function InputScreen({ onBack, onAnalyze }: InputScreenProps) {
+export default function InputScreen({
+  onBack,
+  onAnalyze,
+  isLoading,
+  errorMessage,
+}: InputScreenProps) {
   const [materialType, setMaterialType] = useState('polymer');
   const [temperature, setTemperature] = useState(500);
   const [exposureTime, setExposureTime] = useState(30);
@@ -118,12 +125,19 @@ export default function InputScreen({ onBack, onAnalyze }: InputScreenProps) {
               </p>
             </div>
 
+            {errorMessage && (
+              <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                {errorMessage}
+              </div>
+            )}
+
             <button
               type="submit"
+              disabled={isLoading}
               className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-red-600 text-white px-6 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105"
             >
               <Calculator className="w-5 h-5" />
-              Analyze Fire Risk
+              {isLoading ? 'Analyzing...' : 'Analyze Fire Risk'}
             </button>
           </form>
         </div>

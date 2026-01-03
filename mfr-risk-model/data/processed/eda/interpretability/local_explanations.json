@@ -1,0 +1,56 @@
+[
+  {
+    "sample_index": 637,
+    "material_type": "polymer",
+    "top_increasing": {
+      "HEAT FLUX": 0.5244923101847921,
+      "SURF AREA": 0.19442555924084445,
+      "C FACTOR": 0.0007541535291428745,
+      "material_type_polymer": 0.00011114628105019891,
+      "SPEC HOLDER DIFF": 0.0001055358449389392
+    },
+    "top_decreasing": {
+      "Material_Name_Oak_Flooring": 0.0,
+      "Material_Name_PlasticC": 0.0,
+      "Material_Name_Pine_Siding": 0.0,
+      "Material_Name_Particleboard": 0.0,
+      "Material_Name_Pallet_Wood": 0.0
+    }
+  },
+  {
+    "sample_index": 208,
+    "material_type": "composite",
+    "top_increasing": {
+      "HEAT FLUX": 0.30595384760779537,
+      "SURF AREA": 0.19442555924084445,
+      "C FACTOR": 0.00641278250075009,
+      "TIME TO IGN": 9.124926697992704e-05,
+      "SPECIMEN MASS": 1.3675805514750151e-05
+    },
+    "top_decreasing": {
+      "Material_Name_Oak_Flooring": 0.0,
+      "Material_Name_Plywood": 0.0,
+      "Material_Name_Plastic_Laminate_Countertop": 0.0,
+      "Material_Name_PlasticC": 0.0,
+      "Material_Name_Pine_Siding": 0.0
+    }
+  },
+  {
+    "sample_index": 120,
+    "material_type": "generic",
+    "top_increasing": {
+      "HEAT FLUX": 0.5244923101847921,
+      "SURF AREA": 0.19442555924084445,
+      "C FACTOR": 0.005438112884960151,
+      "TIME TO IGN": 0.0005703079186245439,
+      "SCAN COUNT": 0.00015166492594510976
+    },
+    "top_decreasing": {
+      "Material_Name_Oak_Flooring": 0.0,
+      "Material_Name_Plywood": 0.0,
+      "Material_Name_Plastic_Laminate_Countertop": 0.0,
+      "Material_Name_PlasticC": 0.0,
+      "Material_Name_Pine_Siding": 0.0
+    }
+  }
+]

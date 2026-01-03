@@ -1,0 +1,96 @@
+feature,importance
+HEAT FLUX,0.7430307727617887
+SURF AREA,0.19442559678509777
+TIME TO IGN,0.050301158422684775
+C FACTOR,0.007550097188620593
+SPECIMEN MASS,0.001429666714861485
+SCAN COUNT,0.0005401284213356574
+END OF TEST SCAN,0.0004805306861730038
+END OF TEST TIME,0.0004404691165844131
+Material_Name_PMMA,0.00044040725849289953
+Material_Name_Nylon_Carpet_High_Pile,0.0003679445455606992
+SPEC HOLDER DIFF,0.00028916737683115694
+material_type_polymer,0.00011114628105019891
+Material_Name_Polyester_Microfiber_Sheet,0.00010266734188290667
+material_type_generic,7.542885965479725e-05
+Material_Name_Nylon,5.963330405254347e-05
+Material_Name_PET,3.227149484563059e-05
+Material_Name_PC,3.12859097870045e-05
+Material_Name_Polyester_Bed_Skirt,2.8523405785084107e-05
+Material_Name_Rubber_Band,2.1149365406712582e-05
+Material_Name_Vinyl_Tile,2.0693755163401473e-05
+Material_Name_High_Temperature_SCBA_Facepiece,2.0452868458099912e-05
+Material_Name_Luan_Panel,2.0401888776496227e-05
+Material_Name_Engineered_Wood_Table,1.7315716107285113e-05
+Material_Name_EPDM_Membrane,1.718940505086694e-05
+Material_Name_Face_Shield,1.1547532445269083e-05
+Material_Name_Rubber_Foam_Pipe_Insulation,1.0085688722089441e-05
+Material_Name_PP,7.188112236193982e-06
+Material_Name_Pressure_Treated_Deck,6.64876581783571e-06
+Material_Name_Overstuffed_Chair_Assembly,5.589257937641203e-06
+Material_Name_Vinyl_Siding,5.375038232600697e-06
+Material_Name_Oak_Flooring,5.05254871704141e-06
+Material_Name_Fiberglass_Insulation_R30,4.964876853099334e-06
+Material_Name_Fiberglass_Insulation_R13_Paper_Faced,4.5134403357707095e-06
+Material_Name_Plywood,4.331065405617933e-06
+Material_Name_FRP_Panel,3.71829396868935e-06
+Material_Name_FDNY_LDF,3.6245196784998263e-06
+Material_Name_Vinyl_Plank_Flooring,3.441076289357696e-06
+Material_Name_LDPE,3.421021765440522e-06
+Material_Name_Homasote,3.419297600947818e-06
+Material_Name_Plastic_Laminate_Countertop,3.2332362922583855e-06
+Material_Name_Cellulose_Insulation,2.9399933459845853e-06
+Material_Name_Eucalyptus_Flooring,2.8642557640729108e-06
+Material_Name_Masonite_Board,2.8481609272764554e-06
+Material_Name_Black_PMMA,2.6293736100044274e-06
+Material_Name_Basswood_Panel,2.5697608794582842e-06
+Material_Name_Asphalt_Shingle,2.447130245836332e-06
+Material_Name_Gypsum_Wallboard,2.3762095864398926e-06
+Material_Name_HDPE,2.3038196231703786e-06
+Material_Name_Polyolefin_Carpet_Low_Pile,2.214047873929247e-06
+Material_Name_HIPS,1.9812863008848033e-06
+Material_Name_PETG,1.971908959606198e-06
+Material_Name_Engineered_Wood_Furniture,1.9215785550503627e-06
+Material_Name_OSB,1.760015698858766e-06
+Material_Name_House_Wrap,1.633186584920976e-06
+Material_Name_Engineered_Flooring,1.6193792148604179e-06
+Material_Name_Composite_Deck_Board,1.5794074172978178e-06
+Material_Name_Overstuffed_Chair_Polyurethane_Foam,1.577940947514859e-06
+Material_Name_Roof_Felt,1.508590745436073e-06
+Material_Name_Wool_Rug,1.5031478082383064e-06
+Material_Name_Overstuffed_Chair_Polyester_Batting,1.425213587228323e-06
+Material_Name_Fiberglass_Insulation_R30_Paper_Faced,1.2385647646014774e-06
+Material_Name_Window_Screen,1.1850383978181239e-06
+Material_Name_PVC,1.1702465179408453e-06
+Material_Name_Polyisocyanurate_Foam_Board,1.0977538737558185e-06
+Material_Name_Cotton_Sheet,1.0154434821808939e-06
+Material_Name_Wood_Stud,1.0091790606287374e-06
+Material_Name_Corrugated_Cardboard,9.669832248122552e-07
+Material_Name_Pine_Siding,9.386505066241845e-07
+Material_Name_Pallet_Wood,9.27434269690002e-07
+Material_Name_MDF,8.747354983042347e-07
+Material_Name_Feather_Pillow_Feathers,7.553564319294518e-07
+Material_Name_XPS_Foam_Board,6.994920289199338e-07
+Material_Name_Cotton_Raw,6.027310834108867e-07
+Material_Name_Mineral_Wool_Insulation,5.991983768034051e-07
+Material_Name_Excelsior,5.684504278885036e-07
+Material_Name_Cotton_Rug,5.298738610309303e-07
+Material_Name_PE_Foam_Pipe_Insulation,5.137520207844269e-07
+Material_Name_Rebond_Foam_Carpet_Pad,4.899920041590634e-07
+Material_Name_Rug_Pad,4.7650159904000853e-07
+Material_Name_Overstuffed_Chair_Polyester_Fabric,4.0384819179690623e-07
+Material_Name_Memory_Foam_Carpet_Pad,3.673410999090865e-07
+Material_Name_Straw,3.4155795415289997e-07
+Material_Name_Particleboard,2.852452014688281e-07
+Material_Name_Latex_Pillow_Foam,2.6131579241336774e-07
+Material_Name_PEVA,2.202253273763783e-07
+Material_Name_Lightweight_Gypsum_Wallboard,2.0086571883432558e-07
+Material_Name_Polyisocyanurate_Spray_Foam_Insulation,1.842144387115822e-07
+Material_Name_Hemp_Sheet,1.3787982695226776e-07
+Material_Name_PlasticC,1.1074991318736219e-08
+FLOW FACTOR,0.0
+SCAN TIME,0.0
+CO2 DELAY TIME,0.0
+CO DELAY TIME,0.0
+TEST STATUS,0.0
+O2 DELAY TIME,0.0
