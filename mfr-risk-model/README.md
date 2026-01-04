@@ -81,3 +81,54 @@ phase 2 shifts the project from a functional prototype to a credible analytical 
 current status: **phase 1 complete**
 
 next milestone: **phase 2 — validation and integration**
+
+---
+
+## Phase 2 — Validation, Interpretability, and Live Integration
+
+Phase 2 builds on the Phase 1 engineering foundation by focusing on scientific credibility, interpretability, and practical usability.
+
+While Phase 1 demonstrated that an end-to-end material fire risk estimation pipeline could exist and run reliably on real experimental data, Phase 2 evaluates whether the system’s outputs are meaningful, stable, and appropriate for early-stage material comparison.
+
+### Phase 2 Objectives
+
+The primary goals of Phase 2 were to:
+- validate the proxy fire risk score introduced in Phase 1
+- understand which physical properties most strongly drive model predictions
+- assess model behavior across different material classes
+- integrate the trained model into a live, user-facing interface
+
+### What Was Completed
+
+**1. Proxy Risk Score Validation**
+- Performed exploratory data analysis (EDA) to evaluate correlations between the proxy risk score and measurable fire behavior indicators.
+- Verified strong alignment with expected physical relationships:
+  - strong positive correlation with heat flux
+  - moderate negative correlation with time to ignition
+- Compared alternative proxy formulations (PCA-based, regression-based) and justified retaining the Phase 1 weighted proxy based on interpretability and stability.
+
+**2. Material-Class Analysis**
+- Stratified model performance across polymers, composites, and generic materials.
+- Identified higher variance in polymer predictions and documented appropriate caution for interpretation.
+- Confirmed stable behavior for composites and generic materials.
+
+**3. Model Interpretability**
+- Generated global feature importance rankings, confirming heat flux and surface area as dominant drivers.
+- Produced local, per-material explanations to support user-facing interpretations.
+- Translated technical explanations into UI-readable language.
+
+**4. Live API Integration**
+- Implemented a lightweight FastAPI backend to serve predictions.
+- Ensured the model is trained once at startup and reused for inference.
+- Preserved all Phase 1 modeling logic without modification.
+
+**5. UI → API → Model Integration**
+- Connected the UI to the live prediction API.
+- Verified dynamic predictions change meaningfully with different inputs.
+- Added loading and error states without redesigning UI components.
+
+### Phase 2 Outcome
+
+Phase 2 demonstrates that the system is not only functional, but also interpretable, scientifically grounded, and usable in real time. The project now operates as a credible decision-support tool for early-stage material fire risk comparison, with clearly documented assumptions and limitations.
+
+The system does not claim to provide definitive regulatory fire ratings; instead, it is intended to support comparative analysis and informed material selection under specified exposure conditions.
