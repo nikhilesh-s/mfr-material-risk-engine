@@ -37,45 +37,51 @@ export default function InputScreen({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 p-6">
+    <div className="min-h-screen bg-[#f4f6f7] p-6">
       <div className="max-w-3xl mx-auto py-8">
-        <button
-          onClick={onBack}
-          className="inline-flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-8 transition-colors"
-        >
-          <ChevronLeft className="w-5 h-5" />
-          Back to Overview
-        </button>
-
-        <div className="bg-white rounded-2xl shadow-xl p-10">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">
+        <div className="flex items-center justify-between mb-8">
+          <button
+            onClick={onBack}
+            className="inline-flex items-center gap-2 text-[#5c6770] hover:text-[#8b5e3c] transition-colors"
+          >
+            <ChevronLeft className="w-5 h-5" />
+            Back to Overview
+          </button>
+          <img
+            src="https://i.imgur.com/756B74g.png"
+            alt="Material Fire Risk logo"
+            className="h-10"
+          />
+        </div>
+        <div className="bg-white rounded-2xl shadow-xl p-10 border border-[#d6c4a1]">
+          <h1 className="text-3xl font-bold text-[#5c6770] mb-2">
             Material Assessment Input
           </h1>
-          <p className="text-slate-600 mb-8">
-            Define the testing conditions for fire resistance analysis
+          <p className="text-[#5c6770] mb-8">
+            Inputs represent simplified experimental conditions for comparative, early-stage risk assessment.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">
+              <label className="block text-sm font-semibold text-[#5c6770] mb-2">
                 Material Type
               </label>
               <select
                 value={materialType}
                 onChange={(e) => setMaterialType(e.target.value)}
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 border border-[#a9b1b7] rounded-lg focus:ring-2 focus:ring-[#e26a2c] focus:border-transparent outline-none transition-all"
               >
                 <option value="polymer">Polymer</option>
                 <option value="composite">Composite</option>
                 <option value="generic">Generic Material</option>
               </select>
-              <p className="text-sm text-slate-500 mt-1">
-                Select the primary material classification
+              <p className="text-sm text-[#a9b1b7] mt-1">
+                Primary material classification used for comparison
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">
+              <label className="block text-sm font-semibold text-[#5c6770] mb-2">
                 Temperature (°C)
               </label>
               <input
@@ -84,15 +90,15 @@ export default function InputScreen({
                 onChange={(e) => setTemperature(Number(e.target.value))}
                 min="0"
                 max="2000"
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 border border-[#a9b1b7] rounded-lg focus:ring-2 focus:ring-[#e26a2c] focus:border-transparent outline-none transition-all"
               />
-              <p className="text-sm text-slate-500 mt-1">
-                Maximum thermal exposure temperature (0-2000°C)
+              <p className="text-sm text-[#a9b1b7] mt-1">
+                Simplified heat exposure input for controlled test conditions (0-2000°C)
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">
+              <label className="block text-sm font-semibold text-[#5c6770] mb-2">
                 Exposure Time (minutes)
               </label>
               <input
@@ -101,32 +107,32 @@ export default function InputScreen({
                 onChange={(e) => setExposureTime(Number(e.target.value))}
                 min="1"
                 max="480"
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 border border-[#a9b1b7] rounded-lg focus:ring-2 focus:ring-[#e26a2c] focus:border-transparent outline-none transition-all"
               />
-              <p className="text-sm text-slate-500 mt-1">
-                Duration of continuous thermal exposure (1-480 minutes)
+              <p className="text-sm text-[#a9b1b7] mt-1">
+                Exposure duration under simplified test conditions (1-480 minutes)
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-slate-900 mb-2">
+              <label className="block text-sm font-semibold text-[#5c6770] mb-2">
                 Environment
               </label>
               <select
                 value={environment}
                 onChange={(e) => setEnvironment(e.target.value)}
-                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                className="w-full px-4 py-3 border border-[#a9b1b7] rounded-lg focus:ring-2 focus:ring-[#e26a2c] focus:border-transparent outline-none transition-all"
               >
                 <option value="open-air">Open Air</option>
                 <option value="enclosed">Enclosed / Confined</option>
               </select>
-              <p className="text-sm text-slate-500 mt-1">
-                Ambient conditions during thermal exposure
+              <p className="text-sm text-[#a9b1b7] mt-1">
+                Experimental ambient conditions used for comparative analysis
               </p>
             </div>
 
             {errorMessage && (
-              <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+              <div className="rounded-lg border border-[#9e2a2b] bg-[#f4f6f7] p-3 text-sm text-[#9e2a2b]">
                 {errorMessage}
               </div>
             )}
@@ -134,7 +140,7 @@ export default function InputScreen({
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-red-600 text-white px-6 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all hover:scale-105"
+              className="w-full inline-flex items-center justify-center gap-2 bg-[#e26a2c] text-white px-6 py-4 rounded-xl font-semibold shadow-lg hover:bg-[#9e2a2b] transition-all hover:scale-105 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               <Calculator className="w-5 h-5" />
               {isLoading ? 'Analyzing...' : 'Analyze Fire Risk'}

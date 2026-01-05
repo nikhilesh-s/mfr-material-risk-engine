@@ -1,4 +1,4 @@
-import { Flame, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface LandingScreenProps {
   onGetStarted: () => void;
@@ -6,55 +6,58 @@ interface LandingScreenProps {
 
 export default function LandingScreen({ onGetStarted }: LandingScreenProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-[#f4f6f7] flex items-center justify-center p-6">
       <div className="max-w-4xl w-full">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl mb-6 shadow-lg">
-            <Flame className="w-10 h-10 text-white" />
-          </div>
+          <img
+            src="https://i.imgur.com/756B74g.png"
+            alt="Material Fire Risk logo"
+            className="h-20 mx-auto mb-6"
+          />
 
-          <h1 className="text-5xl font-bold text-slate-900 mb-4">
-            Material Fire Resistance Risk Estimator
+          <h1 className="text-4xl md:text-5xl font-bold text-[#5c6770] mb-4">
+            Comparative fire resistance risk estimation under controlled thermal exposure
           </h1>
 
-          <p className="text-xl text-slate-600 max-w-2xl mx-auto">
-            Estimate fire failure risk and resistance of materials under thermal exposure.
+          <p className="text-lg text-[#5c6770] max-w-3xl mx-auto">
+            Experimental-condition analysis designed for early-stage material comparison. This is a decision-support tool,
+            not a regulatory or certification system.
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-xl p-10 mb-8">
-          <h2 className="text-2xl font-semibold text-slate-900 mb-8 text-center">
+        <div className="bg-white rounded-2xl shadow-xl p-10 mb-8 border border-[#d6c4a1]">
+          <h2 className="text-2xl font-semibold text-[#5c6770] mb-8 text-center">
             How It Works
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-blue-600">1</span>
+              <div className="w-16 h-16 bg-[#f4f6f7] rounded-xl flex items-center justify-center mx-auto mb-4 border border-[#d6c4a1]">
+                <span className="text-2xl font-bold text-[#8b5e3c]">1</span>
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">Input</h3>
-              <p className="text-slate-600">
-                Define material properties and fire exposure conditions
+              <h3 className="text-lg font-semibold text-[#5c6770] mb-2">Input</h3>
+              <p className="text-[#5c6770]">
+                Provide simplified test-condition inputs for comparative analysis
               </p>
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-blue-600">2</span>
+              <div className="w-16 h-16 bg-[#f4f6f7] rounded-xl flex items-center justify-center mx-auto mb-4 border border-[#d6c4a1]">
+                <span className="text-2xl font-bold text-[#8b5e3c]">2</span>
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">Model</h3>
-              <p className="text-slate-600">
-                ML engine analyzes thermal resistance and failure patterns
+              <h3 className="text-lg font-semibold text-[#5c6770] mb-2">Model</h3>
+              <p className="text-[#5c6770]">
+                The model evaluates relative fire failure risk under similar conditions
               </p>
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl font-bold text-blue-600">3</span>
+              <div className="w-16 h-16 bg-[#f4f6f7] rounded-xl flex items-center justify-center mx-auto mb-4 border border-[#d6c4a1]">
+                <span className="text-2xl font-bold text-[#8b5e3c]">3</span>
               </div>
-              <h3 className="text-lg font-semibold text-slate-900 mb-2">Risk Assessment</h3>
-              <p className="text-slate-600">
-                Get actionable risk scores and resistance metrics
+              <h3 className="text-lg font-semibold text-[#5c6770] mb-2">Results</h3>
+              <p className="text-[#5c6770]">
+                Receive interpretable risk scores for early-stage comparisons
               </p>
             </div>
           </div>
@@ -63,15 +66,15 @@ export default function LandingScreen({ onGetStarted }: LandingScreenProps) {
         <div className="text-center">
           <button
             onClick={onGetStarted}
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-600 text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transition-all hover:scale-105"
+            className="inline-flex items-center gap-2 bg-[#e26a2c] text-white px-8 py-4 rounded-xl font-semibold text-lg shadow-lg hover:bg-[#9e2a2b] transition-all hover:scale-105"
           >
-            Run a Material Assessment
+            Run Material Assessment
             <ArrowRight className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="mt-12 text-center text-sm text-slate-500">
-          <p>Developed by Nikhilesh Suravarjjala</p>
+        <div className="mt-12 text-center text-sm text-[#a9b1b7]">
+          <p>Experimental-condition decision support for early material evaluation</p>
         </div>
       </div>
     </div>
