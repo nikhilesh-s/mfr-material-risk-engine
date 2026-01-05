@@ -3,14 +3,15 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from src.model import predict_risk, train_model
-from src.utils import clean_fire_properties
+from src.utils import DROP_COLUMNS, META_COLUMNS, TEXT_HEAVY_COLUMNS, clean_fire_properties, map_material_type
 
 
 class FirePropertiesInput(BaseModel):
@@ -40,6 +41,15 @@ class FirePropertiesInput(BaseModel):
 
 
 app = FastAPI(title="MFR Risk API", version="0.1.0")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
 
 RAW_DATA_PATH = (
     Path(__file__).resolve().parents[1]
@@ -60,7 +70,74 @@ def load_model() -> None:
     model, _ = train_model(cleaned_df)
 
     app.state.raw_df = raw_df
+    app.state.training_stats = _build_training_stats(raw_df)
+    app.state.feature_cols = cleaned_df.drop(columns=["risk_score"]).columns.tolist()
     app.state.model = model
+
+
+def _build_training_stats(raw_df: pd.DataFrame) -> Dict[str, Any]:
+    """Capture preprocessing stats from training data for inference-time transforms."""
+    base = raw_df.drop(columns=DROP_COLUMNS, errors="ignore")
+    base = base.drop(columns=TEXT_HEAVY_COLUMNS, errors="ignore")
+    base = base.drop(columns=META_COLUMNS, errors="ignore")
+    base["material_type"] = base["MATERIAL"].map(map_material_type)
+
+    numeric_cols = base.select_dtypes(include=["number"]).columns.tolist()
+    categorical_cols = [
+        col for col in base.select_dtypes(include=["object"]).columns if col != "MATERIAL"
+    ]
+
+    medians = base[numeric_cols].median()
+    base[numeric_cols] = base[numeric_cols].fillna(medians)
+    base[categorical_cols] = base[categorical_cols].fillna("unknown")
+
+    minmax: Dict[str, Tuple[float, float]] = {}
+    for col in numeric_cols:
+        minmax[col] = (float(base[col].min()), float(base[col].max()))
+
+    encoded = pd.get_dummies(base.drop(columns=["MATERIAL"], errors="ignore"), drop_first=True)
+
+    return {
+        "numeric_cols": numeric_cols,
+        "categorical_cols": categorical_cols,
+        "medians": medians,
+        "minmax": minmax,
+        "dummy_columns": encoded.columns.tolist(),
+    }
+
+
+def _transform_input(
+    raw_row: Dict[str, Any],
+    stats: Dict[str, Any],
+    feature_cols: List[str],
+) -> pd.DataFrame:
+    """Transform a single raw input row using training-time statistics."""
+    base = pd.DataFrame([raw_row])
+    base = base.drop(columns=DROP_COLUMNS, errors="ignore")
+    base = base.drop(columns=TEXT_HEAVY_COLUMNS, errors="ignore")
+    base = base.drop(columns=META_COLUMNS, errors="ignore")
+    base["material_type"] = base["MATERIAL"].map(map_material_type)
+
+    for col in stats["numeric_cols"]:
+        base[col] = base[col].fillna(stats["medians"][col])
+    for col in stats["categorical_cols"]:
+        base[col] = base[col].fillna("unknown")
+
+    encoded = pd.get_dummies(base.drop(columns=["MATERIAL"], errors="ignore"), drop_first=True)
+    for col in stats["dummy_columns"]:
+        if col not in encoded.columns:
+            encoded[col] = 0.0
+    encoded = encoded[stats["dummy_columns"]]
+
+    for col in stats["numeric_cols"]:
+        col_min, col_max = stats["minmax"][col]
+        if col_min == col_max:
+            encoded[col] = 0.0
+        else:
+            encoded[col] = (encoded[col] - col_min) / (col_max - col_min)
+
+    encoded = encoded.reindex(columns=feature_cols, fill_value=0.0)
+    return encoded
 
 
 @app.post("/predict")
@@ -71,16 +148,16 @@ def predict(payload: FirePropertiesInput) -> Dict[str, Any]:
 
     raw_df = app.state.raw_df
     model = app.state.model
+    stats = app.state.training_stats
+    feature_cols = app.state.feature_cols
 
     input_row = {col: None for col in raw_df.columns}
     for key, value in payload.dict(by_alias=True).items():
         input_row[key] = value
 
-    combined = pd.concat([raw_df, pd.DataFrame([input_row])], ignore_index=True)
-    cleaned_combined, _ = clean_fire_properties(combined)
-    cleaned_row = cleaned_combined.iloc[-1].to_dict()
+    feature_frame = _transform_input(input_row, stats, feature_cols)
 
-    result = predict_risk(model, cleaned_row)
+    result = predict_risk(model, feature_frame.iloc[0].to_dict())
     return {
         "riskScore": result["riskScore"],
         "riskClass": result["riskClass"],
