@@ -41,7 +41,9 @@ function App() {
     setErrorMessage(null);
 
     try {
-      const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+      const apiBase =
+        import.meta.env.VITE_API_BASE_URL ||
+        'https://mfr-material-risk-engine-production.up.railway.app';
       const response = await fetch(`${apiBase}/predict`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
