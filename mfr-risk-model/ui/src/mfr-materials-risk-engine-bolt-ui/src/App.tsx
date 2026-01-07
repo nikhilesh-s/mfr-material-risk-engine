@@ -41,9 +41,11 @@ function App() {
     setErrorMessage(null);
 
     try {
-      const apiBase =
-        import.meta.env.VITE_API_BASE_URL ||
-        'https://mfr-material-risk-engine-production.up.railway.app';
+      const apiBase = import.meta.env.VITE_API_BASE_URL
+        || (import.meta.env.DEV ? 'http://localhost:8000' : '');
+      if (!apiBase) {
+        throw new Error('Missing VITE_API_BASE_URL for production.');
+      }
       const response = await fetch(`${apiBase}/predict`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -71,7 +73,7 @@ function App() {
       setAssessmentResults(results);
       setCurrentScreen('results');
     } catch (error) {
-      setErrorMessage('Unable to reach the prediction service. Please try again.');
+      setErrorMessage('Prediction service is unreachable. Please verify your connection and try again.');
     } finally {
       setIsLoading(false);
     }
