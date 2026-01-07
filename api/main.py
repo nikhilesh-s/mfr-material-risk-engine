@@ -45,11 +45,12 @@ app = FastAPI(title="MFR Risk API", version="0.1.0")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "https://mfr-material-risk-engine.vercel.app",
         "http://localhost:5173",
         "http://127.0.0.1:5173",
     ],
-    allow_methods=["GET", "POST"],
-    allow_headers=["*"],
+    allow_methods=["POST", "OPTIONS"],
+    allow_headers=["content-type"],
 )
 
 RAW_DATA_PATH = (
