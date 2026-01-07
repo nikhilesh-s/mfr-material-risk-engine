@@ -2,11 +2,10 @@ import { useState } from 'react';
 import LandingScreen from './components/LandingScreen';
 import InputScreen from './components/InputScreen';
 import ResultsScreen from './components/ResultsScreen';
-import InsightsScreen from './components/InsightsScreen';
 import { AssessmentInput } from './components/InputScreen';
 import { AssessmentResults } from './components/ResultsScreen';
 
-type Screen = 'landing' | 'input' | 'results' | 'insights';
+type Screen = 'landing' | 'input' | 'results';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('landing');
@@ -86,14 +85,6 @@ function App() {
     setCurrentScreen('input');
   };
 
-  const handleViewInsights = () => {
-    setCurrentScreen('insights');
-  };
-
-  const handleBackToResults = () => {
-    setCurrentScreen('results');
-  };
-
   return (
     <>
       {currentScreen === 'landing' && (
@@ -110,15 +101,6 @@ function App() {
       {currentScreen === 'results' && assessmentInput && assessmentResults && (
         <ResultsScreen
           onBack={handleBackToInput}
-          onViewInsights={handleViewInsights}
-          input={assessmentInput}
-          results={assessmentResults}
-        />
-      )}
-      {currentScreen === 'insights' && assessmentInput && assessmentResults && (
-        <InsightsScreen
-          onBack={handleBackToResults}
-          onReturnHome={handleBackToLanding}
           input={assessmentInput}
           results={assessmentResults}
         />

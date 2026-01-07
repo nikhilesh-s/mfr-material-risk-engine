@@ -1,0 +1,5762 @@
+{
+  "minmax": {
+    "HEAT FLUX": [
+      15.0,
+      100.0
+    ],
+    "TIME TO IGN": [
+      0.0,
+      1102.5
+    ],
+    "FLOW FACTOR": [
+      1.0,
+      1.0
+    ]
+  },
+  "records": [
+    {
+      "materialName": "ABS",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 113.0,
+      "flowFactor": 1.0,
+      "riskScore": 53.07315590292407
+    },
+    {
+      "materialName": "ABS",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 110.0,
+      "flowFactor": 1.0,
+      "riskScore": 53.155943841740985
+    },
+    {
+      "materialName": "ABS",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 108.25,
+      "flowFactor": 1.0,
+      "riskScore": 53.20240760360435
+    },
+    {
+      "materialName": "ABS",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 25.25,
+      "flowFactor": 1.0,
+      "riskScore": 65.75560630593449
+    },
+    {
+      "materialName": "ABS",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 25.0,
+      "flowFactor": 1.0,
+      "riskScore": 65.76298665886782
+    },
+    {
+      "materialName": "ABS",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 25.75,
+      "flowFactor": 1.0,
+      "riskScore": 65.7437337813582
+    },
+    {
+      "materialName": "ABS",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 12.25,
+      "flowFactor": 1.0,
+      "riskScore": 75.80962280033913
+    },
+    {
+      "materialName": "ABS",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 12.75,
+      "flowFactor": 1.0,
+      "riskScore": 75.79543970425149
+    },
+    {
+      "materialName": "ABS",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 13.0,
+      "flowFactor": 1.0,
+      "riskScore": 75.79036992288727
+    },
+    {
+      "materialName": "Asphalt_Shingle",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 86.0,
+      "flowFactor": 1.0,
+      "riskScore": 54.53558131133131
+    },
+    {
+      "materialName": "Asphalt_Shingle",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 88.75,
+      "flowFactor": 1.0,
+      "riskScore": 54.44850540306386
+    },
+    {
+      "materialName": "Asphalt_Shingle",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 88.5,
+      "flowFactor": 1.0,
+      "riskScore": 54.46489695862036
+    },
+    {
+      "materialName": "Asphalt_Shingle",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 28.75,
+      "flowFactor": 1.0,
+      "riskScore": 65.8992818510935
+    },
+    {
+      "materialName": "Asphalt_Shingle",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 26.0,
+      "flowFactor": 1.0,
+      "riskScore": 65.9721478038783
+    },
+    {
+      "materialName": "Asphalt_Shingle",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 26.0,
+      "flowFactor": 1.0,
+      "riskScore": 65.97619129304799
+    },
+    {
+      "materialName": "Asphalt_Shingle",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 14.75,
+      "flowFactor": 1.0,
+      "riskScore": 76.57643138908641
+    },
+    {
+      "materialName": "Asphalt_Shingle",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 14.0,
+      "flowFactor": 1.0,
+      "riskScore": 76.59672402155799
+    },
+    {
+      "materialName": "Asphalt_Shingle",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 15.0,
+      "flowFactor": 1.0,
+      "riskScore": 76.56229262866923
+    },
+    {
+      "materialName": "Basswood_Panel",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 88.0,
+      "flowFactor": 1.0,
+      "riskScore": 52.49488974831075
+    },
+    {
+      "materialName": "Basswood_Panel",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 96.5,
+      "flowFactor": 1.0,
+      "riskScore": 52.257358701301094
+    },
+    {
+      "materialName": "Basswood_Panel",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 113.0,
+      "flowFactor": 1.0,
+      "riskScore": 51.806646213871886
+    },
+    {
+      "materialName": "Basswood_Panel",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 92.5,
+      "flowFactor": 1.0,
+      "riskScore": 53.047051744597916
+    },
+    {
+      "materialName": "Basswood_Panel",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 14.5,
+      "flowFactor": 1.0,
+      "riskScore": 65.46176993868164
+    },
+    {
+      "materialName": "Basswood_Panel",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 13.75,
+      "flowFactor": 1.0,
+      "riskScore": 65.49066941114626
+    },
+    {
+      "materialName": "Basswood_Panel",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 16.25,
+      "flowFactor": 1.0,
+      "riskScore": 65.37256076369147
+    },
+    {
+      "materialName": "Basswood_Panel",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 6.5,
+      "flowFactor": 1.0,
+      "riskScore": 75.70674608213733
+    },
+    {
+      "materialName": "Basswood_Panel",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 5.75,
+      "flowFactor": 1.0,
+      "riskScore": 75.74875799457797
+    },
+    {
+      "materialName": "Basswood_Panel",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 6.5,
+      "flowFactor": 1.0,
+      "riskScore": 75.67578453801549
+    },
+    {
+      "materialName": "Black_PMMA",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 109.5,
+      "flowFactor": 1.0,
+      "riskScore": 51.35525544637679
+    },
+    {
+      "materialName": "Black_PMMA",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 119.0,
+      "flowFactor": 1.0,
+      "riskScore": 52.59256244256728
+    },
+    {
+      "materialName": "Black_PMMA",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 116.75,
+      "flowFactor": 1.0,
+      "riskScore": 52.643389382165886
+    },
+    {
+      "materialName": "Black_PMMA",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 102.25,
+      "flowFactor": 1.0,
+      "riskScore": 55.299448835650445
+    },
+    {
+      "materialName": "Black_PMMA",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 108.0,
+      "flowFactor": 1.0,
+      "riskScore": 52.50022386481299
+    },
+    {
+      "materialName": "Black_PMMA",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 104.5,
+      "flowFactor": 1.0,
+      "riskScore": 54.45976926657256
+    },
+    {
+      "materialName": "Black_PMMA",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 26.25,
+      "flowFactor": 1.0,
+      "riskScore": 65.38507341415004
+    },
+    {
+      "materialName": "Black_PMMA",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 27.5,
+      "flowFactor": 1.0,
+      "riskScore": 65.36607845779614
+    },
+    {
+      "materialName": "Black_PMMA",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 27.25,
+      "flowFactor": 1.0,
+      "riskScore": 65.035478686858
+    },
+    {
+      "materialName": "Black_PMMA",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 23.75,
+      "flowFactor": 1.0,
+      "riskScore": 65.88689903643312
+    },
+    {
+      "materialName": "Black_PMMA",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 11.75,
+      "flowFactor": 1.0,
+      "riskScore": 75.72190533076312
+    },
+    {
+      "materialName": "Black_PMMA",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 12.75,
+      "flowFactor": 1.0,
+      "riskScore": 75.71086840343474
+    },
+    {
+      "materialName": "Black_PMMA",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 12.5,
+      "flowFactor": 1.0,
+      "riskScore": 75.73153450957504
+    },
+    {
+      "materialName": "Black_PMMA",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 14.75,
+      "flowFactor": 1.0,
+      "riskScore": 76.23352824390625
+    },
+    {
+      "materialName": "Cellulose_Insulation",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 9.75,
+      "flowFactor": 1.0,
+      "riskScore": 56.28952738098923
+    },
+    {
+      "materialName": "Cellulose_Insulation",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 12.0,
+      "flowFactor": 1.0,
+      "riskScore": 56.198034520743015
+    },
+    {
+      "materialName": "Cellulose_Insulation",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 9.25,
+      "flowFactor": 1.0,
+      "riskScore": 56.283608572939535
+    },
+    {
+      "materialName": "Cellulose_Insulation",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 2.25,
+      "flowFactor": 1.0,
+      "riskScore": 67.46717153078036
+    },
+    {
+      "materialName": "Cellulose_Insulation",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 1.25,
+      "flowFactor": 1.0,
+      "riskScore": 67.49080104908145
+    },
+    {
+      "materialName": "Cellulose_Insulation",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 1.5,
+      "flowFactor": 1.0,
+      "riskScore": 67.48163000205999
+    },
+    {
+      "materialName": "Cellulose_Insulation",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.75,
+      "flowFactor": 1.0,
+      "riskScore": 77.76825175435884
+    },
+    {
+      "materialName": "Cellulose_Insulation",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 2.0,
+      "flowFactor": 1.0,
+      "riskScore": 77.7579254215817
+    },
+    {
+      "materialName": "Cellulose_Insulation",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.5,
+      "flowFactor": 1.0,
+      "riskScore": 77.77135757865872
+    },
+    {
+      "materialName": "Composite_Deck_Board",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 170.0,
+      "flowFactor": 1.0,
+      "riskScore": 50.63377646806555
+    },
+    {
+      "materialName": "Composite_Deck_Board",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 154.25,
+      "flowFactor": 1.0,
+      "riskScore": 51.091865338994054
+    },
+    {
+      "materialName": "Composite_Deck_Board",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 171.75,
+      "flowFactor": 1.0,
+      "riskScore": 49.843977575237425
+    },
+    {
+      "materialName": "Composite_Deck_Board",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 26.25,
+      "flowFactor": 1.0,
+      "riskScore": 64.09710561049248
+    },
+    {
+      "materialName": "Composite_Deck_Board",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 25.25,
+      "flowFactor": 1.0,
+      "riskScore": 64.12287239313922
+    },
+    {
+      "materialName": "Composite_Deck_Board",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 26.5,
+      "flowFactor": 1.0,
+      "riskScore": 64.08897434067214
+    },
+    {
+      "materialName": "Composite_Deck_Board",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 11.75,
+      "flowFactor": 1.0,
+      "riskScore": 74.79011338580158
+    },
+    {
+      "materialName": "Composite_Deck_Board",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 12.0,
+      "flowFactor": 1.0,
+      "riskScore": 74.77897835959212
+    },
+    {
+      "materialName": "Composite_Deck_Board",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 10.75,
+      "flowFactor": 1.0,
+      "riskScore": 74.81293423273625
+    },
+    {
+      "materialName": "Corrugated_Cardboard",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 30.5,
+      "flowFactor": 1.0,
+      "riskScore": 56.23029689656105
+    },
+    {
+      "materialName": "Corrugated_Cardboard",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 32.5,
+      "flowFactor": 1.0,
+      "riskScore": 56.175759599826755
+    },
+    {
+      "materialName": "Corrugated_Cardboard",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 30.0,
+      "flowFactor": 1.0,
+      "riskScore": 56.244075629400456
+    },
+    {
+      "materialName": "Corrugated_Cardboard",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 7.25,
+      "flowFactor": 1.0,
+      "riskScore": 67.15712536748009
+    },
+    {
+      "materialName": "Corrugated_Cardboard",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 8.0,
+      "flowFactor": 1.0,
+      "riskScore": 67.13648614816118
+    },
+    {
+      "materialName": "Corrugated_Cardboard",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 6.75,
+      "flowFactor": 1.0,
+      "riskScore": 67.17021093215865
+    },
+    {
+      "materialName": "Corrugated_Cardboard",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.75,
+      "flowFactor": 1.0,
+      "riskScore": 77.54596123227869
+    },
+    {
+      "materialName": "Corrugated_Cardboard",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.0,
+      "flowFactor": 1.0,
+      "riskScore": 77.56642716093508
+    },
+    {
+      "materialName": "Corrugated_Cardboard",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 4.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.53264461154653
+    },
+    {
+      "materialName": "Cotton_Raw",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 20.0,
+      "flowFactor": 1.0,
+      "riskScore": 55.29448021970643
+    },
+    {
+      "materialName": "Cotton_Raw",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 40.25,
+      "flowFactor": 1.0,
+      "riskScore": 54.742304531275074
+    },
+    {
+      "materialName": "Cotton_Raw",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 33.25,
+      "flowFactor": 1.0,
+      "riskScore": 54.93624656529933
+    },
+    {
+      "materialName": "Cotton_Raw",
+      "materialType": "generic",
+      "heatFlux": 35.0,
+      "timeToIgn": 9.0,
+      "flowFactor": 1.0,
+      "riskScore": 58.854969904410005
+    },
+    {
+      "materialName": "Cotton_Raw",
+      "materialType": "generic",
+      "heatFlux": 35.0,
+      "timeToIgn": 19.0,
+      "flowFactor": 1.0,
+      "riskScore": 58.58921511059
+    },
+    {
+      "materialName": "Cotton_Raw",
+      "materialType": "generic",
+      "heatFlux": 35.0,
+      "timeToIgn": 6.75,
+      "flowFactor": 1.0,
+      "riskScore": 58.913883833681304
+    },
+    {
+      "materialName": "Cotton_Raw",
+      "materialType": "generic",
+      "heatFlux": 35.0,
+      "timeToIgn": 3.0,
+      "flowFactor": 1.0,
+      "riskScore": 59.02343397723221
+    },
+    {
+      "materialName": "Cotton_Raw",
+      "materialType": "generic",
+      "heatFlux": 35.0,
+      "timeToIgn": 2.75,
+      "flowFactor": 1.0,
+      "riskScore": 59.02844601253321
+    },
+    {
+      "materialName": "Cotton_Raw",
+      "materialType": "generic",
+      "heatFlux": 35.0,
+      "timeToIgn": 3.5,
+      "flowFactor": 1.0,
+      "riskScore": 59.013872021487025
+    },
+    {
+      "materialName": "Cotton_Raw",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.25,
+      "flowFactor": 1.0,
+      "riskScore": 74.91431255164726
+    },
+    {
+      "materialName": "Cotton_Raw",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.0,
+      "flowFactor": 1.0,
+      "riskScore": 74.92625627679973
+    },
+    {
+      "materialName": "Cotton_Raw",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.0,
+      "flowFactor": 1.0,
+      "riskScore": 74.93821343717195
+    },
+    {
+      "materialName": "Cotton_Rug",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 70.5,
+      "flowFactor": 1.0,
+      "riskScore": 39.69540642741905
+    },
+    {
+      "materialName": "Cotton_Rug",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 62.25,
+      "flowFactor": 1.0,
+      "riskScore": 39.91810553479464
+    },
+    {
+      "materialName": "Cotton_Rug",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 69.25,
+      "flowFactor": 1.0,
+      "riskScore": 39.72768710965753
+    },
+    {
+      "materialName": "Cotton_Rug",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 15.0,
+      "flowFactor": 1.0,
+      "riskScore": 51.49880393188451
+    },
+    {
+      "materialName": "Cotton_Rug",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 13.75,
+      "flowFactor": 1.0,
+      "riskScore": 51.536398908866886
+    },
+    {
+      "materialName": "Cotton_Rug",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 16.75,
+      "flowFactor": 1.0,
+      "riskScore": 51.454304143721544
+    },
+    {
+      "materialName": "Cotton_Rug",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 6.5,
+      "flowFactor": 1.0,
+      "riskScore": 76.56190736879668
+    },
+    {
+      "materialName": "Cotton_Rug",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 6.25,
+      "flowFactor": 1.0,
+      "riskScore": 61.569521685356776
+    },
+    {
+      "materialName": "Cotton_Rug",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 6.0,
+      "flowFactor": 1.0,
+      "riskScore": 61.43803722940827
+    },
+    {
+      "materialName": "Cotton_Sheet",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 8.75,
+      "flowFactor": 1.0,
+      "riskScore": 42.72023200605394
+    },
+    {
+      "materialName": "Cotton_Sheet",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 10.75,
+      "flowFactor": 1.0,
+      "riskScore": 42.66569470931964
+    },
+    {
+      "materialName": "Cotton_Sheet",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 9.75,
+      "flowFactor": 1.0,
+      "riskScore": 42.69307888571648
+    },
+    {
+      "materialName": "Cotton_Sheet",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 2.75,
+      "flowFactor": 1.0,
+      "riskScore": 53.17767272325149
+    },
+    {
+      "materialName": "Cotton_Sheet",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 3.0,
+      "flowFactor": 1.0,
+      "riskScore": 53.17092776686096
+    },
+    {
+      "materialName": "Cotton_Sheet",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 3.25,
+      "flowFactor": 1.0,
+      "riskScore": 53.16406728107462
+    },
+    {
+      "materialName": "Cotton_Sheet",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 2.0,
+      "flowFactor": 1.0,
+      "riskScore": 63.49231406228982
+    },
+    {
+      "materialName": "Cotton_Sheet",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 2.25,
+      "flowFactor": 1.0,
+      "riskScore": 63.48545357718509
+    },
+    {
+      "materialName": "Cotton_Sheet",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.75,
+      "flowFactor": 1.0,
+      "riskScore": 63.49905901936197
+    },
+    {
+      "materialName": "EPDM_Membrane",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 108.0,
+      "flowFactor": 1.0,
+      "riskScore": 51.20636919097695
+    },
+    {
+      "materialName": "EPDM_Membrane",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 110.0,
+      "flowFactor": 1.0,
+      "riskScore": 36.149639791326074
+    },
+    {
+      "materialName": "EPDM_Membrane",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 156.75,
+      "flowFactor": 1.0,
+      "riskScore": 34.88735082177826
+    },
+    {
+      "materialName": "EPDM_Membrane",
+      "materialType": "generic",
+      "heatFlux": 35.0,
+      "timeToIgn": 154.0,
+      "flowFactor": 1.0,
+      "riskScore": 39.5675494609112
+    },
+    {
+      "materialName": "EPDM_Membrane",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 150.75,
+      "flowFactor": 1.0,
+      "riskScore": 35.533716677230856
+    },
+    {
+      "materialName": "EPDM_Membrane",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 35.5,
+      "flowFactor": 1.0,
+      "riskScore": 48.470968322738635
+    },
+    {
+      "materialName": "EPDM_Membrane",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 34.75,
+      "flowFactor": 1.0,
+      "riskScore": 48.493109381596405
+    },
+    {
+      "materialName": "EPDM_Membrane",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 35.5,
+      "flowFactor": 1.0,
+      "riskScore": 48.46576954781327
+    },
+    {
+      "materialName": "EPDM_Membrane",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 20.25,
+      "flowFactor": 1.0,
+      "riskScore": 50.44885039786239
+    },
+    {
+      "materialName": "EPDM_Membrane",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 14.5,
+      "flowFactor": 1.0,
+      "riskScore": 59.342290948054064
+    },
+    {
+      "materialName": "EPDM_Membrane",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 14.25,
+      "flowFactor": 1.0,
+      "riskScore": 59.348515993223614
+    },
+    {
+      "materialName": "EPDM_Membrane",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 12.5,
+      "flowFactor": 1.0,
+      "riskScore": 59.39555740893999
+    },
+    {
+      "materialName": "EPDM_Membrane",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 8.0,
+      "flowFactor": 1.0,
+      "riskScore": 61.07341317484053
+    },
+    {
+      "materialName": "Engineered_Flooring",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 128.5,
+      "flowFactor": 1.0,
+      "riskScore": 54.34367591890981
+    },
+    {
+      "materialName": "Engineered_Flooring",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 142.5,
+      "flowFactor": 1.0,
+      "riskScore": 53.41612919039819
+    },
+    {
+      "materialName": "Engineered_Flooring",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 142.0,
+      "flowFactor": 1.0,
+      "riskScore": 53.426904205590844
+    },
+    {
+      "materialName": "Engineered_Flooring",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 26.75,
+      "flowFactor": 1.0,
+      "riskScore": 67.41204639420243
+    },
+    {
+      "materialName": "Engineered_Flooring",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 27.0,
+      "flowFactor": 1.0,
+      "riskScore": 67.40639898093555
+    },
+    {
+      "materialName": "Engineered_Flooring",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 25.5,
+      "flowFactor": 1.0,
+      "riskScore": 66.8963464312157
+    },
+    {
+      "materialName": "Engineered_Flooring",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 13.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.52131355493889
+    },
+    {
+      "materialName": "Engineered_Flooring",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 13.75,
+      "flowFactor": 1.0,
+      "riskScore": 77.51354225188808
+    },
+    {
+      "materialName": "Engineered_Flooring",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 12.5,
+      "flowFactor": 1.0,
+      "riskScore": 77.55177265372343
+    },
+    {
+      "materialName": "Engineered_Wood_Furniture",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 118.25,
+      "flowFactor": 1.0,
+      "riskScore": 52.63229648945965
+    },
+    {
+      "materialName": "Engineered_Wood_Furniture",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 88.0,
+      "flowFactor": 1.0,
+      "riskScore": 53.453635068907026
+    },
+    {
+      "materialName": "Engineered_Wood_Furniture",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 116.25,
+      "flowFactor": 1.0,
+      "riskScore": 52.68671825816714
+    },
+    {
+      "materialName": "Engineered_Wood_Furniture",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 22.75,
+      "flowFactor": 1.0,
+      "riskScore": 66.02111186528107
+    },
+    {
+      "materialName": "Engineered_Wood_Furniture",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 28.75,
+      "flowFactor": 1.0,
+      "riskScore": 65.86067703027459
+    },
+    {
+      "materialName": "Engineered_Wood_Furniture",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 16.75,
+      "flowFactor": 1.0,
+      "riskScore": 66.18530141729107
+    },
+    {
+      "materialName": "Engineered_Wood_Furniture",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 10.25,
+      "flowFactor": 1.0,
+      "riskScore": 76.67240599289818
+    },
+    {
+      "materialName": "Engineered_Wood_Furniture",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 11.75,
+      "flowFactor": 1.0,
+      "riskScore": 76.61079461102891
+    },
+    {
+      "materialName": "Engineered_Wood_Furniture",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 7.0,
+      "flowFactor": 1.0,
+      "riskScore": 76.74420528765636
+    },
+    {
+      "materialName": "Engineered_Wood_Table",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 112.75,
+      "flowFactor": 1.0,
+      "riskScore": 52.297930135229244
+    },
+    {
+      "materialName": "Engineered_Wood_Table",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 130.0,
+      "flowFactor": 1.0,
+      "riskScore": 52.37551101229465
+    },
+    {
+      "materialName": "Engineered_Wood_Table",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 127.0,
+      "flowFactor": 1.0,
+      "riskScore": 52.48989579329425
+    },
+    {
+      "materialName": "Engineered_Wood_Table",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 114.5,
+      "flowFactor": 1.0,
+      "riskScore": 52.74546534359853
+    },
+    {
+      "materialName": "Engineered_Wood_Table",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 116.5,
+      "flowFactor": 1.0,
+      "riskScore": 52.75181131118144
+    },
+    {
+      "materialName": "Engineered_Wood_Table",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 14.5,
+      "flowFactor": 1.0,
+      "riskScore": 65.00522979856392
+    },
+    {
+      "materialName": "Engineered_Wood_Table",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 24.25,
+      "flowFactor": 1.0,
+      "riskScore": 64.75476890765034
+    },
+    {
+      "materialName": "Engineered_Wood_Table",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 26.5,
+      "flowFactor": 1.0,
+      "riskScore": 64.62522685708646
+    },
+    {
+      "materialName": "Engineered_Wood_Table",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.75,
+      "flowFactor": 1.0,
+      "riskScore": 76.22622715315256
+    },
+    {
+      "materialName": "Engineered_Wood_Table",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.75,
+      "flowFactor": 1.0,
+      "riskScore": 76.23951299456527
+    },
+    {
+      "materialName": "Engineered_Wood_Table",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 8.0,
+      "flowFactor": 1.0,
+      "riskScore": 76.05114161928927
+    },
+    {
+      "materialName": "Eucalyptus_Flooring",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 187.0,
+      "flowFactor": 1.0,
+      "riskScore": 51.69940489222802
+    },
+    {
+      "materialName": "Eucalyptus_Flooring",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 164.25,
+      "flowFactor": 1.0,
+      "riskScore": 52.286231013865326
+    },
+    {
+      "materialName": "Eucalyptus_Flooring",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 176.25,
+      "flowFactor": 1.0,
+      "riskScore": 51.96201092911556
+    },
+    {
+      "materialName": "Eucalyptus_Flooring",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 35.0,
+      "flowFactor": 1.0,
+      "riskScore": 66.09204109195959
+    },
+    {
+      "materialName": "Eucalyptus_Flooring",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 25.0,
+      "flowFactor": 1.0,
+      "riskScore": 66.49042219222358
+    },
+    {
+      "materialName": "Eucalyptus_Flooring",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 32.0,
+      "flowFactor": 1.0,
+      "riskScore": 66.1707855416068
+    },
+    {
+      "materialName": "Eucalyptus_Flooring",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 14.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.18469122285818
+    },
+    {
+      "materialName": "Eucalyptus_Flooring",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 12.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.22900427961659
+    },
+    {
+      "materialName": "Eucalyptus_Flooring",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 15.5,
+      "flowFactor": 1.0,
+      "riskScore": 77.13710302613403
+    },
+    {
+      "materialName": "Excelsior",
+      "materialType": "generic",
+      "heatFlux": 35.0,
+      "timeToIgn": 18.75,
+      "flowFactor": 1.0,
+      "riskScore": 60.343135982470876
+    },
+    {
+      "materialName": "Excelsior",
+      "materialType": "generic",
+      "heatFlux": 35.0,
+      "timeToIgn": 20.25,
+      "flowFactor": 1.0,
+      "riskScore": 59.90444182787393
+    },
+    {
+      "materialName": "Excelsior",
+      "materialType": "generic",
+      "heatFlux": 35.0,
+      "timeToIgn": 20.5,
+      "flowFactor": 1.0,
+      "riskScore": 58.939057520128266
+    },
+    {
+      "materialName": "FDNY_LDF",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 39.0,
+      "flowFactor": 1.0,
+      "riskScore": 57.452496977552606
+    },
+    {
+      "materialName": "FDNY_LDF",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 35.75,
+      "flowFactor": 1.0,
+      "riskScore": 57.54335844303215
+    },
+    {
+      "materialName": "FDNY_LDF",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 37.75,
+      "flowFactor": 1.0,
+      "riskScore": 56.75580218546911
+    },
+    {
+      "materialName": "FDNY_LDF",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 37.5,
+      "flowFactor": 1.0,
+      "riskScore": 56.76335584562593
+    },
+    {
+      "materialName": "FDNY_LDF",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 6.25,
+      "flowFactor": 1.0,
+      "riskScore": 67.90752480181267
+    },
+    {
+      "materialName": "FDNY_LDF",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 5.5,
+      "flowFactor": 1.0,
+      "riskScore": 67.92718203704251
+    },
+    {
+      "materialName": "FDNY_LDF",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 6.0,
+      "flowFactor": 1.0,
+      "riskScore": 67.9159449207409
+    },
+    {
+      "materialName": "FDNY_LDF",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 2.75,
+      "flowFactor": 1.0,
+      "riskScore": 78.29988427825955
+    },
+    {
+      "materialName": "FDNY_LDF",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 2.5,
+      "flowFactor": 1.0,
+      "riskScore": 78.30686029553856
+    },
+    {
+      "materialName": "FDNY_LDF",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.0,
+      "flowFactor": 1.0,
+      "riskScore": 78.29215733300285
+    },
+    {
+      "materialName": "FRP_Panel",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 80.0,
+      "flowFactor": 1.0,
+      "riskScore": 54.638316497564745
+    },
+    {
+      "materialName": "FRP_Panel",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 79.75,
+      "flowFactor": 1.0,
+      "riskScore": 54.65031798260337
+    },
+    {
+      "materialName": "FRP_Panel",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 80.75,
+      "flowFactor": 1.0,
+      "riskScore": 54.61525119241507
+    },
+    {
+      "materialName": "FRP_Panel",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 29.75,
+      "flowFactor": 1.0,
+      "riskScore": 67.7306352740523
+    },
+    {
+      "materialName": "FRP_Panel",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 32.5,
+      "flowFactor": 1.0,
+      "riskScore": 66.21212752122084
+    },
+    {
+      "materialName": "FRP_Panel",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 31.5,
+      "flowFactor": 1.0,
+      "riskScore": 66.25343285232942
+    },
+    {
+      "materialName": "FRP_Panel",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 30.5,
+      "flowFactor": 1.0,
+      "riskScore": 66.27556049249372
+    },
+    {
+      "materialName": "FRP_Panel",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 17.75,
+      "flowFactor": 1.0,
+      "riskScore": 76.91794548597606
+    },
+    {
+      "materialName": "FRP_Panel",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 17.0,
+      "flowFactor": 1.0,
+      "riskScore": 76.94557415777639
+    },
+    {
+      "materialName": "FRP_Panel",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 18.25,
+      "flowFactor": 1.0,
+      "riskScore": 76.90670836973221
+    },
+    {
+      "materialName": "Face_Shield",
+      "materialType": "generic",
+      "heatFlux": 100.0,
+      "timeToIgn": 23.25,
+      "flowFactor": 1.0,
+      "riskScore": 85.07373030033293
+    },
+    {
+      "materialName": "Face_Shield",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 85.0,
+      "flowFactor": 1.0,
+      "riskScore": 62.796904879453066
+    },
+    {
+      "materialName": "Face_Shield",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 47.5,
+      "flowFactor": 1.0,
+      "riskScore": 74.10796485451827
+    },
+    {
+      "materialName": "Feather_Pillow_Feathers",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 4.0,
+      "flowFactor": 1.0,
+      "riskScore": 55.42754412939106
+    },
+    {
+      "materialName": "Feather_Pillow_Feathers",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 55.53661872285387
+    },
+    {
+      "materialName": "Feather_Pillow_Feathers",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 55.53644542944176
+    },
+    {
+      "materialName": "Feather_Pillow_Feathers",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 55.53644542944176
+    },
+    {
+      "materialName": "Feather_Pillow_Feathers",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 3.25,
+      "flowFactor": 1.0,
+      "riskScore": 65.74230099576303
+    },
+    {
+      "materialName": "Feather_Pillow_Feathers",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 4.75,
+      "flowFactor": 1.0,
+      "riskScore": 65.70125361318458
+    },
+    {
+      "materialName": "Feather_Pillow_Feathers",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 8.25,
+      "flowFactor": 1.0,
+      "riskScore": 65.60613104596752
+    },
+    {
+      "materialName": "Feather_Pillow_Feathers",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.75,
+      "flowFactor": 1.0,
+      "riskScore": 76.07706167594034
+    },
+    {
+      "materialName": "Feather_Pillow_Feathers",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.75,
+      "flowFactor": 1.0,
+      "riskScore": 76.07700391330462
+    },
+    {
+      "materialName": "Feather_Pillow_Feathers",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.75,
+      "flowFactor": 1.0,
+      "riskScore": 76.07711944132565
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R13_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 57.61073968569208
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R13_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 57.61183720331866
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R13_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 57.60467445741936
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R13_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 57.929326786117876
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R13_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 68.36768206936279
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R13_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 68.1324767662519
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R13_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 78.42994472883197
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R13_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 78.42122235595419
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R13_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 78.430868955796
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 57.6297440639368
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 57.61501422542202
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 58.08673463107915
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 68.38616657286454
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 68.38570445800197
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 68.37542245539036
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 78.67918670229679
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 78.66826929140474
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 78.67924446493252
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 8.5,
+      "flowFactor": 1.0,
+      "riskScore": 43.086444573546835
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 7.25,
+      "flowFactor": 1.0,
+      "riskScore": 58.12559628098484
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 7.25,
+      "flowFactor": 1.0,
+      "riskScore": 58.12617392387423
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 2.75,
+      "flowFactor": 1.0,
+      "riskScore": 68.5451666390763
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 2.0,
+      "flowFactor": 1.0,
+      "riskScore": 68.5563325519713
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 1.75,
+      "flowFactor": 1.0,
+      "riskScore": 68.57503467079044
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.25,
+      "flowFactor": 1.0,
+      "riskScore": 78.86849003637396
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.5,
+      "flowFactor": 1.0,
+      "riskScore": 78.87734137800899
+    },
+    {
+      "materialName": "Fiberglass_Insulation_R30_Paper_Faced",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.5,
+      "flowFactor": 1.0,
+      "riskScore": 78.8623227180553
+    },
+    {
+      "materialName": "Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 57.70146381402025
+    },
+    {
+      "materialName": "Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 57.74536449713313
+    },
+    {
+      "materialName": "Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 57.73213652018265
+    },
+    {
+      "materialName": "Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 44.75,
+      "flowFactor": 1.0,
+      "riskScore": 66.81624972406365
+    },
+    {
+      "materialName": "Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 45.5,
+      "flowFactor": 1.0,
+      "riskScore": 66.81051363945582
+    },
+    {
+      "materialName": "Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 33.0,
+      "flowFactor": 1.0,
+      "riskScore": 67.14851240746611
+    },
+    {
+      "materialName": "Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 18.5,
+      "flowFactor": 1.0,
+      "riskScore": 77.84111583608792
+    },
+    {
+      "materialName": "Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 17.0,
+      "flowFactor": 1.0,
+      "riskScore": 77.87199673576934
+    },
+    {
+      "materialName": "Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.75,
+      "flowFactor": 1.0,
+      "riskScore": 78.23161675129626
+    },
+    {
+      "materialName": "HDPE",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 190.5,
+      "flowFactor": 1.0,
+      "riskScore": 52.617086487402844
+    },
+    {
+      "materialName": "HDPE",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 191.75,
+      "flowFactor": 1.0,
+      "riskScore": 52.5836505248385
+    },
+    {
+      "materialName": "HDPE",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 175.75,
+      "flowFactor": 1.0,
+      "riskScore": 50.774718474920924
+    },
+    {
+      "materialName": "HDPE",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 150.25,
+      "flowFactor": 1.0,
+      "riskScore": 51.46859602594132
+    },
+    {
+      "materialName": "HDPE",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 197.0,
+      "flowFactor": 1.0,
+      "riskScore": 50.196487182403914
+    },
+    {
+      "materialName": "HDPE",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 191.0,
+      "flowFactor": 1.0,
+      "riskScore": 50.358597213803634
+    },
+    {
+      "materialName": "HDPE",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 54.5,
+      "flowFactor": 1.0,
+      "riskScore": 66.61130676369267
+    },
+    {
+      "materialName": "HDPE",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 52.75,
+      "flowFactor": 1.0,
+      "riskScore": 66.65950345418955
+    },
+    {
+      "materialName": "HDPE",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 55.75,
+      "flowFactor": 1.0,
+      "riskScore": 64.33356460155089
+    },
+    {
+      "materialName": "HDPE",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 59.25,
+      "flowFactor": 1.0,
+      "riskScore": 64.23849980250336
+    },
+    {
+      "materialName": "HDPE",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 29.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.59249924068347
+    },
+    {
+      "materialName": "HDPE",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 29.75,
+      "flowFactor": 1.0,
+      "riskScore": 77.57889379850658
+    },
+    {
+      "materialName": "HDPE",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 28.5,
+      "flowFactor": 1.0,
+      "riskScore": 77.6134850468266
+    },
+    {
+      "materialName": "HIPS",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 136.25,
+      "flowFactor": 1.0,
+      "riskScore": 51.85243661030773
+    },
+    {
+      "materialName": "HIPS",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 141.25,
+      "flowFactor": 1.0,
+      "riskScore": 51.71464925990551
+    },
+    {
+      "materialName": "HIPS",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 151.25,
+      "flowFactor": 1.0,
+      "riskScore": 51.44254041636809
+    },
+    {
+      "materialName": "HIPS",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 36.75,
+      "flowFactor": 1.0,
+      "riskScore": 64.85345960768598
+    },
+    {
+      "materialName": "HIPS",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 37.5,
+      "flowFactor": 1.0,
+      "riskScore": 64.83189615866502
+    },
+    {
+      "materialName": "HIPS",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 34.5,
+      "flowFactor": 1.0,
+      "riskScore": 64.91526174035975
+    },
+    {
+      "materialName": "HIPS",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 14.75,
+      "flowFactor": 1.0,
+      "riskScore": 75.74621671052712
+    },
+    {
+      "materialName": "HIPS",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 16.5,
+      "flowFactor": 1.0,
+      "riskScore": 75.69859766290807
+    },
+    {
+      "materialName": "HIPS",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 16.0,
+      "flowFactor": 1.0,
+      "riskScore": 75.71047018742661
+    },
+    {
+      "materialName": "Hemp_Sheet",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 14.0,
+      "flowFactor": 1.0,
+      "riskScore": 42.73897047209157
+    },
+    {
+      "materialName": "Hemp_Sheet",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 15.25,
+      "flowFactor": 1.0,
+      "riskScore": 42.70501463066569
+    },
+    {
+      "materialName": "Hemp_Sheet",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 13.75,
+      "flowFactor": 1.0,
+      "riskScore": 42.74611977726044
+    },
+    {
+      "materialName": "Hemp_Sheet",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 4.75,
+      "flowFactor": 1.0,
+      "riskScore": 53.28484656343879
+    },
+    {
+      "materialName": "Hemp_Sheet",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 5.25,
+      "flowFactor": 1.0,
+      "riskScore": 53.27112559323511
+    },
+    {
+      "materialName": "Hemp_Sheet",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 4.75,
+      "flowFactor": 1.0,
+      "riskScore": 53.28496209145983
+    },
+    {
+      "materialName": "Hemp_Sheet",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 2.75,
+      "flowFactor": 1.0,
+      "riskScore": 63.63332821518881
+    },
+    {
+      "materialName": "Hemp_Sheet",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.0,
+      "flowFactor": 1.0,
+      "riskScore": 63.62692984219132
+    },
+    {
+      "materialName": "Hemp_Sheet",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 2.5,
+      "flowFactor": 1.0,
+      "riskScore": 63.640361992330874
+    },
+    {
+      "materialName": "High_Temperature_SCBA_Facepiece",
+      "materialType": "generic",
+      "heatFlux": 100.0,
+      "timeToIgn": 13.25,
+      "flowFactor": 1.0,
+      "riskScore": 85.42324300420383
+    },
+    {
+      "materialName": "High_Temperature_SCBA_Facepiece",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 61.5,
+      "flowFactor": 1.0,
+      "riskScore": 63.52456639668714
+    },
+    {
+      "materialName": "High_Temperature_SCBA_Facepiece",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 37.25,
+      "flowFactor": 1.0,
+      "riskScore": 74.45648211703181
+    },
+    {
+      "materialName": "Homasote",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 59.5,
+      "flowFactor": 1.0,
+      "riskScore": 55.298194716008034
+    },
+    {
+      "materialName": "Homasote",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 53.75,
+      "flowFactor": 1.0,
+      "riskScore": 55.4473212617133
+    },
+    {
+      "materialName": "Homasote",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 51.25,
+      "flowFactor": 1.0,
+      "riskScore": 55.519160900237694
+    },
+    {
+      "materialName": "Homasote",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 55.5,
+      "flowFactor": 1.0,
+      "riskScore": 55.40299476419553
+    },
+    {
+      "materialName": "Homasote",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 10.0,
+      "flowFactor": 1.0,
+      "riskScore": 66.92509893740055
+    },
+    {
+      "materialName": "Homasote",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 9.25,
+      "flowFactor": 1.0,
+      "riskScore": 66.94654685568558
+    },
+    {
+      "materialName": "Homasote",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 9.5,
+      "flowFactor": 1.0,
+      "riskScore": 66.94309446112824
+    },
+    {
+      "materialName": "Homasote",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 4.75,
+      "flowFactor": 1.0,
+      "riskScore": 77.36322901312995
+    },
+    {
+      "materialName": "Homasote",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.5,
+      "flowFactor": 1.0,
+      "riskScore": 77.39614510918848
+    },
+    {
+      "materialName": "Homasote",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.75,
+      "flowFactor": 1.0,
+      "riskScore": 77.40002873195175
+    },
+    {
+      "materialName": "House_Wrap",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 41.59308803841811
+    },
+    {
+      "materialName": "House_Wrap",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 41.59320356678861
+    },
+    {
+      "materialName": "House_Wrap",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 56.593139582603925
+    },
+    {
+      "materialName": "House_Wrap",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 51.38191418014218
+    },
+    {
+      "materialName": "House_Wrap",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 34.0,
+      "flowFactor": 1.0,
+      "riskScore": 50.45616647163838
+    },
+    {
+      "materialName": "House_Wrap",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 51.381336539665604
+    },
+    {
+      "materialName": "House_Wrap",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 12.25,
+      "flowFactor": 1.0,
+      "riskScore": 61.342120853391094
+    },
+    {
+      "materialName": "House_Wrap",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 10.0,
+      "flowFactor": 1.0,
+      "riskScore": 61.40392298366359
+    },
+    {
+      "materialName": "House_Wrap",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 7.25,
+      "flowFactor": 1.0,
+      "riskScore": 61.478175275159806
+    },
+    {
+      "materialName": "LDPE",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 118.5,
+      "flowFactor": 1.0,
+      "riskScore": 54.58146892482242
+    },
+    {
+      "materialName": "LDPE",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 112.5,
+      "flowFactor": 1.0,
+      "riskScore": 54.74415658806703
+    },
+    {
+      "materialName": "LDPE",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 103.5,
+      "flowFactor": 1.0,
+      "riskScore": 54.989632190128546
+    },
+    {
+      "materialName": "LDPE",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 40.5,
+      "flowFactor": 1.0,
+      "riskScore": 66.99745790859524
+    },
+    {
+      "materialName": "LDPE",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 39.75,
+      "flowFactor": 1.0,
+      "riskScore": 67.01844371473838
+    },
+    {
+      "materialName": "LDPE",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 40.0,
+      "flowFactor": 1.0,
+      "riskScore": 67.0110633507721
+    },
+    {
+      "materialName": "LDPE",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 27.5,
+      "flowFactor": 1.0,
+      "riskScore": 77.64589469513055
+    },
+    {
+      "materialName": "LDPE",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 27.0,
+      "flowFactor": 1.0,
+      "riskScore": 77.6595001373074
+    },
+    {
+      "materialName": "LDPE",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 22.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.78875183798768
+    },
+    {
+      "materialName": "Latex_Pillow_Foam",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 11.0,
+      "flowFactor": 1.0,
+      "riskScore": 56.20000250240608
+    },
+    {
+      "materialName": "Latex_Pillow_Foam",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 12.75,
+      "flowFactor": 1.0,
+      "riskScore": 56.59627581854193
+    },
+    {
+      "materialName": "Latex_Pillow_Foam",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 21.5,
+      "flowFactor": 1.0,
+      "riskScore": 56.36309052844555
+    },
+    {
+      "materialName": "Latex_Pillow_Foam",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 10.25,
+      "flowFactor": 1.0,
+      "riskScore": 56.66857756915044
+    },
+    {
+      "materialName": "Latex_Pillow_Foam",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 4.25,
+      "flowFactor": 1.0,
+      "riskScore": 67.13606923428077
+    },
+    {
+      "materialName": "Latex_Pillow_Foam",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 6.75,
+      "flowFactor": 1.0,
+      "riskScore": 67.05435194539474
+    },
+    {
+      "materialName": "Latex_Pillow_Foam",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 2.75,
+      "flowFactor": 1.0,
+      "riskScore": 67.16146255411843
+    },
+    {
+      "materialName": "Latex_Pillow_Foam",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 1.75,
+      "flowFactor": 1.0,
+      "riskScore": 67.20450080288533
+    },
+    {
+      "materialName": "Latex_Pillow_Foam",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 5.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.40193625299905
+    },
+    {
+      "materialName": "Latex_Pillow_Foam",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.75,
+      "flowFactor": 1.0,
+      "riskScore": 77.50370168310064
+    },
+    {
+      "materialName": "Latex_Pillow_Foam",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.0,
+      "flowFactor": 1.0,
+      "riskScore": 77.51475206245237
+    },
+    {
+      "materialName": "Latex_Pillow_Foam",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.50685183203805
+    },
+    {
+      "materialName": "Lightweight_Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 150.75,
+      "flowFactor": 1.0,
+      "riskScore": 53.42692936467947
+    },
+    {
+      "materialName": "Lightweight_Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 149.25,
+      "flowFactor": 1.0,
+      "riskScore": 53.46641714230489
+    },
+    {
+      "materialName": "Lightweight_Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 150.5,
+      "flowFactor": 1.0,
+      "riskScore": 53.43419420888497
+    },
+    {
+      "materialName": "Lightweight_Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 31.25,
+      "flowFactor": 1.0,
+      "riskScore": 66.9754626322749
+    },
+    {
+      "materialName": "Lightweight_Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 29.25,
+      "flowFactor": 1.0,
+      "riskScore": 67.02953780865901
+    },
+    {
+      "materialName": "Lightweight_Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 29.0,
+      "flowFactor": 1.0,
+      "riskScore": 67.03229706258588
+    },
+    {
+      "materialName": "Lightweight_Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 17.5,
+      "flowFactor": 1.0,
+      "riskScore": 77.63801128673356
+    },
+    {
+      "materialName": "Lightweight_Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 15.75,
+      "flowFactor": 1.0,
+      "riskScore": 77.68586139594002
+    },
+    {
+      "materialName": "Lightweight_Gypsum_Wallboard",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 14.5,
+      "flowFactor": 1.0,
+      "riskScore": 77.72524706152295
+    },
+    {
+      "materialName": "Luan_Panel",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 80.75,
+      "flowFactor": 1.0,
+      "riskScore": 55.67261706595262
+    },
+    {
+      "materialName": "Luan_Panel",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 73.5,
+      "flowFactor": 1.0,
+      "riskScore": 55.8727264155344
+    },
+    {
+      "materialName": "Luan_Panel",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 80.5,
+      "flowFactor": 1.0,
+      "riskScore": 55.67797568533406
+    },
+    {
+      "materialName": "Luan_Panel",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 12.5,
+      "flowFactor": 1.0,
+      "riskScore": 68.28609149967212
+    },
+    {
+      "materialName": "Luan_Panel",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 14.0,
+      "flowFactor": 1.0,
+      "riskScore": 67.77641836693356
+    },
+    {
+      "materialName": "Luan_Panel",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 13.0,
+      "flowFactor": 1.0,
+      "riskScore": 67.80559323047528
+    },
+    {
+      "materialName": "Luan_Panel",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 16.0,
+      "flowFactor": 1.0,
+      "riskScore": 67.7246537510856
+    },
+    {
+      "materialName": "Luan_Panel",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 6.75,
+      "flowFactor": 1.0,
+      "riskScore": 78.27965656619735
+    },
+    {
+      "materialName": "Luan_Panel",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 7.25,
+      "flowFactor": 1.0,
+      "riskScore": 78.25542253453266
+    },
+    {
+      "materialName": "Luan_Panel",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 7.75,
+      "flowFactor": 1.0,
+      "riskScore": 78.25215685485931
+    },
+    {
+      "materialName": "MDF",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 136.75,
+      "flowFactor": 1.0,
+      "riskScore": 51.22858952523853
+    },
+    {
+      "materialName": "MDF",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 148.75,
+      "flowFactor": 1.0,
+      "riskScore": 50.903214176452394
+    },
+    {
+      "materialName": "MDF",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 136.75,
+      "flowFactor": 1.0,
+      "riskScore": 51.24129760235334
+    },
+    {
+      "materialName": "MDF",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 31.0,
+      "flowFactor": 1.0,
+      "riskScore": 64.39263329294711
+    },
+    {
+      "materialName": "MDF",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 31.75,
+      "flowFactor": 1.0,
+      "riskScore": 64.38660841445383
+    },
+    {
+      "materialName": "MDF",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 30.25,
+      "flowFactor": 1.0,
+      "riskScore": 64.40807374287448
+    },
+    {
+      "materialName": "MDF",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 16.25,
+      "flowFactor": 1.0,
+      "riskScore": 75.08481897854291
+    },
+    {
+      "materialName": "MDF",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 13.75,
+      "flowFactor": 1.0,
+      "riskScore": 75.16740267109341
+    },
+    {
+      "materialName": "MDF",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 14.5,
+      "flowFactor": 1.0,
+      "riskScore": 75.13024296326292
+    },
+    {
+      "materialName": "Masonite_Board",
+      "materialType": "generic",
+      "heatFlux": 15.0,
+      "timeToIgn": 488.5,
+      "flowFactor": 1.0,
+      "riskScore": 40.048713705065374
+    },
+    {
+      "materialName": "Masonite_Board",
+      "materialType": "generic",
+      "heatFlux": 15.0,
+      "timeToIgn": 430.75,
+      "flowFactor": 1.0,
+      "riskScore": 41.627998193303675
+    },
+    {
+      "materialName": "Masonite_Board",
+      "materialType": "generic",
+      "heatFlux": 15.0,
+      "timeToIgn": 398.0,
+      "flowFactor": 1.0,
+      "riskScore": 42.51516892108293
+    },
+    {
+      "materialName": "Masonite_Board",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 149.0,
+      "flowFactor": 1.0,
+      "riskScore": 53.64319765830554
+    },
+    {
+      "materialName": "Masonite_Board",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 149.75,
+      "flowFactor": 1.0,
+      "riskScore": 53.620132331147765
+    },
+    {
+      "materialName": "Masonite_Board",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 153.0,
+      "flowFactor": 1.0,
+      "riskScore": 53.52996403933976
+    },
+    {
+      "materialName": "Masonite_Board",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 45.25,
+      "flowFactor": 1.0,
+      "riskScore": 64.25382478583313
+    },
+    {
+      "materialName": "Masonite_Board",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 39.5,
+      "flowFactor": 1.0,
+      "riskScore": 64.41693022549141
+    },
+    {
+      "materialName": "Masonite_Board",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 42.25,
+      "flowFactor": 1.0,
+      "riskScore": 64.34025184512434
+    },
+    {
+      "materialName": "Masonite_Board",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 43.5,
+      "flowFactor": 1.0,
+      "riskScore": 64.30329228190423
+    },
+    {
+      "materialName": "Masonite_Board",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 40.75,
+      "flowFactor": 1.0,
+      "riskScore": 64.37800668308331
+    },
+    {
+      "materialName": "Masonite_Board",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 46.0,
+      "flowFactor": 1.0,
+      "riskScore": 64.22989301087912
+    },
+    {
+      "materialName": "Masonite_Board",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 20.0,
+      "flowFactor": 1.0,
+      "riskScore": 77.7426767670097
+    },
+    {
+      "materialName": "Masonite_Board",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 20.0,
+      "flowFactor": 1.0,
+      "riskScore": 77.7426767670097
+    },
+    {
+      "materialName": "Masonite_Board",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 22.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.68266533939924
+    },
+    {
+      "materialName": "Memory_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 10.75,
+      "flowFactor": 1.0,
+      "riskScore": 55.691453448296514
+    },
+    {
+      "materialName": "Memory_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 8.0,
+      "flowFactor": 1.0,
+      "riskScore": 55.76518585985273
+    },
+    {
+      "materialName": "Memory_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 9.75,
+      "flowFactor": 1.0,
+      "riskScore": 55.72051278104454
+    },
+    {
+      "materialName": "Memory_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 2.5,
+      "flowFactor": 1.0,
+      "riskScore": 68.5697531568656
+    },
+    {
+      "materialName": "Memory_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 2.25,
+      "flowFactor": 1.0,
+      "riskScore": 66.21582385734241
+    },
+    {
+      "materialName": "Memory_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 2.25,
+      "flowFactor": 1.0,
+      "riskScore": 66.21853876462363
+    },
+    {
+      "materialName": "Memory_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.5,
+      "flowFactor": 1.0,
+      "riskScore": 76.53254469740901
+    },
+    {
+      "materialName": "Memory_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.5,
+      "flowFactor": 1.0,
+      "riskScore": 76.53398879911602
+    },
+    {
+      "materialName": "Memory_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.25,
+      "flowFactor": 1.0,
+      "riskScore": 76.5453548869129
+    },
+    {
+      "materialName": "Mineral_Wool_Insulation",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 56.273748547506145
+    },
+    {
+      "materialName": "Mineral_Wool_Insulation",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 56.26958952754274
+    },
+    {
+      "materialName": "Mineral_Wool_Insulation",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 56.26860753797762
+    },
+    {
+      "materialName": "Mineral_Wool_Insulation",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 66.61153582712336
+    },
+    {
+      "materialName": "Mineral_Wool_Insulation",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 66.61679235647041
+    },
+    {
+      "materialName": "Mineral_Wool_Insulation",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 66.61950726369386
+    },
+    {
+      "materialName": "Mineral_Wool_Insulation",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 76.88988388619882
+    },
+    {
+      "materialName": "Mineral_Wool_Insulation",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 76.84540554917515
+    },
+    {
+      "materialName": "Mineral_Wool_Insulation",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 76.87873541923004
+    },
+    {
+      "materialName": "Nylon",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 55.53045992648703
+    },
+    {
+      "materialName": "Nylon",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 468.0,
+      "flowFactor": 1.0,
+      "riskScore": 26.986597905852694
+    },
+    {
+      "materialName": "Nylon",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 573.5,
+      "flowFactor": 1.0,
+      "riskScore": 39.92559538146118
+    },
+    {
+      "materialName": "Nylon",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 538.25,
+      "flowFactor": 1.0,
+      "riskScore": 40.88477905493056
+    },
+    {
+      "materialName": "Nylon",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 67.25,
+      "flowFactor": 1.0,
+      "riskScore": 63.99522323260163
+    },
+    {
+      "materialName": "Nylon",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 69.75,
+      "flowFactor": 1.0,
+      "riskScore": 63.92604075802748
+    },
+    {
+      "materialName": "Nylon",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 79.75,
+      "flowFactor": 1.0,
+      "riskScore": 62.534909057126434
+    },
+    {
+      "materialName": "Nylon",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 30.0,
+      "flowFactor": 1.0,
+      "riskScore": 74.18219054687312
+    },
+    {
+      "materialName": "Nylon",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 30.75,
+      "flowFactor": 1.0,
+      "riskScore": 74.16178238360783
+    },
+    {
+      "materialName": "Nylon",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 30.25,
+      "flowFactor": 1.0,
+      "riskScore": 74.17481019393978
+    },
+    {
+      "materialName": "Nylon_Carpet_High_Pile",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 625.25,
+      "flowFactor": 1.0,
+      "riskScore": 41.03557379683831
+    },
+    {
+      "materialName": "Nylon_Carpet_High_Pile",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 1003.75,
+      "flowFactor": 1.0,
+      "riskScore": 30.736138538153448
+    },
+    {
+      "materialName": "Nylon_Carpet_High_Pile",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 449.0,
+      "flowFactor": 1.0,
+      "riskScore": 45.843911436670474
+    },
+    {
+      "materialName": "Nylon_Carpet_High_Pile",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 50.5,
+      "flowFactor": 1.0,
+      "riskScore": 66.97850501012364
+    },
+    {
+      "materialName": "Nylon_Carpet_High_Pile",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 53.25,
+      "flowFactor": 1.0,
+      "riskScore": 66.88911853028708
+    },
+    {
+      "materialName": "Nylon_Carpet_High_Pile",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 61.5,
+      "flowFactor": 1.0,
+      "riskScore": 66.67219582425193
+    },
+    {
+      "materialName": "Nylon_Carpet_High_Pile",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 19.5,
+      "flowFactor": 1.0,
+      "riskScore": 76.52989086051065
+    },
+    {
+      "materialName": "Nylon_Carpet_High_Pile",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 18.25,
+      "flowFactor": 1.0,
+      "riskScore": 76.56806348591623
+    },
+    {
+      "materialName": "Nylon_Carpet_High_Pile",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 17.25,
+      "flowFactor": 1.0,
+      "riskScore": 76.5925594520136
+    },
+    {
+      "materialName": "OSB",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 174.25,
+      "flowFactor": 1.0,
+      "riskScore": 50.4039983896757
+    },
+    {
+      "materialName": "OSB",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 134.5,
+      "flowFactor": 1.0,
+      "riskScore": 51.50180499976226
+    },
+    {
+      "materialName": "OSB",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 173.75,
+      "flowFactor": 1.0,
+      "riskScore": 50.4135603649798
+    },
+    {
+      "materialName": "OSB",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 25.5,
+      "flowFactor": 1.0,
+      "riskScore": 64.78316622023898
+    },
+    {
+      "materialName": "OSB",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 21.0,
+      "flowFactor": 1.0,
+      "riskScore": 64.90503756781261
+    },
+    {
+      "materialName": "OSB",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 22.25,
+      "flowFactor": 1.0,
+      "riskScore": 64.87576061423651
+    },
+    {
+      "materialName": "OSB",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 10.25,
+      "flowFactor": 1.0,
+      "riskScore": 75.48658895536111
+    },
+    {
+      "materialName": "OSB",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 7.5,
+      "flowFactor": 1.0,
+      "riskScore": 75.54253005664602
+    },
+    {
+      "materialName": "OSB",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 12.25,
+      "flowFactor": 1.0,
+      "riskScore": 75.44735916508903
+    },
+    {
+      "materialName": "Oak_Flooring",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 143.0,
+      "flowFactor": 1.0,
+      "riskScore": 53.3370905011925
+    },
+    {
+      "materialName": "Oak_Flooring",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 221.0,
+      "flowFactor": 1.0,
+      "riskScore": 51.65674634184557
+    },
+    {
+      "materialName": "Oak_Flooring",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 177.5,
+      "flowFactor": 1.0,
+      "riskScore": 53.016426934215076
+    },
+    {
+      "materialName": "Oak_Flooring",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 234.0,
+      "flowFactor": 1.0,
+      "riskScore": 51.323626659790776
+    },
+    {
+      "materialName": "Oak_Flooring",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 27.25,
+      "flowFactor": 1.0,
+      "riskScore": 67.15291793830883
+    },
+    {
+      "materialName": "Oak_Flooring",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 33.5,
+      "flowFactor": 1.0,
+      "riskScore": 67.00341399334374
+    },
+    {
+      "materialName": "Oak_Flooring",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 29.25,
+      "flowFactor": 1.0,
+      "riskScore": 67.14724905709329
+    },
+    {
+      "materialName": "Oak_Flooring",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 10.75,
+      "flowFactor": 1.0,
+      "riskScore": 77.97988862918592
+    },
+    {
+      "materialName": "Oak_Flooring",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 13.0,
+      "flowFactor": 1.0,
+      "riskScore": 77.91103932801063
+    },
+    {
+      "materialName": "Oak_Flooring",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 11.0,
+      "flowFactor": 1.0,
+      "riskScore": 77.94934487256843
+    },
+    {
+      "materialName": "Overstuffed_Chair_Assembly",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 59.5,
+      "flowFactor": 1.0,
+      "riskScore": 54.03130534613921
+    },
+    {
+      "materialName": "Overstuffed_Chair_Assembly",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 76.5,
+      "flowFactor": 1.0,
+      "riskScore": 53.59067065368205
+    },
+    {
+      "materialName": "Overstuffed_Chair_Assembly",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 62.25,
+      "flowFactor": 1.0,
+      "riskScore": 53.98131395913688
+    },
+    {
+      "materialName": "Overstuffed_Chair_Assembly",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 12.75,
+      "flowFactor": 1.0,
+      "riskScore": 65.61722938315256
+    },
+    {
+      "materialName": "Overstuffed_Chair_Assembly",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 15.25,
+      "flowFactor": 1.0,
+      "riskScore": 65.5552096351383
+    },
+    {
+      "materialName": "Overstuffed_Chair_Assembly",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 13.0,
+      "flowFactor": 1.0,
+      "riskScore": 65.61689623701835
+    },
+    {
+      "materialName": "Overstuffed_Chair_Assembly",
+      "materialType": "polymer",
+      "heatFlux": 35.0,
+      "timeToIgn": 8.0,
+      "flowFactor": 1.0,
+      "riskScore": 59.576595595857896
+    },
+    {
+      "materialName": "Overstuffed_Chair_Assembly",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 10.75,
+      "flowFactor": 1.0,
+      "riskScore": 75.97281601126335
+    },
+    {
+      "materialName": "Overstuffed_Chair_Assembly",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 11.0,
+      "flowFactor": 1.0,
+      "riskScore": 75.96376049503559
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Batting",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 604.5,
+      "flowFactor": 1.0,
+      "riskScore": 39.28051014580235
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Batting",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 994.0,
+      "flowFactor": 1.0,
+      "riskScore": 28.685336533562328
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Batting",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 453.75,
+      "flowFactor": 1.0,
+      "riskScore": 43.38139567911122
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Batting",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 36.75,
+      "flowFactor": 1.0,
+      "riskScore": 65.02840180192038
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Batting",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 48.0,
+      "flowFactor": 1.0,
+      "riskScore": 64.72141289136783
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Batting",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 49.25,
+      "flowFactor": 1.0,
+      "riskScore": 64.68514648803676
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Batting",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 15.75,
+      "flowFactor": 1.0,
+      "riskScore": 75.8899622993672
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Batting",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 16.5,
+      "flowFactor": 1.0,
+      "riskScore": 75.86764792229341
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Batting",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 18.5,
+      "flowFactor": 1.0,
+      "riskScore": 75.81576777291951
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Fabric",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 240.75,
+      "flowFactor": 1.0,
+      "riskScore": 49.20602278924261
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Fabric",
+      "materialType": "composite",
+      "heatFlux": 35.0,
+      "timeToIgn": 27.75,
+      "flowFactor": 1.0,
+      "riskScore": 59.11958821541307
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Fabric",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 586.75,
+      "flowFactor": 1.0,
+      "riskScore": 39.79134562291796
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Fabric",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 20.0,
+      "flowFactor": 1.0,
+      "riskScore": 65.50717421344349
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Fabric",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 22.0,
+      "flowFactor": 1.0,
+      "riskScore": 65.45263691670918
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Fabric",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 6.75,
+      "flowFactor": 1.0,
+      "riskScore": 65.86789172317366
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Fabric",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 9.0,
+      "flowFactor": 1.0,
+      "riskScore": 76.10032276764194
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Fabric",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 8.75,
+      "flowFactor": 1.0,
+      "riskScore": 76.10729878145509
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyester_Fabric",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 9.25,
+      "flowFactor": 1.0,
+      "riskScore": 76.09340451852668
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyurethane_Foam",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 5.5,
+      "flowFactor": 1.0,
+      "riskScore": 55.57405346686548
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyurethane_Foam",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 5.25,
+      "flowFactor": 1.0,
+      "riskScore": 55.58027854506453
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyurethane_Foam",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 5.75,
+      "flowFactor": 1.0,
+      "riskScore": 55.56667310288766
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyurethane_Foam",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 1.75,
+      "flowFactor": 1.0,
+      "riskScore": 65.97107838906845
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyurethane_Foam",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 1.75,
+      "flowFactor": 1.0,
+      "riskScore": 65.97096286104164
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyurethane_Foam",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 1.75,
+      "flowFactor": 1.0,
+      "riskScore": 65.96963428736144
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyurethane_Foam",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.5,
+      "flowFactor": 1.0,
+      "riskScore": 76.27015030879255
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyurethane_Foam",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.5,
+      "flowFactor": 1.0,
+      "riskScore": 76.27107453300702
+    },
+    {
+      "materialName": "Overstuffed_Chair_Polyurethane_Foam",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.0,
+      "flowFactor": 1.0,
+      "riskScore": 76.28439115373921
+    },
+    {
+      "materialName": "PC",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 55.965451365903164
+    },
+    {
+      "materialName": "PC",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 55.96314083840803
+    },
+    {
+      "materialName": "PC",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 55.96198553058649
+    },
+    {
+      "materialName": "PC",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 128.5,
+      "flowFactor": 1.0,
+      "riskScore": 62.75892690634463
+    },
+    {
+      "materialName": "PC",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 171.0,
+      "flowFactor": 1.0,
+      "riskScore": 61.60130905756305
+    },
+    {
+      "materialName": "PC",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 148.25,
+      "flowFactor": 1.0,
+      "riskScore": 62.22613308343868
+    },
+    {
+      "materialName": "PC",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 53.5,
+      "flowFactor": 1.0,
+      "riskScore": 75.09674908334807
+    },
+    {
+      "materialName": "PC",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 59.0,
+      "flowFactor": 1.0,
+      "riskScore": 74.9470892194025
+    },
+    {
+      "materialName": "PC",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 52.5,
+      "flowFactor": 1.0,
+      "riskScore": 75.12164939613271
+    },
+    {
+      "materialName": "PET",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 343.5,
+      "flowFactor": 1.0,
+      "riskScore": 48.112435535548805
+    },
+    {
+      "materialName": "PET",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 295.0,
+      "flowFactor": 1.0,
+      "riskScore": 47.55559288896753
+    },
+    {
+      "materialName": "PET",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 380.0,
+      "flowFactor": 1.0,
+      "riskScore": 45.24035714738815
+    },
+    {
+      "materialName": "PET",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 659.25,
+      "flowFactor": 1.0,
+      "riskScore": 37.23528013261156
+    },
+    {
+      "materialName": "PET",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 1102.5,
+      "flowFactor": 1.0,
+      "riskScore": 25.17809910997722
+    },
+    {
+      "materialName": "PET",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 88.5,
+      "flowFactor": 1.0,
+      "riskScore": 63.46240411640104
+    },
+    {
+      "materialName": "PET",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 84.25,
+      "flowFactor": 1.0,
+      "riskScore": 63.57805037490445
+    },
+    {
+      "materialName": "PET",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 81.75,
+      "flowFactor": 1.0,
+      "riskScore": 63.651276360771924
+    },
+    {
+      "materialName": "PET",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 42.25,
+      "flowFactor": 1.0,
+      "riskScore": 75.02195683539601
+    },
+    {
+      "materialName": "PET",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 36.5,
+      "flowFactor": 1.0,
+      "riskScore": 75.1859287669245
+    },
+    {
+      "materialName": "PET",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 39.75,
+      "flowFactor": 1.0,
+      "riskScore": 75.0882511506879
+    },
+    {
+      "materialName": "PETG",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 243.0,
+      "flowFactor": 1.0,
+      "riskScore": 49.52361049137897
+    },
+    {
+      "materialName": "PETG",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 242.5,
+      "flowFactor": 1.0,
+      "riskScore": 49.53837121936927
+    },
+    {
+      "materialName": "PETG",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 250.0,
+      "flowFactor": 1.0,
+      "riskScore": 49.33428958671621
+    },
+    {
+      "materialName": "PETG",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 59.0,
+      "flowFactor": 1.0,
+      "riskScore": 64.82626377718455
+    },
+    {
+      "materialName": "PETG",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 60.5,
+      "flowFactor": 1.0,
+      "riskScore": 64.78486981880904
+    },
+    {
+      "materialName": "PETG",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 57.75,
+      "flowFactor": 1.0,
+      "riskScore": 64.86027738262673
+    },
+    {
+      "materialName": "PETG",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 32.25,
+      "flowFactor": 1.0,
+      "riskScore": 75.84769494886106
+    },
+    {
+      "materialName": "PETG",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 29.75,
+      "flowFactor": 1.0,
+      "riskScore": 75.91687742343521
+    },
+    {
+      "materialName": "PETG",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 29.25,
+      "flowFactor": 1.0,
+      "riskScore": 75.93048286561209
+    },
+    {
+      "materialName": "PEVA",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 13.5,
+      "flowFactor": 1.0,
+      "riskScore": 56.21877011122325
+    },
+    {
+      "materialName": "PEVA",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 12.75,
+      "flowFactor": 1.0,
+      "riskScore": 56.23981367863888
+    },
+    {
+      "materialName": "PEVA",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 14.0,
+      "flowFactor": 1.0,
+      "riskScore": 56.205857837207226
+    },
+    {
+      "materialName": "PEVA",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 5.75,
+      "flowFactor": 1.0,
+      "riskScore": 66.72394540406665
+    },
+    {
+      "materialName": "PEVA",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 5.5,
+      "flowFactor": 1.0,
+      "riskScore": 66.73149905732647
+    },
+    {
+      "materialName": "PEVA",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 6.25,
+      "flowFactor": 1.0,
+      "riskScore": 66.71149524215211
+    },
+    {
+      "materialName": "PEVA",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.08701448621854
+    },
+    {
+      "materialName": "PEVA",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 4.0,
+      "flowFactor": 1.0,
+      "riskScore": 77.06643303091592
+    },
+    {
+      "materialName": "PEVA",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.08591696996675
+    },
+    {
+      "materialName": "PE_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 35.5,
+      "flowFactor": 1.0,
+      "riskScore": 55.07082863967867
+    },
+    {
+      "materialName": "PE_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 36.0,
+      "flowFactor": 1.0,
+      "riskScore": 55.05641450131993
+    },
+    {
+      "materialName": "PE_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 39.25,
+      "flowFactor": 1.0,
+      "riskScore": 54.970058634396615
+    },
+    {
+      "materialName": "PE_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 3.25,
+      "flowFactor": 1.0,
+      "riskScore": 66.23949357570484
+    },
+    {
+      "materialName": "PE_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 4.25,
+      "flowFactor": 1.0,
+      "riskScore": 66.21696158055255
+    },
+    {
+      "materialName": "PE_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 3.5,
+      "flowFactor": 1.0,
+      "riskScore": 66.34277027987649
+    },
+    {
+      "materialName": "PE_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.25,
+      "flowFactor": 1.0,
+      "riskScore": 76.69741924857615
+    },
+    {
+      "materialName": "PE_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 2.0,
+      "flowFactor": 1.0,
+      "riskScore": 76.67920612056399
+    },
+    {
+      "materialName": "PE_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.25,
+      "flowFactor": 1.0,
+      "riskScore": 76.69666831502423
+    },
+    {
+      "materialName": "PMMA",
+      "materialType": "generic",
+      "heatFlux": 15.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 50.042700244882575
+    },
+    {
+      "materialName": "PMMA",
+      "materialType": "generic",
+      "heatFlux": 15.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 50.040389673313456
+    },
+    {
+      "materialName": "PMMA",
+      "materialType": "generic",
+      "heatFlux": 15.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 50.03865675565512
+    },
+    {
+      "materialName": "PMMA",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 100.5,
+      "flowFactor": 1.0,
+      "riskScore": 52.81425055517577
+    },
+    {
+      "materialName": "PMMA",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 94.0,
+      "flowFactor": 1.0,
+      "riskScore": 48.180009802224106
+    },
+    {
+      "materialName": "PMMA",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 96.5,
+      "flowFactor": 1.0,
+      "riskScore": 52.92193880683506
+    },
+    {
+      "materialName": "PMMA",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 30.0,
+      "flowFactor": 1.0,
+      "riskScore": 63.5984704001848
+    },
+    {
+      "materialName": "PMMA",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 30.75,
+      "flowFactor": 1.0,
+      "riskScore": 63.57690695116381
+    },
+    {
+      "materialName": "PMMA",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 30.0,
+      "flowFactor": 1.0,
+      "riskScore": 63.5984704001848
+    },
+    {
+      "materialName": "PMMA",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 20.75,
+      "flowFactor": 1.0,
+      "riskScore": 75.57370916231774
+    },
+    {
+      "materialName": "PMMA",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 16.25,
+      "flowFactor": 1.0,
+      "riskScore": 75.69384757034045
+    },
+    {
+      "materialName": "PMMA",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 16.0,
+      "flowFactor": 1.0,
+      "riskScore": 75.70353849484292
+    },
+    {
+      "materialName": "PP",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 114.75,
+      "flowFactor": 1.0,
+      "riskScore": 54.68813086222131
+    },
+    {
+      "materialName": "PP",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 116.25,
+      "flowFactor": 1.0,
+      "riskScore": 54.65078038198254
+    },
+    {
+      "materialName": "PP",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 107.5,
+      "flowFactor": 1.0,
+      "riskScore": 54.88945326295563
+    },
+    {
+      "materialName": "PP",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 34.5,
+      "flowFactor": 1.0,
+      "riskScore": 67.16938782495974
+    },
+    {
+      "materialName": "PP",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 32.25,
+      "flowFactor": 1.0,
+      "riskScore": 67.23061231475565
+    },
+    {
+      "materialName": "PP",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 34.25,
+      "flowFactor": 1.0,
+      "riskScore": 67.17619054604818
+    },
+    {
+      "materialName": "PP",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 16.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.96010411147434
+    },
+    {
+      "materialName": "PP",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 17.5,
+      "flowFactor": 1.0,
+      "riskScore": 77.92493523125165
+    },
+    {
+      "materialName": "PP",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 17.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.93116030946227
+    },
+    {
+      "materialName": "PVC",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 204.75,
+      "flowFactor": 1.0,
+      "riskScore": 49.90357785834727
+    },
+    {
+      "materialName": "PVC",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 321.0,
+      "flowFactor": 1.0,
+      "riskScore": 46.73915726641138
+    },
+    {
+      "materialName": "PVC",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 251.0,
+      "flowFactor": 1.0,
+      "riskScore": 48.65893782014602
+    },
+    {
+      "materialName": "PVC",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 47.25,
+      "flowFactor": 1.0,
+      "riskScore": 65.09053817162985
+    },
+    {
+      "materialName": "PVC",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 48.75,
+      "flowFactor": 1.0,
+      "riskScore": 65.05318768035814
+    },
+    {
+      "materialName": "PVC",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 42.0,
+      "flowFactor": 1.0,
+      "riskScore": 64.62973276923644
+    },
+    {
+      "materialName": "PVC",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 24.5,
+      "flowFactor": 1.0,
+      "riskScore": 76.0071692729952
+    },
+    {
+      "materialName": "PVC",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 23.25,
+      "flowFactor": 1.0,
+      "riskScore": 76.04176051028227
+    },
+    {
+      "materialName": "PVC",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 23.25,
+      "flowFactor": 1.0,
+      "riskScore": 76.04176051028227
+    },
+    {
+      "materialName": "Pallet_Wood",
+      "materialType": "generic",
+      "heatFlux": 35.0,
+      "timeToIgn": 54.75,
+      "flowFactor": 1.0,
+      "riskScore": 58.53909996940083
+    },
+    {
+      "materialName": "Pallet_Wood",
+      "materialType": "generic",
+      "heatFlux": 35.0,
+      "timeToIgn": 51.0,
+      "flowFactor": 1.0,
+      "riskScore": 58.63744388888102
+    },
+    {
+      "materialName": "Pallet_Wood",
+      "materialType": "generic",
+      "heatFlux": 35.0,
+      "timeToIgn": 54.75,
+      "flowFactor": 1.0,
+      "riskScore": 58.52049993236735
+    },
+    {
+      "materialName": "Particleboard",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 138.5,
+      "flowFactor": 1.0,
+      "riskScore": 52.00755966132273
+    },
+    {
+      "materialName": "Particleboard",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 150.5,
+      "flowFactor": 1.0,
+      "riskScore": 51.66468180735697
+    },
+    {
+      "materialName": "Particleboard",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 147.5,
+      "flowFactor": 1.0,
+      "riskScore": 51.75509462363536
+    },
+    {
+      "materialName": "Particleboard",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 140.5,
+      "flowFactor": 1.0,
+      "riskScore": 51.23954317207687
+    },
+    {
+      "materialName": "Particleboard",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 35.75,
+      "flowFactor": 1.0,
+      "riskScore": 64.3742965460854
+    },
+    {
+      "materialName": "Particleboard",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 31.75,
+      "flowFactor": 1.0,
+      "riskScore": 64.49134265860003
+    },
+    {
+      "materialName": "Particleboard",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 33.25,
+      "flowFactor": 1.0,
+      "riskScore": 64.44376785867676
+    },
+    {
+      "materialName": "Particleboard",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 15.5,
+      "flowFactor": 1.0,
+      "riskScore": 75.22318931888864
+    },
+    {
+      "materialName": "Particleboard",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 14.5,
+      "flowFactor": 1.0,
+      "riskScore": 75.260739932185
+    },
+    {
+      "materialName": "Particleboard",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 15.75,
+      "flowFactor": 1.0,
+      "riskScore": 74.93911122300099
+    },
+    {
+      "materialName": "Pine_Siding",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 72.75,
+      "flowFactor": 1.0,
+      "riskScore": 53.67101272587929
+    },
+    {
+      "materialName": "Pine_Siding",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 56.25,
+      "flowFactor": 1.0,
+      "riskScore": 54.715886467179445
+    },
+    {
+      "materialName": "Pine_Siding",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 71.75,
+      "flowFactor": 1.0,
+      "riskScore": 54.19464807114455
+    },
+    {
+      "materialName": "Pine_Siding",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 11.0,
+      "flowFactor": 1.0,
+      "riskScore": 66.24961467117187
+    },
+    {
+      "materialName": "Pine_Siding",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 11.75,
+      "flowFactor": 1.0,
+      "riskScore": 66.25843513437005
+    },
+    {
+      "materialName": "Pine_Siding",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 10.0,
+      "flowFactor": 1.0,
+      "riskScore": 66.31211940476847
+    },
+    {
+      "materialName": "Pine_Siding",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.75,
+      "flowFactor": 1.0,
+      "riskScore": 76.761921816332
+    },
+    {
+      "materialName": "Pine_Siding",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 4.5,
+      "flowFactor": 1.0,
+      "riskScore": 76.64637624762773
+    },
+    {
+      "materialName": "Pine_Siding",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 4.25,
+      "flowFactor": 1.0,
+      "riskScore": 76.72249585065252
+    },
+    {
+      "materialName": "PlasticC",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 141.75,
+      "flowFactor": 1.0,
+      "riskScore": 51.70219910348431
+    },
+    {
+      "materialName": "PlasticC",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 137.0,
+      "flowFactor": 1.0,
+      "riskScore": 51.83318372182293
+    },
+    {
+      "materialName": "PlasticC",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 147.25,
+      "flowFactor": 1.0,
+      "riskScore": 51.55484980007491
+    },
+    {
+      "materialName": "PlasticC",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 37.75,
+      "flowFactor": 1.0,
+      "riskScore": 64.82740400908793
+    },
+    {
+      "materialName": "PlasticC",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 37.25,
+      "flowFactor": 1.0,
+      "riskScore": 64.83985416550911
+    },
+    {
+      "materialName": "PlasticC",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 39.0,
+      "flowFactor": 1.0,
+      "riskScore": 64.79165747501224
+    },
+    {
+      "materialName": "PlasticC",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 16.75,
+      "flowFactor": 1.0,
+      "riskScore": 75.69410550235581
+    },
+    {
+      "materialName": "PlasticC",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 16.75,
+      "flowFactor": 1.0,
+      "riskScore": 75.69295022757532
+    },
+    {
+      "materialName": "PlasticC",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 16.5,
+      "flowFactor": 1.0,
+      "riskScore": 75.69917530578591
+    },
+    {
+      "materialName": "Plastic_Laminate_Countertop",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 313.75,
+      "flowFactor": 1.0,
+      "riskScore": 48.44731257402221
+    },
+    {
+      "materialName": "Plastic_Laminate_Countertop",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 100.25,
+      "flowFactor": 1.0,
+      "riskScore": 54.87442824491746
+    },
+    {
+      "materialName": "Plastic_Laminate_Countertop",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 672.75,
+      "flowFactor": 1.0,
+      "riskScore": 39.31121564538941
+    },
+    {
+      "materialName": "Plastic_Laminate_Countertop",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 22.5,
+      "flowFactor": 1.0,
+      "riskScore": 66.23264635607016
+    },
+    {
+      "materialName": "Plastic_Laminate_Countertop",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 21.5,
+      "flowFactor": 1.0,
+      "riskScore": 66.26505597133306
+    },
+    {
+      "materialName": "Plastic_Laminate_Countertop",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 33.0,
+      "flowFactor": 1.0,
+      "riskScore": 65.99470289128321
+    },
+    {
+      "materialName": "Plastic_Laminate_Countertop",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 12.0,
+      "flowFactor": 1.0,
+      "riskScore": 76.97540284020974
+    },
+    {
+      "materialName": "Plastic_Laminate_Countertop",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 11.5,
+      "flowFactor": 1.0,
+      "riskScore": 77.91159482588287
+    },
+    {
+      "materialName": "Plastic_Laminate_Countertop",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 11.75,
+      "flowFactor": 1.0,
+      "riskScore": 77.82086092051486
+    },
+    {
+      "materialName": "Plywood",
+      "materialType": "composite",
+      "heatFlux": 35.0,
+      "timeToIgn": 68.75,
+      "flowFactor": 1.0,
+      "riskScore": 57.56577069065825
+    },
+    {
+      "materialName": "Plywood",
+      "materialType": "composite",
+      "heatFlux": 35.0,
+      "timeToIgn": 80.0,
+      "flowFactor": 1.0,
+      "riskScore": 57.246189203198526
+    },
+    {
+      "materialName": "Plywood",
+      "materialType": "composite",
+      "heatFlux": 35.0,
+      "timeToIgn": 75.5,
+      "flowFactor": 1.0,
+      "riskScore": 57.35604561411458
+    },
+    {
+      "materialName": "Polyester_Bed_Skirt",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 350.5,
+      "flowFactor": 1.0,
+      "riskScore": 33.61423497024536
+    },
+    {
+      "materialName": "Polyester_Bed_Skirt",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 387.25,
+      "flowFactor": 1.0,
+      "riskScore": 32.61371509275283
+    },
+    {
+      "materialName": "Polyester_Bed_Skirt",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 327.25,
+      "flowFactor": 1.0,
+      "riskScore": 34.24665697541623
+    },
+    {
+      "materialName": "Polyester_Bed_Skirt",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 44.5,
+      "flowFactor": 1.0,
+      "riskScore": 52.18703997153058
+    },
+    {
+      "materialName": "Polyester_Bed_Skirt",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 43.25,
+      "flowFactor": 1.0,
+      "riskScore": 52.22105357697275
+    },
+    {
+      "materialName": "Polyester_Bed_Skirt",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 37.75,
+      "flowFactor": 1.0,
+      "riskScore": 52.37054014750044
+    },
+    {
+      "materialName": "Polyester_Bed_Skirt",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 18.75,
+      "flowFactor": 1.0,
+      "riskScore": 63.18206894675187
+    },
+    {
+      "materialName": "Polyester_Bed_Skirt",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 19.0,
+      "flowFactor": 1.0,
+      "riskScore": 63.17515069763663
+    },
+    {
+      "materialName": "Polyester_Bed_Skirt",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 16.5,
+      "flowFactor": 1.0,
+      "riskScore": 63.24312014312991
+    },
+    {
+      "materialName": "Polyester_Microfiber_Sheet",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 857.5,
+      "flowFactor": 1.0,
+      "riskScore": 19.377915821767953
+    },
+    {
+      "materialName": "Polyester_Microfiber_Sheet",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 400.25,
+      "flowFactor": 1.0,
+      "riskScore": 31.81991939909836
+    },
+    {
+      "materialName": "Polyester_Microfiber_Sheet",
+      "materialType": "composite",
+      "heatFlux": 25.0,
+      "timeToIgn": 356.25,
+      "flowFactor": 1.0,
+      "riskScore": 33.01737160408088
+    },
+    {
+      "materialName": "Polyester_Microfiber_Sheet",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 40.25,
+      "flowFactor": 1.0,
+      "riskScore": 67.34942907387418
+    },
+    {
+      "materialName": "Polyester_Microfiber_Sheet",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 40.25,
+      "flowFactor": 1.0,
+      "riskScore": 67.34885143374014
+    },
+    {
+      "materialName": "Polyester_Microfiber_Sheet",
+      "materialType": "composite",
+      "heatFlux": 50.0,
+      "timeToIgn": 34.5,
+      "flowFactor": 1.0,
+      "riskScore": 67.50589165890818
+    },
+    {
+      "materialName": "Polyester_Microfiber_Sheet",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 17.0,
+      "flowFactor": 1.0,
+      "riskScore": 78.27539108597558
+    },
+    {
+      "materialName": "Polyester_Microfiber_Sheet",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 17.25,
+      "flowFactor": 1.0,
+      "riskScore": 78.26928153304225
+    },
+    {
+      "materialName": "Polyester_Microfiber_Sheet",
+      "materialType": "composite",
+      "heatFlux": 75.0,
+      "timeToIgn": 18.75,
+      "flowFactor": 1.0,
+      "riskScore": 78.22852296914736
+    },
+    {
+      "materialName": "Polyisocyanurate_Foam_Board",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 0.0,
+      "flowFactor": 1.0,
+      "riskScore": 56.78820287734696
+    },
+    {
+      "materialName": "Polyisocyanurate_Foam_Board",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 3.0,
+      "flowFactor": 1.0,
+      "riskScore": 56.711075822824654
+    },
+    {
+      "materialName": "Polyisocyanurate_Foam_Board",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 2.25,
+      "flowFactor": 1.0,
+      "riskScore": 56.739446606457754
+    },
+    {
+      "materialName": "Polyisocyanurate_Foam_Board",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 1.75,
+      "flowFactor": 1.0,
+      "riskScore": 56.75079925073996
+    },
+    {
+      "materialName": "Polyisocyanurate_Foam_Board",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 14.25,
+      "flowFactor": 1.0,
+      "riskScore": 66.50181401196875
+    },
+    {
+      "materialName": "Polyisocyanurate_Foam_Board",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 0.5,
+      "flowFactor": 1.0,
+      "riskScore": 66.8808158516909
+    },
+    {
+      "materialName": "Polyisocyanurate_Foam_Board",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 0.5,
+      "flowFactor": 1.0,
+      "riskScore": 66.8812202011624
+    },
+    {
+      "materialName": "Polyisocyanurate_Foam_Board",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 0.75,
+      "flowFactor": 1.0,
+      "riskScore": 66.87360878388631
+    },
+    {
+      "materialName": "Polyisocyanurate_Foam_Board",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 10.25,
+      "flowFactor": 1.0,
+      "riskScore": 76.90477519644253
+    },
+    {
+      "materialName": "Polyisocyanurate_Foam_Board",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.179887771415
+    },
+    {
+      "materialName": "Polyisocyanurate_Foam_Board",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.18063870496692
+    },
+    {
+      "materialName": "Polyisocyanurate_Foam_Board",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.5,
+      "flowFactor": 1.0,
+      "riskScore": 77.17493349874972
+    },
+    {
+      "materialName": "Polyisocyanurate_Spray_Foam_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 6.25,
+      "flowFactor": 1.0,
+      "riskScore": 56.45610773116096
+    },
+    {
+      "materialName": "Polyisocyanurate_Spray_Foam_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 3.0,
+      "flowFactor": 1.0,
+      "riskScore": 56.536629423104046
+    },
+    {
+      "materialName": "Polyisocyanurate_Spray_Foam_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 2.0,
+      "flowFactor": 1.0,
+      "riskScore": 66.86506293780329
+    },
+    {
+      "materialName": "Polyisocyanurate_Spray_Foam_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 2.75,
+      "flowFactor": 1.0,
+      "riskScore": 66.8235708918107
+    },
+    {
+      "materialName": "Polyisocyanurate_Spray_Foam_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.17953098273057
+    },
+    {
+      "materialName": "Polyisocyanurate_Spray_Foam_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.1834011757097
+    },
+    {
+      "materialName": "Polyolefin_Carpet_Low_Pile",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 39.5,
+      "flowFactor": 1.0,
+      "riskScore": 39.5686026399762
+    },
+    {
+      "materialName": "Polyolefin_Carpet_Low_Pile",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 40.75,
+      "flowFactor": 1.0,
+      "riskScore": 39.5323362393947
+    },
+    {
+      "materialName": "Polyolefin_Carpet_Low_Pile",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 37.75,
+      "flowFactor": 1.0,
+      "riskScore": 54.614659164030385
+    },
+    {
+      "materialName": "Polyolefin_Carpet_Low_Pile",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 11.75,
+      "flowFactor": 1.0,
+      "riskScore": 51.479445763356814
+    },
+    {
+      "materialName": "Polyolefin_Carpet_Low_Pile",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 11.25,
+      "flowFactor": 1.0,
+      "riskScore": 51.49819220957461
+    },
+    {
+      "materialName": "Polyolefin_Carpet_Low_Pile",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 10.5,
+      "flowFactor": 1.0,
+      "riskScore": 51.513517134195844
+    },
+    {
+      "materialName": "Polyolefin_Carpet_Low_Pile",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 6.25,
+      "flowFactor": 1.0,
+      "riskScore": 61.92247234078041
+    },
+    {
+      "materialName": "Polyolefin_Carpet_Low_Pile",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 6.5,
+      "flowFactor": 1.0,
+      "riskScore": 61.91359011525562
+    },
+    {
+      "materialName": "Polyolefin_Carpet_Low_Pile",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 5.25,
+      "flowFactor": 1.0,
+      "riskScore": 76.95314617493202
+    },
+    {
+      "materialName": "Pressure_Treated_Deck",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 173.0,
+      "flowFactor": 1.0,
+      "riskScore": 51.344896166713816
+    },
+    {
+      "materialName": "Pressure_Treated_Deck",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 188.75,
+      "flowFactor": 1.0,
+      "riskScore": 50.92215892116915
+    },
+    {
+      "materialName": "Pressure_Treated_Deck",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 173.0,
+      "flowFactor": 1.0,
+      "riskScore": 51.36800179402593
+    },
+    {
+      "materialName": "Pressure_Treated_Deck",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 160.0,
+      "flowFactor": 1.0,
+      "riskScore": 51.66282395830789
+    },
+    {
+      "materialName": "Pressure_Treated_Deck",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 30.75,
+      "flowFactor": 1.0,
+      "riskScore": 65.48677203875535
+    },
+    {
+      "materialName": "Pressure_Treated_Deck",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 31.0,
+      "flowFactor": 1.0,
+      "riskScore": 65.65633812415264
+    },
+    {
+      "materialName": "Pressure_Treated_Deck",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 31.5,
+      "flowFactor": 1.0,
+      "riskScore": 65.64689165734532
+    },
+    {
+      "materialName": "Pressure_Treated_Deck",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 14.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.36075570464095
+    },
+    {
+      "materialName": "Pressure_Treated_Deck",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 10.75,
+      "flowFactor": 1.0,
+      "riskScore": 77.46263663249519
+    },
+    {
+      "materialName": "Pressure_Treated_Deck",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 13.5,
+      "flowFactor": 1.0,
+      "riskScore": 76.83761106499728
+    },
+    {
+      "materialName": "Rebond_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 6.5,
+      "flowFactor": 1.0,
+      "riskScore": 56.63553019156243
+    },
+    {
+      "materialName": "Rebond_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 8.0,
+      "flowFactor": 1.0,
+      "riskScore": 56.59043932530188
+    },
+    {
+      "materialName": "Rebond_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 7.75,
+      "flowFactor": 1.0,
+      "riskScore": 56.60313397848981
+    },
+    {
+      "materialName": "Rebond_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 2.0,
+      "flowFactor": 1.0,
+      "riskScore": 67.1004365670619
+    },
+    {
+      "materialName": "Rebond_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 1.25,
+      "flowFactor": 1.0,
+      "riskScore": 67.11968944730955
+    },
+    {
+      "materialName": "Rebond_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 1.25,
+      "flowFactor": 1.0,
+      "riskScore": 67.12436833650523
+    },
+    {
+      "materialName": "Rebond_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.75,
+      "flowFactor": 1.0,
+      "riskScore": 77.42383116497037
+    },
+    {
+      "materialName": "Rebond_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.5,
+      "flowFactor": 1.0,
+      "riskScore": 77.43340655869066
+    },
+    {
+      "materialName": "Rebond_Foam_Carpet_Pad",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.0,
+      "flowFactor": 1.0,
+      "riskScore": 77.4177216120428
+    },
+    {
+      "materialName": "Roof_Felt",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 30.5,
+      "flowFactor": 1.0,
+      "riskScore": 41.01617371980695
+    },
+    {
+      "materialName": "Roof_Felt",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 33.75,
+      "flowFactor": 1.0,
+      "riskScore": 40.92669859066066
+    },
+    {
+      "materialName": "Roof_Felt",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 33.75,
+      "flowFactor": 1.0,
+      "riskScore": 40.92548554500728
+    },
+    {
+      "materialName": "Roof_Felt",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 11.75,
+      "flowFactor": 1.0,
+      "riskScore": 51.43240081159253
+    },
+    {
+      "materialName": "Roof_Felt",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 11.0,
+      "flowFactor": 1.0,
+      "riskScore": 66.45251725686141
+    },
+    {
+      "materialName": "Roof_Felt",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 11.75,
+      "flowFactor": 1.0,
+      "riskScore": 51.43303621711765
+    },
+    {
+      "materialName": "Roof_Felt",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 5.75,
+      "flowFactor": 1.0,
+      "riskScore": 61.88909059661296
+    },
+    {
+      "materialName": "Roof_Felt",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 6.25,
+      "flowFactor": 1.0,
+      "riskScore": 61.875311861023974
+    },
+    {
+      "materialName": "Roof_Felt",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 6.5,
+      "flowFactor": 1.0,
+      "riskScore": 61.87099299663339
+    },
+    {
+      "materialName": "Rubber_Band",
+      "materialType": "generic",
+      "heatFlux": 100.0,
+      "timeToIgn": 2.75,
+      "flowFactor": 1.0,
+      "riskScore": 85.83609600547386
+    },
+    {
+      "materialName": "Rubber_Band",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 87.5,
+      "flowFactor": 1.0,
+      "riskScore": 51.628095335284975
+    },
+    {
+      "materialName": "Rubber_Band",
+      "materialType": "polymer",
+      "heatFlux": 35.0,
+      "timeToIgn": 37.25,
+      "flowFactor": 1.0,
+      "riskScore": 57.11799928088287
+    },
+    {
+      "materialName": "Rubber_Band",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 25.0,
+      "flowFactor": 1.0,
+      "riskScore": 63.62607027381798
+    },
+    {
+      "materialName": "Rubber_Band",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 12.75,
+      "flowFactor": 1.0,
+      "riskScore": 74.25352125421016
+    },
+    {
+      "materialName": "Rubber_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 1.5,
+      "flowFactor": 1.0,
+      "riskScore": 54.54102474957079
+    },
+    {
+      "materialName": "Rubber_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 3.75,
+      "flowFactor": 1.0,
+      "riskScore": 54.47922261688548
+    },
+    {
+      "materialName": "Rubber_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 4.75,
+      "flowFactor": 1.0,
+      "riskScore": 54.45258937542113
+    },
+    {
+      "materialName": "Rubber_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 0.5,
+      "flowFactor": 1.0,
+      "riskScore": 64.86293092111161
+    },
+    {
+      "materialName": "Rubber_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 0.25,
+      "flowFactor": 1.0,
+      "riskScore": 64.86973364220006
+    },
+    {
+      "materialName": "Rubber_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 0.5,
+      "flowFactor": 1.0,
+      "riskScore": 64.86350856124567
+    },
+    {
+      "materialName": "Rubber_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.25,
+      "flowFactor": 1.0,
+      "riskScore": 75.16385128925887
+    },
+    {
+      "materialName": "Rubber_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 1.0,
+      "flowFactor": 1.0,
+      "riskScore": 75.1428654858653
+    },
+    {
+      "materialName": "Rubber_Foam_Pipe_Insulation",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.25,
+      "flowFactor": 1.0,
+      "riskScore": 75.1632736491306
+    },
+    {
+      "materialName": "Rug_Pad",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 35.75,
+      "flowFactor": 1.0,
+      "riskScore": 55.16964478728929
+    },
+    {
+      "materialName": "Rug_Pad",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 34.75,
+      "flowFactor": 1.0,
+      "riskScore": 55.19697119966985
+    },
+    {
+      "materialName": "Rug_Pad",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 36.0,
+      "flowFactor": 1.0,
+      "riskScore": 55.16393958382745
+    },
+    {
+      "materialName": "Rug_Pad",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 6.25,
+      "flowFactor": 1.0,
+      "riskScore": 66.26677234422819
+    },
+    {
+      "materialName": "Rug_Pad",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 6.5,
+      "flowFactor": 1.0,
+      "riskScore": 66.26164478089461
+    },
+    {
+      "materialName": "Rug_Pad",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 5.75,
+      "flowFactor": 1.0,
+      "riskScore": 66.27858710061763
+    },
+    {
+      "materialName": "Rug_Pad",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.25,
+      "flowFactor": 1.0,
+      "riskScore": 76.64333134053012
+    },
+    {
+      "materialName": "Rug_Pad",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.25,
+      "flowFactor": 1.0,
+      "riskScore": 76.64154065474268
+    },
+    {
+      "materialName": "Rug_Pad",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.75,
+      "flowFactor": 1.0,
+      "riskScore": 76.62857061809093
+    },
+    {
+      "materialName": "Straw",
+      "materialType": "generic",
+      "heatFlux": 35.0,
+      "timeToIgn": 9.5,
+      "flowFactor": 1.0,
+      "riskScore": 60.59801368759592
+    },
+    {
+      "materialName": "Straw",
+      "materialType": "generic",
+      "heatFlux": 35.0,
+      "timeToIgn": 16.0,
+      "flowFactor": 1.0,
+      "riskScore": 60.02655766138933
+    },
+    {
+      "materialName": "Straw",
+      "materialType": "generic",
+      "heatFlux": 35.0,
+      "timeToIgn": 18.75,
+      "flowFactor": 1.0,
+      "riskScore": 59.000655467245664
+    },
+    {
+      "materialName": "Vinyl_Plank_Flooring",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 26.75,
+      "flowFactor": 1.0,
+      "riskScore": 54.289106269184906
+    },
+    {
+      "materialName": "Vinyl_Plank_Flooring",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 24.75,
+      "flowFactor": 1.0,
+      "riskScore": 54.34410568077023
+    },
+    {
+      "materialName": "Vinyl_Plank_Flooring",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 24.5,
+      "flowFactor": 1.0,
+      "riskScore": 54.35148604473651
+    },
+    {
+      "materialName": "Vinyl_Plank_Flooring",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 8.5,
+      "flowFactor": 1.0,
+      "riskScore": 65.08271075911352
+    },
+    {
+      "materialName": "Vinyl_Plank_Flooring",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 8.0,
+      "flowFactor": 1.0,
+      "riskScore": 65.0963162012904
+    },
+    {
+      "materialName": "Vinyl_Plank_Flooring",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 8.25,
+      "flowFactor": 1.0,
+      "riskScore": 65.08951348020197
+    },
+    {
+      "materialName": "Vinyl_Plank_Flooring",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 4.5,
+      "flowFactor": 1.0,
+      "riskScore": 75.48480548475814
+    },
+    {
+      "materialName": "Vinyl_Plank_Flooring",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.5,
+      "flowFactor": 1.0,
+      "riskScore": 75.51172755316054
+    },
+    {
+      "materialName": "Vinyl_Plank_Flooring",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 4.75,
+      "flowFactor": 1.0,
+      "riskScore": 75.47598101908486
+    },
+    {
+      "materialName": "Vinyl_Siding",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 148.5,
+      "flowFactor": 1.0,
+      "riskScore": 37.47659745660377
+    },
+    {
+      "materialName": "Vinyl_Siding",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 202.75,
+      "flowFactor": 1.0,
+      "riskScore": 35.99809974315297
+    },
+    {
+      "materialName": "Vinyl_Siding",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 194.25,
+      "flowFactor": 1.0,
+      "riskScore": 36.229334496553605
+    },
+    {
+      "materialName": "Vinyl_Siding",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 35.5,
+      "flowFactor": 1.0,
+      "riskScore": 50.839710868955855
+    },
+    {
+      "materialName": "Vinyl_Siding",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 32.25,
+      "flowFactor": 1.0,
+      "riskScore": 50.93149655860366
+    },
+    {
+      "materialName": "Vinyl_Siding",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 33.0,
+      "flowFactor": 1.0,
+      "riskScore": 65.91183643236744
+    },
+    {
+      "materialName": "Vinyl_Siding",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 15.75,
+      "flowFactor": 1.0,
+      "riskScore": 61.6783484597424
+    },
+    {
+      "materialName": "Vinyl_Siding",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 17.5,
+      "flowFactor": 1.0,
+      "riskScore": 61.6244908932112
+    },
+    {
+      "materialName": "Vinyl_Siding",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 17.5,
+      "flowFactor": 1.0,
+      "riskScore": 61.628072264751424
+    },
+    {
+      "materialName": "Vinyl_Tile",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 103.0,
+      "flowFactor": 1.0,
+      "riskScore": 37.673363673934126
+    },
+    {
+      "materialName": "Vinyl_Tile",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 103.25,
+      "flowFactor": 1.0,
+      "riskScore": 37.69012868126676
+    },
+    {
+      "materialName": "Vinyl_Tile",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 102.5,
+      "flowFactor": 1.0,
+      "riskScore": 37.71492690401701
+    },
+    {
+      "materialName": "Vinyl_Tile",
+      "materialType": "polymer",
+      "heatFlux": 25.0,
+      "timeToIgn": 86.75,
+      "flowFactor": 1.0,
+      "riskScore": 55.234681378691754
+    },
+    {
+      "materialName": "Vinyl_Tile",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 39.5,
+      "flowFactor": 1.0,
+      "riskScore": 49.721366308181665
+    },
+    {
+      "materialName": "Vinyl_Tile",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 36.25,
+      "flowFactor": 1.0,
+      "riskScore": 49.80564266236793
+    },
+    {
+      "materialName": "Vinyl_Tile",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 37.0,
+      "flowFactor": 1.0,
+      "riskScore": 64.78569370365985
+    },
+    {
+      "materialName": "Vinyl_Tile",
+      "materialType": "polymer",
+      "heatFlux": 50.0,
+      "timeToIgn": 28.75,
+      "flowFactor": 1.0,
+      "riskScore": 67.10604831766953
+    },
+    {
+      "materialName": "Vinyl_Tile",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 19.0,
+      "flowFactor": 1.0,
+      "riskScore": 60.57446234823976
+    },
+    {
+      "materialName": "Vinyl_Tile",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 19.0,
+      "flowFactor": 1.0,
+      "riskScore": 60.570187819548536
+    },
+    {
+      "materialName": "Vinyl_Tile",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 18.75,
+      "flowFactor": 1.0,
+      "riskScore": 75.57883609247952
+    },
+    {
+      "materialName": "Vinyl_Tile",
+      "materialType": "polymer",
+      "heatFlux": 75.0,
+      "timeToIgn": 14.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.79218217676696
+    },
+    {
+      "materialName": "Window_Screen",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 4.25,
+      "flowFactor": 1.0,
+      "riskScore": 58.14919711238238
+    },
+    {
+      "materialName": "Window_Screen",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 2.25,
+      "flowFactor": 1.0,
+      "riskScore": 43.20344558870596
+    },
+    {
+      "materialName": "Window_Screen",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 2.75,
+      "flowFactor": 1.0,
+      "riskScore": 43.189897910886764
+    },
+    {
+      "materialName": "Window_Screen",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 3.25,
+      "flowFactor": 1.0,
+      "riskScore": 43.176292468709896
+    },
+    {
+      "materialName": "Window_Screen",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 1.0,
+      "flowFactor": 1.0,
+      "riskScore": 53.53157684120696
+    },
+    {
+      "materialName": "Window_Screen",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 0.25,
+      "flowFactor": 1.0,
+      "riskScore": 53.55227382488241
+    },
+    {
+      "materialName": "Window_Screen",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 1.25,
+      "flowFactor": 1.0,
+      "riskScore": 53.524947412502435
+    },
+    {
+      "materialName": "Window_Screen",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.25,
+      "flowFactor": 1.0,
+      "riskScore": 63.84639147194123
+    },
+    {
+      "materialName": "Window_Screen",
+      "materialType": "generic",
+      "heatFlux": 35.0,
+      "timeToIgn": 0.75,
+      "flowFactor": 1.0,
+      "riskScore": 47.362082266444006
+    },
+    {
+      "materialName": "Window_Screen",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 0.25,
+      "flowFactor": 1.0,
+      "riskScore": 63.84621817990159
+    },
+    {
+      "materialName": "Wood_Stud",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 133.0,
+      "flowFactor": 1.0,
+      "riskScore": 51.946840590199514
+    },
+    {
+      "materialName": "Wood_Stud",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 151.5,
+      "flowFactor": 1.0,
+      "riskScore": 51.39000746649604
+    },
+    {
+      "materialName": "Wood_Stud",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 112.5,
+      "flowFactor": 1.0,
+      "riskScore": 51.90953876429526
+    },
+    {
+      "materialName": "Wood_Stud",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 18.0,
+      "flowFactor": 1.0,
+      "riskScore": 64.7541165976925
+    },
+    {
+      "materialName": "Wood_Stud",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 17.5,
+      "flowFactor": 1.0,
+      "riskScore": 64.84940042895187
+    },
+    {
+      "materialName": "Wood_Stud",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 14.25,
+      "flowFactor": 1.0,
+      "riskScore": 64.99392475210362
+    },
+    {
+      "materialName": "Wood_Stud",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 7.25,
+      "flowFactor": 1.0,
+      "riskScore": 75.46944967655224
+    },
+    {
+      "materialName": "Wood_Stud",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 5.75,
+      "flowFactor": 1.0,
+      "riskScore": 75.52838930966655
+    },
+    {
+      "materialName": "Wood_Stud",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 6.25,
+      "flowFactor": 1.0,
+      "riskScore": 75.4921981837984
+    },
+    {
+      "materialName": "Wool_Rug",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 579.0,
+      "flowFactor": 1.0,
+      "riskScore": 40.25490079346527
+    },
+    {
+      "materialName": "Wool_Rug",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 39.75,
+      "flowFactor": 1.0,
+      "riskScore": 39.92248116221624
+    },
+    {
+      "materialName": "Wool_Rug",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 27.75,
+      "flowFactor": 1.0,
+      "riskScore": 40.2611422199621
+    },
+    {
+      "materialName": "Wool_Rug",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 25.25,
+      "flowFactor": 1.0,
+      "riskScore": 40.3237973707057
+    },
+    {
+      "materialName": "Wool_Rug",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 3.0,
+      "flowFactor": 1.0,
+      "riskScore": 66.06898471082194
+    },
+    {
+      "materialName": "Wool_Rug",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 4.25,
+      "flowFactor": 1.0,
+      "riskScore": 66.04461769421174
+    },
+    {
+      "materialName": "Wool_Rug",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 5.25,
+      "flowFactor": 1.0,
+      "riskScore": 66.01786893297508
+    },
+    {
+      "materialName": "Wool_Rug",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 2.0,
+      "flowFactor": 1.0,
+      "riskScore": 76.55837290755552
+    },
+    {
+      "materialName": "Wool_Rug",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 2.5,
+      "flowFactor": 1.0,
+      "riskScore": 76.53021091751488
+    },
+    {
+      "materialName": "Wool_Rug",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 2.25,
+      "flowFactor": 1.0,
+      "riskScore": 76.54007514918305
+    },
+    {
+      "materialName": "XPS_Foam_Board",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 147.25,
+      "flowFactor": 1.0,
+      "riskScore": 53.28395040246835
+    },
+    {
+      "materialName": "XPS_Foam_Board",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 161.75,
+      "flowFactor": 1.0,
+      "riskScore": 52.89020127552099
+    },
+    {
+      "materialName": "XPS_Foam_Board",
+      "materialType": "generic",
+      "heatFlux": 25.0,
+      "timeToIgn": 160.5,
+      "flowFactor": 1.0,
+      "riskScore": 52.9236372408349
+    },
+    {
+      "materialName": "XPS_Foam_Board",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 15.25,
+      "flowFactor": 1.0,
+      "riskScore": 67.17007807488359
+    },
+    {
+      "materialName": "XPS_Foam_Board",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 16.0,
+      "flowFactor": 1.0,
+      "riskScore": 67.15070966660913
+    },
+    {
+      "materialName": "XPS_Foam_Board",
+      "materialType": "generic",
+      "heatFlux": 50.0,
+      "timeToIgn": 15.25,
+      "flowFactor": 1.0,
+      "riskScore": 67.17181099802951
+    },
+    {
+      "materialName": "XPS_Foam_Board",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 4.5,
+      "flowFactor": 1.0,
+      "riskScore": 77.75983198821277
+    },
+    {
+      "materialName": "XPS_Foam_Board",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.79303689746729
+    },
+    {
+      "materialName": "XPS_Foam_Board",
+      "materialType": "generic",
+      "heatFlux": 75.0,
+      "timeToIgn": 3.25,
+      "flowFactor": 1.0,
+      "riskScore": 77.79280584141367
+    }
+  ]
+}
