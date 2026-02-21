@@ -41,21 +41,22 @@ function App() {
     setErrorMessage(null);
 
     try {
-      const apiBase = import.meta.env.VITE_API_BASE_URL
-        || (import.meta.env.DEV ? 'http://localhost:8000' : '');
-      if (!apiBase) {
-        throw new Error('Missing VITE_API_BASE_URL for production.');
-      }
-      const response = await fetch(`${apiBase}/predict`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          MATERIAL: input.materialType,
-          'HEAT FLUX': input.temperature,
-          'TIME TO IGN': input.exposureTime,
-          'FLOW FACTOR': input.environment === 'enclosed' ? 1.15 : 0.85,
-        }),
-      });
+      const apiBaseUrl = 'https://mfr-material-risk-engine.onrender.com';
+      const data = {
+        MATERIAL: input.materialType,
+        'HEAT FLUX': input.temperature,
+        'TIME TO IGN': input.exposureTime,
+        'FLOW FACTOR': input.environment === 'enclosed' ? 1.15 : 0.85,
+      };
+
+      const response = await fetch(
+        `${apiBaseUrl}/predict`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        },
+      );
 
       if (!response.ok) {
         throw new Error(`API error: ${response.status}`);
