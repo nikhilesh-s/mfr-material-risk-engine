@@ -41,16 +41,17 @@ class FirePropertiesInput(BaseModel):
         populate_by_name = True
 
 
-app = FastAPI(title="MFR Risk API", version="0.1.0")
+app = FastAPI(
+    title="MFR Risk API",
+    version="0.1.0",
+    docs_url="/docs",
+    openapi_url="/openapi.json",
+)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://mfr-material-risk-engine.vercel.app",
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
-    allow_methods=["POST", "OPTIONS"],
-    allow_headers=["content-type"],
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 RAW_DATA_PATH = (
@@ -200,6 +201,12 @@ def _transform_input(
 
     encoded = encoded.reindex(columns=feature_cols, fill_value=0.0)
     return encoded
+
+
+@app.get("/health")
+def health() -> Dict[str, str]:
+    """Liveness probe endpoint for deployment health checks."""
+    return {"status": "ok"}
 
 
 @app.post("/predict")
