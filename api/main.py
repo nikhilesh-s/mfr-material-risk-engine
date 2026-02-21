@@ -2,17 +2,24 @@
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
 import numpy as np
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from src.model import predict_risk, train_model
 from src.utils import DROP_COLUMNS, META_COLUMNS, TEXT_HEAVY_COLUMNS, clean_fire_properties, map_material_type
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s"
+)
+logger = logging.getLogger("mfr-api")
 
 
 class FirePropertiesInput(BaseModel):
@@ -49,10 +56,21 @@ app = FastAPI(
 )
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://mfr-material-risk-engine.vercel.app",
+        "http://localhost:5173",
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    logger.info(f"Incoming request: {request.method} {request.url.path}")
+    response = await call_next(request)
+    logger.info(f"Completed: {request.method} {request.url.path} -> {response.status_code}")
+    return response
 
 RAW_DATA_PATH = (
     Path(__file__).resolve().parents[1]
@@ -209,27 +227,41 @@ def health() -> Dict[str, str]:
     return {"status": "ok"}
 
 
+@app.get("/version")
+def version():
+    return {
+        "service": "MFR Risk API",
+        "version": "0.1.0",
+        "status": "production"
+    }
+
+
 @app.post("/predict")
 def predict(payload: FirePropertiesInput) -> Dict[str, Any]:
     """Run cleaning + feature pipeline and return UI-ready risk outputs."""
-    if not hasattr(app.state, "model") or not hasattr(app.state, "raw_df"):
-        raise HTTPException(status_code=500, detail="Model is not initialized.")
+    logger.info("Received prediction request")
+    try:
+        if not hasattr(app.state, "model") or not hasattr(app.state, "raw_df"):
+            raise HTTPException(status_code=500, detail="Model is not initialized.")
 
-    model = app.state.model
-    stats = app.state.training_stats
-    feature_cols = app.state.feature_cols
+        model = app.state.model
+        stats = app.state.training_stats
+        feature_cols = app.state.feature_cols
 
-    input_row = {col: None for col in stats["numeric_cols"] + stats["categorical_cols"] + ["MATERIAL"]}
-    payload_data = payload.dict(by_alias=True)
-    for key, value in payload_data.items():
-        input_row[key] = value
+        input_row = {col: None for col in stats["numeric_cols"] + stats["categorical_cols"] + ["MATERIAL"]}
+        payload_data = payload.dict(by_alias=True)
+        for key, value in payload_data.items():
+            input_row[key] = value
 
-    feature_frame = _transform_input(input_row, stats, feature_cols)
+        feature_frame = _transform_input(input_row, stats, feature_cols)
 
-    result = predict_risk(model, feature_frame.iloc[0].to_dict())
-    return {
-        "riskScore": result["riskScore"],
-        "riskClass": result["riskClass"],
-        "resistanceIndex": result["resistanceIndex"],
-        "interpretation": result["interpretation"],
-    }
+        result = predict_risk(model, feature_frame.iloc[0].to_dict())
+        return {
+            "riskScore": result["riskScore"],
+            "riskClass": result["riskClass"],
+            "resistanceIndex": result["resistanceIndex"],
+            "interpretation": result["interpretation"],
+        }
+    except Exception:
+        logger.exception("Prediction failed")
+        raise HTTPException(status_code=500, detail="Internal model inference error")
