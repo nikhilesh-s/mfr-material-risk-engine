@@ -77,10 +77,19 @@ def predict_risk(
         feature_name: float(contribution)
         for feature_name, contribution in zip(feature_names, contribution_values)
     }
+    sorted_contributions = sorted(
+        feature_contributions.items(), key=lambda x: abs(x[1]), reverse=True
+    )
+    top_5_features = [
+        {"feature": feature_name, "contribution": float(contribution)}
+        for feature_name, contribution in sorted_contributions
+        if float(contribution) != 0.0
+    ][:5]
     interpretability = {
         "prediction": raw_prediction,
         "bias": bias_value,
         "feature_contributions": feature_contributions,
+        "top_5_features": top_5_features,
     }
 
     risk_score = int(round(raw_prediction))
