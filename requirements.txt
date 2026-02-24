@@ -2,4 +2,5 @@ fastapi==0.111.0
 numpy==2.0.1
 pandas==2.2.2
 scikit-learn==1.5.1
+treeinterpreter==0.2.3
 uvicorn==0.30.1

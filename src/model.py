@@ -4,9 +4,11 @@ from __future__ import annotations
 
 from typing import Dict, Tuple
 
+import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
+from treeinterpreter import treeinterpreter as ti
 
 from .features import FEATURE_COLUMNS, add_derived_features, prepare_feature_frame
 from .utils import clean_fire_properties
@@ -60,9 +62,28 @@ def predict_risk(
                     feature_frame[col] = 0.0
             feature_frame = feature_frame[list(model.feature_names_in_)]
 
-    score = float(model.predict(feature_frame)[0])
-    score = max(0.0, min(100.0, score))
-    risk_score = int(round(score))
+    raw_prediction = float(model.predict(feature_frame)[0])
+
+    _, bias, contributions = ti.predict(model, feature_frame)
+    bias_value = float(np.asarray(bias[0]).squeeze())
+    contribution_values = np.atleast_1d(np.asarray(contributions[0]).squeeze())
+
+    feature_names = (
+        list(model.feature_names_in_)
+        if hasattr(model, "feature_names_in_")
+        else list(feature_frame.columns)
+    )
+    feature_contributions = {
+        feature_name: float(contribution)
+        for feature_name, contribution in zip(feature_names, contribution_values)
+    }
+    interpretability = {
+        "prediction": raw_prediction,
+        "bias": bias_value,
+        "feature_contributions": feature_contributions,
+    }
+
+    risk_score = int(round(raw_prediction))
     risk_class = classify_risk(risk_score)
     resistance_index = int(round(100 - risk_score))
 
@@ -98,6 +119,7 @@ def predict_risk(
         "resistanceIndex": resistance_index,
         "comparison": comparison,
         "interpretation": interpretation,
+        "interpretability": interpretability,
     }
 
 

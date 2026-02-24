@@ -261,6 +261,7 @@ def predict(payload: FirePropertiesInput) -> Dict[str, Any]:
             "riskClass": result["riskClass"],
             "resistanceIndex": result["resistanceIndex"],
             "interpretation": result["interpretation"],
+            "interpretability": result["interpretability"],
         }
     except Exception:
         logger.exception("Prediction failed")
