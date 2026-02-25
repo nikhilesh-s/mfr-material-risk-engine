@@ -63,6 +63,21 @@ def predict_risk(
             feature_frame = feature_frame[list(model.feature_names_in_)]
 
     raw_prediction = float(model.predict(feature_frame)[0])
+    tree_predictions = [
+        float(tree.predict(feature_frame)[0]) for tree in model.estimators_
+    ]
+    variance = float(np.var(tree_predictions))
+    confidence_score = float(np.clip(1.0 / (1.0 + variance), 0.0, 1.0))
+    if confidence_score >= 0.75:
+        confidence_label = "High"
+    elif confidence_score >= 0.5:
+        confidence_label = "Medium"
+    else:
+        confidence_label = "Low"
+    confidence = {
+        "score": confidence_score,
+        "label": confidence_label,
+    }
 
     _, bias, contributions = ti.predict(model, feature_frame)
     bias_value = float(np.asarray(bias[0]).squeeze())
@@ -142,6 +157,7 @@ def predict_risk(
         "comparison": comparison,
         "interpretation": interpretation,
         "interpretability": interpretability,
+        "confidence": confidence,
     }
 
 
