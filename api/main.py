@@ -12,7 +12,13 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from src.model import DATASET_VERSION, inspect_model_schema, predict_risk, train_model
+from src.model import (
+    DATASET_VERSION,
+    detect_target_candidates,
+    inspect_model_schema,
+    predict_risk,
+    train_model,
+)
 from src.utils import DROP_COLUMNS, META_COLUMNS, TEXT_HEAVY_COLUMNS, clean_fire_properties, map_material_type
 
 logging.basicConfig(
@@ -105,6 +111,7 @@ def load_model() -> None:
     app.state.model = model
     app.state.dataset_metadata = dataset_metadata
     inspect_model_schema(model)
+    detect_target_candidates(cleaned_df)
 
 
 def _build_training_stats(raw_df: pd.DataFrame) -> Dict[str, Any]:

@@ -14,6 +14,7 @@ from .features import FEATURE_COLUMNS, add_derived_features, prepare_feature_fra
 from .utils import clean_fire_properties
 
 DATASET_VERSION = "v0.2-core"
+_DIAGNOSTIC_FEATURE_NAMES: set[str] = set()
 
 
 def inspect_model_schema(model: RandomForestRegressor) -> None:
@@ -21,6 +22,8 @@ def inspect_model_schema(model: RandomForestRegressor) -> None:
     feature_names = (
         list(model.feature_names_in_) if hasattr(model, "feature_names_in_") else []
     )
+    global _DIAGNOSTIC_FEATURE_NAMES
+    _DIAGNOSTIC_FEATURE_NAMES = set(feature_names)
     categorical_features = [
         name
         for name in feature_names
@@ -44,6 +47,26 @@ def inspect_model_schema(model: RandomForestRegressor) -> None:
     print(f"Numeric Preview (first 5): {numeric_features[:5]}")
     print(f"Categorical Preview (first 5): {categorical_features[:5]}")
     print(f"Target Candidate Preview (first 5): {potential_target_candidates[:5]}")
+
+
+def detect_target_candidates(dataframe: pd.DataFrame) -> None:
+    """Print a variance-based list of likely regression targets for diagnostics."""
+    numeric_df = dataframe.select_dtypes(include=["number"])
+    variances = numeric_df.var()
+    feature_name_set = _DIAGNOSTIC_FEATURE_NAMES
+    candidate_variances = variances[~variances.index.isin(feature_name_set)]
+    candidate_variances = candidate_variances.sort_values(ascending=False)
+    top_candidates = candidate_variances.head(5)
+
+    print("-----------------------------------")
+    print("TARGET CANDIDATE ANALYSIS")
+    print("Top 5 Numeric Columns by Variance:")
+    if top_candidates.empty:
+        print("(none)")
+    else:
+        for idx, (column_name, variance) in enumerate(top_candidates.items(), start=1):
+            print(f"{idx}) {column_name} (variance={float(variance):.6f})")
+    print("-----------------------------------")
 
 
 def train_risk_model(
