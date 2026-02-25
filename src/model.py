@@ -85,11 +85,13 @@ def predict_risk(
         for feature_name, contribution in sorted_contributions
         if float(contribution) != 0.0
     ][:5]
+    top_3_drivers = top_5_features[:3]
     interpretability = {
         "prediction": raw_prediction,
         "bias": bias_value,
         "feature_contributions": feature_contributions,
         "top_5_features": top_5_features,
+        "top_3_drivers": top_3_drivers,
     }
 
     risk_score = int(round(raw_prediction))
@@ -101,26 +103,37 @@ def predict_risk(
         comparison = (
             f"Performs better than baseline {material_label} samples at this heat exposure."
         )
-        interpretation = (
-            "Ignition is unlikely during the specified exposure period, and thermal "
-            "degradation should remain limited under these conditions."
-        )
     elif risk_class == "Medium":
         comparison = (
             f"Performs in line with typical {material_label} behavior under similar exposure."
-        )
-        interpretation = (
-            "Ignition is possible with sustained exposure. Expect moderate thermal "
-            "degradation during the test window."
         )
     else:
         comparison = (
             f"Shows elevated risk compared to more fire-resistant {material_label} options."
         )
-        interpretation = (
-            "Ignition is likely under the specified exposure conditions, and rapid "
-            "material degradation is expected."
+
+    def _driver_clause(driver: Dict[str, object]) -> str:
+        contribution = float(driver["contribution"])
+        direction = (
+            "increased predicted risk" if contribution > 0 else "reduced predicted risk"
         )
+        return f'{driver["feature"]} which {direction}'
+
+    driver_clauses = [_driver_clause(driver) for driver in top_3_drivers[:2]]
+    if len(driver_clauses) >= 2:
+        driver_sentence = (
+            f"Primary drivers include {driver_clauses[0]}, and {driver_clauses[1]}."
+        )
+    elif len(driver_clauses) == 1:
+        driver_sentence = f"Primary driver is {driver_clauses[0]}."
+    else:
+        driver_sentence = (
+            "Primary non-zero feature drivers were not identified for this prediction."
+        )
+    interpretation = (
+        f"{driver_sentence} These exposure characteristics strongly influence the "
+        "relative fire risk assessment."
+    )
 
     return {
         "riskScore": risk_score,

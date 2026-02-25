@@ -3,8 +3,6 @@
 from __future__ import annotations
 
 import logging
-import sys
-from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -235,16 +233,6 @@ def version():
         "service": "MFR Risk API",
         "version": "0.1.0",
         "status": "production"
-    }
-
-
-@app.get("/build-info")
-def build_info() -> Dict[str, Any]:
-    """Temporary deployment-debug endpoint to confirm live build provenance."""
-    return {
-        "commit": "f496c6a",
-        "python_version": sys.version,
-        "timestamp": datetime.utcnow(),
     }
 
 
