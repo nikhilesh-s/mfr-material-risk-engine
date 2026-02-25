@@ -13,6 +13,8 @@ from treeinterpreter import treeinterpreter as ti
 from .features import FEATURE_COLUMNS, add_derived_features, prepare_feature_frame
 from .utils import clean_fire_properties
 
+DATASET_VERSION = "v0.2-core"
+
 
 def train_risk_model(
     df: pd.DataFrame, random_state: int = 42

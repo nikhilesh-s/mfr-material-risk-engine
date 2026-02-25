@@ -12,7 +12,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-from src.model import predict_risk, train_model
+from src.model import DATASET_VERSION, predict_risk, train_model
 from src.utils import DROP_COLUMNS, META_COLUMNS, TEXT_HEAVY_COLUMNS, clean_fire_properties, map_material_type
 
 logging.basicConfig(
@@ -93,10 +93,17 @@ def load_model() -> None:
     app.state.raw_df = raw_df
     training_stats = _build_training_stats(raw_df)
     feature_cols = cleaned_df.drop(columns=["risk_score"]).columns.tolist()
+    dataset_metadata = {
+        "dataset_version": DATASET_VERSION,
+        "feature_count": len(model.feature_names_in_),
+        "feature_names": list(model.feature_names_in_),
+        "model_type": type(model).__name__,
+    }
 
     app.state.training_stats = training_stats
     app.state.feature_cols = feature_cols
     app.state.model = model
+    app.state.dataset_metadata = dataset_metadata
 
 
 def _build_training_stats(raw_df: pd.DataFrame) -> Dict[str, Any]:
@@ -260,6 +267,7 @@ def predict(payload: FirePropertiesInput) -> Dict[str, Any]:
             "riskScore": result["riskScore"],
             "riskClass": result["riskClass"],
             "resistanceIndex": result["resistanceIndex"],
+            "dataset": {"version": DATASET_VERSION},
             "interpretation": result["interpretation"],
             "interpretability": result["interpretability"],
             "confidence": result["confidence"],
