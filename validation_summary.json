@@ -1,0 +1,7 @@
+{
+  "dataset_version": "v0.2-core",
+  "n_samples": 718,
+  "pearson_correlation": 0.9981853936236091,
+  "r2_score": 0.9963037863338758,
+  "mae": 0.17640771809835684
+}
