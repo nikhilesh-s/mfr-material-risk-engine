@@ -16,6 +16,36 @@ from .utils import clean_fire_properties
 DATASET_VERSION = "v0.2-core"
 
 
+def inspect_model_schema(model: RandomForestRegressor) -> None:
+    """Print a startup-only schema summary inferred from trained model features."""
+    feature_names = (
+        list(model.feature_names_in_) if hasattr(model, "feature_names_in_") else []
+    )
+    categorical_features = [
+        name
+        for name in feature_names
+        if name.startswith("Material_Name_") or "_type_" in name
+    ]
+    numeric_features = [name for name in feature_names if name not in categorical_features]
+    potential_target_candidates = [
+        name
+        for name in feature_names
+        if any(token in name.lower() for token in ("target", "label", "risk", "score"))
+    ]
+
+    print("-----------------------------------")
+    print("DATASET SCHEMA SUMMARY")
+    print(f"Version: {DATASET_VERSION}")
+    print(f"Total Features: {len(feature_names)}")
+    print(f"Numeric Features: {len(numeric_features)}")
+    print(f"Categorical Features: {len(categorical_features)}")
+    print(f"Potential Target Candidates: {len(potential_target_candidates)}")
+    print("-----------------------------------")
+    print(f"Numeric Preview (first 5): {numeric_features[:5]}")
+    print(f"Categorical Preview (first 5): {categorical_features[:5]}")
+    print(f"Target Candidate Preview (first 5): {potential_target_candidates[:5]}")
+
+
 def train_risk_model(
     df: pd.DataFrame, random_state: int = 42
 ) -> Tuple[RandomForestRegressor, Tuple[pd.DataFrame, pd.Series]]:
