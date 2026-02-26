@@ -33,14 +33,18 @@ Current status:
 - `v0.2-core` remains the frozen default behavior
 - `v0.3-layered` routing scaffold exists as a placeholder
 - Version selection is controlled by `DRAVIX_DATASET_VERSION` (defaults to `v0.2-core`)
+- `v0.2-core` is restorable by commit hash `538893b`
 
 Implementation notes:
 - `src/model.py` routes feature-matrix construction through a version-aware builder
 - `src/feature_builders.py` contains the v0.2 builder and v0.3 placeholder
 - `validation_runner.py` reports the dataset version used and fails cleanly for unimplemented `v0.3-layered`
+- Manual model artifact helpers use versioned paths (`models/model_<dataset_version>.pkl`) to avoid cross-version overwrite
+- Validation summaries are written to `validation_summary_<dataset_version>.json`
+- Model metadata snapshots are written to `metadata/model_metadata_<dataset_version>.json`
 
 ## Validation Results
-Validation is produced by the standalone reproducible pipeline (`validation_runner.py`) and exported to `validation_summary.json`.
+Validation is produced by the standalone reproducible pipeline (`validation_runner.py`) and exported to a versioned summary file (`validation_summary_<dataset_version>.json`).
 
 Latest frozen metrics (`v0.2-core`):
 - `n_samples`: `718`
@@ -71,15 +75,41 @@ Run the standalone validation pipeline:
 python validation_runner.py
 ```
 
+Run optional deterministic K-fold CV scaffold (default 5 folds shown explicitly):
+
+```bash
+python validation_runner.py --cv --folds 5
+```
+
 What it does:
 - Loads the same dataset used by the backend model startup
 - Reuses the current model-loading path
 - Generates predictions against ground-truth `risk_score`
 - Computes Pearson correlation, R², and MAE
-- Writes `validation_summary.json`
+- Optionally runs deterministic K-fold CV and exports summary statistics
+- Writes `validation_summary_<dataset_version>.json`
+- Writes `metadata/model_metadata_<dataset_version>.json`
 
 Generated artifact:
-- `validation_summary.json` (indented JSON for versioned validation reporting)
+- `validation_summary_<dataset_version>.json` (indented JSON summary)
+- `metadata/model_metadata_<dataset_version>.json` (model + environment snapshot metadata)
+
+Determinism regression test (local by default, optional live via `API_BASE_URL`):
+
+```bash
+python regression_test_predict.py
+API_BASE_URL=https://your-service.onrender.com python regression_test_predict.py
+```
+
+Feature builder/version-routing test scaffold:
+
+```bash
+pip install -r requirements-dev.txt
+pytest tests/test_version_routing.py
+```
+
+Phase 3 intake protocol:
+- `docs/phase3_dataset_intake_checklist.md`
 
 ## API Contract Stability
 Phase 2 engineering freeze preserves the existing `/predict` response contract and rounding behavior.

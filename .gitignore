@@ -17,3 +17,6 @@ ui/src/mfr-materials-risk-engine-bolt-ui/.env
 __pycache__/
 **/__pycache__/
 *.py[cod]
+validation_summary_*.json
+metadata/model_metadata_*.json
+models/model_*.pkl

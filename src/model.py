@@ -2,7 +2,13 @@
 
 from __future__ import annotations
 
+import json
 import os
+import pickle
+import subprocess
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
 from typing import Dict, Tuple
 
 import numpy as np
@@ -34,6 +40,63 @@ def build_feature_matrix(dataframe: pd.DataFrame) -> pd.DataFrame:
         f"Unknown DATASET_VERSION: {DATASET_VERSION}. "
         f"Supported: {', '.join(SUPPORTED_DATASET_VERSIONS)}"
     )
+
+
+def get_model_artifact_path(version: str) -> str:
+    """Return the versioned model artifact path used for manual persistence flows."""
+    return str(Path("models") / f"model_{version}.pkl")
+
+
+def save_model_artifact(
+    model: RandomForestRegressor, version: str | None = None
+) -> str:
+    """Persist a trained model artifact for manual workflows (never called at API startup)."""
+    version_tag = version or DATASET_VERSION
+    path = Path(get_model_artifact_path(version_tag))
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("wb") as fh:
+        pickle.dump(model, fh)
+    return str(path)
+
+
+def _best_effort_git_commit_hash() -> str:
+    """Return the current git commit hash when available, otherwise 'unknown'."""
+    try:
+        commit_hash = subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            stderr=subprocess.DEVNULL,
+            text=True,
+        ).strip()
+        return commit_hash or "unknown"
+    except Exception:
+        return "unknown"
+
+
+def export_model_metadata(
+    model: RandomForestRegressor,
+    n_samples: int,
+    version: str | None = None,
+) -> str:
+    """Export informational model metadata for validation/manual training workflows."""
+    version_tag = version or DATASET_VERSION
+    feature_names = (
+        list(model.feature_names_in_) if hasattr(model, "feature_names_in_") else []
+    )
+    metadata = {
+        "dataset_version": version_tag,
+        "n_samples": int(n_samples),
+        "feature_count": int(len(feature_names)),
+        "feature_names": feature_names,
+        "model_type": type(model).__name__,
+        "python_version": sys.version,
+        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "git_commit_hash": _best_effort_git_commit_hash(),
+    }
+    output_path = Path("metadata") / f"model_metadata_{version_tag}.json"
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with output_path.open("w", encoding="utf-8") as fh:
+        json.dump(metadata, fh, indent=2)
+    return str(output_path)
 
 
 def inspect_model_schema(model: RandomForestRegressor) -> None:
