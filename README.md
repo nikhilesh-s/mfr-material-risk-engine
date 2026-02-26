@@ -23,8 +23,21 @@ Frozen dataset version tag:
 - `v0.2-core`
 
 Code references:
-- `src/model.py` defines `DATASET_VERSION = "v0.2-core"`
+- `src/model.py` defaults `DATASET_VERSION` to `v0.2-core`
 - `/predict` returns `dataset.version` for traceability
+
+## Dataset Versioning Architecture
+The repository now includes a versioned feature-construction scaffold for Phase 3 evolution without changing Phase 2 behavior.
+
+Current status:
+- `v0.2-core` remains the frozen default behavior
+- `v0.3-layered` routing scaffold exists as a placeholder
+- Version selection is controlled by `DRAVIX_DATASET_VERSION` (defaults to `v0.2-core`)
+
+Implementation notes:
+- `src/model.py` routes feature-matrix construction through a version-aware builder
+- `src/feature_builders.py` contains the v0.2 builder and v0.3 placeholder
+- `validation_runner.py` reports the dataset version used and fails cleanly for unimplemented `v0.3-layered`
 
 ## Validation Results
 Validation is produced by the standalone reproducible pipeline (`validation_runner.py`) and exported to `validation_summary.json`.

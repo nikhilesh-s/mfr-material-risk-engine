@@ -9,7 +9,7 @@ import numpy as np
 from sklearn.metrics import mean_absolute_error, r2_score
 
 from api.main import RAW_DATA_PATH, app, load_model
-from src.model import DATASET_VERSION
+from src.model import DATASET_VERSION, SUPPORTED_DATASET_VERSIONS
 from src.utils import clean_fire_properties
 
 
@@ -18,11 +18,25 @@ OUTPUT_PATH = Path("validation_summary.json")
 
 def main() -> None:
     """Run deterministic validation and export summary metrics."""
+    print(f"Dataset version: {DATASET_VERSION}")
+    if DATASET_VERSION not in SUPPORTED_DATASET_VERSIONS:
+        raise ValueError(
+            f"Unknown DATASET_VERSION: {DATASET_VERSION}. "
+            f"Supported: {', '.join(SUPPORTED_DATASET_VERSIONS)}"
+        )
     if not RAW_DATA_PATH.exists():
         raise FileNotFoundError(f"Missing dataset at {RAW_DATA_PATH}")
 
     # Reuse the application's model-loading path so validation matches runtime model setup.
-    load_model()
+    try:
+        load_model()
+    except NotImplementedError as exc:
+        if DATASET_VERSION == "v0.3-layered":
+            raise RuntimeError(
+                "Validation for DRAVIX_DATASET_VERSION=v0.3-layered is not available yet: "
+                "feature builder scaffold exists but is not implemented."
+            ) from exc
+        raise
     model = app.state.model
     raw_df = app.state.raw_df
 

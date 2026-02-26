@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from typing import Dict, Tuple
 
 import numpy as np
@@ -11,10 +12,28 @@ from sklearn.model_selection import train_test_split
 from treeinterpreter import treeinterpreter as ti
 
 from .features import FEATURE_COLUMNS, add_derived_features, prepare_feature_frame
+from .feature_builders import build_features_v02, build_features_v03
 from .utils import clean_fire_properties
 
-DATASET_VERSION = "v0.2-core"
+SUPPORTED_DATASET_VERSIONS = [
+    "v0.2-core",
+    "v0.3-layered",
+]
+
+DATASET_VERSION = os.getenv("DRAVIX_DATASET_VERSION", "v0.2-core")
 _DIAGNOSTIC_FEATURE_NAMES: set[str] = set()
+
+
+def build_feature_matrix(dataframe: pd.DataFrame) -> pd.DataFrame:
+    """Return a version-aware feature matrix without changing prediction targets."""
+    if DATASET_VERSION == "v0.2-core":
+        return build_features_v02(dataframe)
+    if DATASET_VERSION == "v0.3-layered":
+        return build_features_v03(dataframe)
+    raise ValueError(
+        f"Unknown DATASET_VERSION: {DATASET_VERSION}. "
+        f"Supported: {', '.join(SUPPORTED_DATASET_VERSIONS)}"
+    )
 
 
 def inspect_model_schema(model: RandomForestRegressor) -> None:
@@ -224,8 +243,8 @@ def train_risk_score_model(
     if "risk_score" not in cleaned.columns:
         raise ValueError("risk_score is missing from the cleaned dataset.")
 
-    feature_cols = [col for col in cleaned.columns if col != "risk_score"]
-    X = cleaned[feature_cols]
+    X = build_feature_matrix(cleaned)
+    feature_cols = list(X.columns)
     y = cleaned["risk_score"]
 
     X_train, X_test, y_train, y_test = train_test_split(
@@ -254,8 +273,7 @@ def train_model(
 ) -> Tuple[RandomForestRegressor, Dict[str, float]]:
     """Train the proxy risk score model and return the fitted model with metrics."""
     if "risk_score" in df.columns:
-        feature_cols = [col for col in df.columns if col != "risk_score"]
-        X = df[feature_cols]
+        X = build_feature_matrix(df)
         y = df["risk_score"]
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=0.2, random_state=random_state
