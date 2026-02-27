@@ -8,7 +8,8 @@ import numpy as np
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, model_validator
 
 from src.phase3_coating_modifier import get_coating_modifier
 from src.phase3_inference import (
@@ -23,27 +24,65 @@ from src.model import (
     PHASE3_REFERENCE_PATH,
     compute_confidence,
     compute_training_variance_stats,
+    get_material_descriptors,
+    get_material_names,
+    initialize_dataset_metadata,
+    inspect_model_schema,
+    load_material_lookup,
 )
+
+ADMIN_EMAIL = "admin@dravix.ai"
+ADMIN_PASSWORD = "Q9v$2mL!7xK@4pR#8tN^6dH"
+MOCK_SESSION_TOKEN = "mock-session-token"
 
 
 class Phase3Input(BaseModel):
     """Descriptor input schema for Phase 3 resistance prediction."""
 
-    Density_g_cc: float
-    Melting_Point_C: float
-    Specific_Heat_J_g_C: float
-    Thermal_Cond_W_mK: float
-    CTE_um_m_C: float
-    Flash_Point_C: float
-    Autoignition_Temp_C: float
-    UL94_Flammability: float
-    Limiting_Oxygen_Index_pct: float
-    Smoke_Density_Ds: float
-    Char_Yield_pct: float
-    Decomp_Temp_C: float
-    Heat_of_Combustion_MJ_kg: float
-    Flame_Spread_Index: float
+    Density_g_cc: Optional[float] = None
+    Melting_Point_C: Optional[float] = None
+    Specific_Heat_J_g_C: Optional[float] = None
+    Thermal_Cond_W_mK: Optional[float] = None
+    CTE_um_m_C: Optional[float] = None
+    Flash_Point_C: Optional[float] = None
+    Autoignition_Temp_C: Optional[float] = None
+    UL94_Flammability: Optional[float] = None
+    Limiting_Oxygen_Index_pct: Optional[float] = None
+    Smoke_Density_Ds: Optional[float] = None
+    Char_Yield_pct: Optional[float] = None
+    Decomp_Temp_C: Optional[float] = None
+    Heat_of_Combustion_MJ_kg: Optional[float] = None
+    Flame_Spread_Index: Optional[float] = None
+    material_name: Optional[str] = None
     coating_code: Optional[str] = None
+
+    @model_validator(mode="after")
+    def validate_input_mode(self) -> "Phase3Input":
+        if self.material_name is not None and self.material_name.strip():
+            return self
+
+        numeric_fields = [
+            "Density_g_cc",
+            "Melting_Point_C",
+            "Specific_Heat_J_g_C",
+            "Thermal_Cond_W_mK",
+            "CTE_um_m_C",
+            "Flash_Point_C",
+            "Autoignition_Temp_C",
+            "UL94_Flammability",
+            "Limiting_Oxygen_Index_pct",
+            "Smoke_Density_Ds",
+            "Char_Yield_pct",
+            "Decomp_Temp_C",
+            "Heat_of_Combustion_MJ_kg",
+            "Flame_Spread_Index",
+        ]
+        missing = [name for name in numeric_fields if getattr(self, name) is None]
+        if missing:
+            raise ValueError(
+                "All numeric descriptor fields are required when material_name is not provided."
+            )
+        return self
 
 
 class DatasetOutput(BaseModel):
@@ -61,6 +100,10 @@ class ConfidenceOutput(BaseModel):
     label: str
 
 
+class MaterialsOutput(BaseModel):
+    materials: list[str]
+
+
 class Phase3PredictResponse(BaseModel):
     resistanceScore: float
     effectiveResistance: float
@@ -68,6 +111,15 @@ class Phase3PredictResponse(BaseModel):
     dataset: DatasetOutput
     interpretability: InterpretabilityOutput
     confidence: ConfidenceOutput
+
+
+class LoginInput(BaseModel):
+    email: str
+    password: str
+
+
+class LoginResponse(BaseModel):
+    token: str
 
 
 app = FastAPI(
@@ -91,27 +143,31 @@ def _stable_float(value: float, digits: int = 12) -> float:
     return float(round(float(value), digits))
 
 
-def _payload_dict(payload: Phase3Input) -> dict[str, Any]:
+def _manual_payload_dict(payload: Phase3Input) -> dict[str, Any]:
     if hasattr(payload, "model_dump"):
         raw = payload.model_dump(exclude_none=True)
     else:
         raw = payload.dict(exclude_none=True)
+    source_to_feature = {
+        "Density_g_cc": "Density (g/cc)",
+        "Melting_Point_C": "Melting Point (°C)",
+        "Specific_Heat_J_g_C": "Specific Heat (J/g-°C)",
+        "Thermal_Cond_W_mK": "Thermal Cond. (W/m-K)",
+        "CTE_um_m_C": "CTE (µm/m-°C)",
+        "Flash_Point_C": "Flash Point (°C)",
+        "Autoignition_Temp_C": "Autoignition Temp (°C)",
+        "UL94_Flammability": "UL94 Flammability",
+        "Limiting_Oxygen_Index_pct": "Limiting Oxygen Index (%)",
+        "Smoke_Density_Ds": "Smoke Density (Ds)",
+        "Char_Yield_pct": "Char Yield (%)",
+        "Decomp_Temp_C": "Decomp. Temp (°C)",
+        "Heat_of_Combustion_MJ_kg": "Heat of Combustion (MJ/kg)",
+        "Flame_Spread_Index": "Flame Spread Index",
+    }
     return {
-        "Density (g/cc)": raw["Density_g_cc"],
-        "Melting Point (°C)": raw["Melting_Point_C"],
-        "Specific Heat (J/g-°C)": raw["Specific_Heat_J_g_C"],
-        "Thermal Cond. (W/m-K)": raw["Thermal_Cond_W_mK"],
-        "CTE (µm/m-°C)": raw["CTE_um_m_C"],
-        "Flash Point (°C)": raw["Flash_Point_C"],
-        "Autoignition Temp (°C)": raw["Autoignition_Temp_C"],
-        "UL94 Flammability": raw["UL94_Flammability"],
-        "Limiting Oxygen Index (%)": raw["Limiting_Oxygen_Index_pct"],
-        "Smoke Density (Ds)": raw["Smoke_Density_Ds"],
-        "Char Yield (%)": raw["Char_Yield_pct"],
-        "Decomp. Temp (°C)": raw["Decomp_Temp_C"],
-        "Heat of Combustion (MJ/kg)": raw["Heat_of_Combustion_MJ_kg"],
-        "Flame Spread Index": raw["Flame_Spread_Index"],
-        "coating_code": raw.get("coating_code"),
+        feature_name: raw[source_name]
+        for source_name, feature_name in source_to_feature.items()
+        if source_name in raw
     }
 
 
@@ -166,17 +222,16 @@ def load_phase3_runtime() -> None:
         feature_names=feature_names,
         bounds=bounds,
     )
+    load_material_lookup()
+    schema_info = inspect_model_schema(model, reference_df=raw_reference)
+    metadata = initialize_dataset_metadata(model, schema_info=schema_info)
     variance_stats = compute_training_variance_stats(model, reference_feature_frame)
 
     app.state.model = model
     app.state.feature_names = feature_names
     app.state.training_variance_mean = variance_stats["training_variance_mean"]
     app.state.training_variance_std = variance_stats["training_variance_std"]
-
-    print("=== PHASE 3 STARTUP CHECK ===")
-    print("Dataset version:", DATASET_VERSION)
-    print("Reference dataset path:", PHASE3_REFERENCE_PATH)
-    print("Model loaded successfully")
+    app.state.dataset_metadata = metadata
 
 
 @app.get("/health")
@@ -193,13 +248,36 @@ def version() -> Dict[str, str]:
     }
 
 
+@app.get("/materials", response_model=MaterialsOutput)
+def materials() -> Dict[str, list[str]]:
+    return {"materials": get_material_names()}
+
+
+@app.post("/login", response_model=LoginResponse)
+def login(credentials: LoginInput) -> Dict[str, str]:
+    if credentials.email != ADMIN_EMAIL or credentials.password != ADMIN_PASSWORD:
+        raise HTTPException(status_code=401, detail={"error": "Invalid credentials"})
+    return {"token": MOCK_SESSION_TOKEN}
+
+
 @app.post("/predict", response_model=Phase3PredictResponse)
 def predict(input: Phase3Input) -> Dict[str, Any]:
     if not hasattr(app.state, "model"):
         raise HTTPException(status_code=500, detail="Model runtime is not initialized.")
 
-    payload_data = _payload_dict(input)
-    coating_code = payload_data.pop("coating_code", None)
+    coating_code = input.coating_code
+    if input.material_name is not None and input.material_name.strip():
+        payload_data = get_material_descriptors(
+            input.material_name,
+            feature_names=list(app.state.feature_names),
+        )
+        if payload_data is None:
+            return JSONResponse(
+                status_code=404,
+                content={"error": "Material not found in database"},
+            )
+    else:
+        payload_data = _manual_payload_dict(input)
 
     base_result = predict_material_resistance(payload_data)
     base_resistance = float(base_result["resistance_score"])
