@@ -1,4 +1,5 @@
 import type {
+  CoatingsInfo,
   HealthInfo,
   MaterialsInfo,
   PredictionRequest,
@@ -83,6 +84,10 @@ export function getVersion(): Promise<VersionInfo> {
 
 export function getMaterials(): Promise<MaterialsInfo> {
   return requestJson<MaterialsInfo>('/materials');
+}
+
+export function getCoatings(): Promise<CoatingsInfo> {
+  return requestJson<CoatingsInfo>('/coatings');
 }
 
 export function predict(payload: PredictionRequest): Promise<PredictionResponse> {

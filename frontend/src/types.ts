@@ -80,6 +80,10 @@ export interface MaterialsInfo {
   materials: string[];
 }
 
+export interface CoatingsInfo {
+  coatings: string[];
+}
+
 export interface ApiErrorDetail {
   loc?: Array<string | number>;
   msg?: string;

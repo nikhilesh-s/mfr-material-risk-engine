@@ -22,6 +22,11 @@ MATERIALS_LOOKUP_PATH = repo_path(
     "phase3_model",
     "materials_phase3_ready.csv",
 )
+COATINGS_LOOKUP_PATH = repo_path(
+    "data",
+    "phase3_clean",
+    "coatings_clean.csv",
+)
 
 DATASET_VERSION = "v0.3-stable"
 MODEL_VERSION = DATASET_VERSION
@@ -36,6 +41,8 @@ MODEL_ARTIFACT_PATH = repo_path("models", "model_v0.3-stable.pkl")
 
 material_lookup: dict[str, dict[str, Any]] = {}
 material_display_names: dict[str, str] = {}
+coating_lookup: dict[str, dict[str, Any]] = {}
+coating_display_names: dict[str, str] = {}
 dataset_metadata: dict[str, Any] = {
     "version": DATASET_VERSION,
     "feature_count": 0,
@@ -76,6 +83,11 @@ def load_phase3_model(model_path: Path | None = None) -> Any:
 def normalize_material_name(material_name: str) -> str:
     """Normalize incoming material names for deterministic lookup keys."""
     return material_name.strip().lower()
+
+
+def normalize_coating_code(coating_code: str) -> str:
+    """Normalize incoming coating codes for deterministic lookup keys."""
+    return coating_code.strip().lower()
 
 
 def _to_native_value(value: Any) -> Any:
@@ -124,6 +136,46 @@ def load_material_lookup(path: Path | None = None) -> dict[str, dict[str, Any]]:
 def get_material_names() -> list[str]:
     """Return sorted material names available in the loaded lookup."""
     return sorted(material_display_names.values())
+
+
+def load_coating_lookup(path: Path | None = None) -> dict[str, dict[str, Any]]:
+    """Load and cache coating descriptor lookup from Phase 3 coatings dataset."""
+    csv_path = path or COATINGS_LOOKUP_PATH
+    if not csv_path.exists():
+        raise FileNotFoundError(f"Missing coatings lookup dataset: {csv_path}")
+
+    df = pd.read_csv(csv_path, low_memory=False)
+    if "Coating_Code" not in df.columns:
+        raise ValueError("coatings lookup dataset must contain 'Coating_Code' column.")
+
+    lookup: dict[str, dict[str, Any]] = {}
+    display_names: dict[str, str] = {}
+    for _, row in df.iterrows():
+        raw_code = row.get("Coating_Code")
+        if pd.isna(raw_code):
+            continue
+
+        normalized_code = normalize_coating_code(str(raw_code))
+        if not normalized_code:
+            continue
+        if normalized_code in lookup:
+            # Keep first occurrence for deterministic behavior.
+            continue
+
+        row_dict = {column: _to_native_value(value) for column, value in row.items()}
+        lookup[normalized_code] = row_dict
+        display_names[normalized_code] = str(raw_code).strip()
+
+    global coating_lookup
+    global coating_display_names
+    coating_lookup = lookup
+    coating_display_names = display_names
+    return coating_lookup
+
+
+def get_coating_names() -> list[str]:
+    """Return sorted coating codes available in the loaded lookup."""
+    return sorted(coating_display_names.values())
 
 
 def get_material_descriptors(

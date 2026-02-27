@@ -13,6 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from src.api_contract import (
+    CoatingsOutput,
     LoginInput,
     LoginResponse,
     MaterialsOutput,
@@ -35,10 +36,12 @@ from src.model import (
     compute_confidence,
     compute_feature_interpretability,
     compute_training_variance_stats,
+    get_coating_names,
     get_material_descriptors,
     get_material_names,
     initialize_dataset_metadata,
     inspect_model_schema,
+    load_coating_lookup,
     load_material_lookup,
 )
 
@@ -193,6 +196,7 @@ def load_phase3_runtime() -> None:
         bounds=bounds,
     )
     load_material_lookup()
+    load_coating_lookup()
     variance_stats = compute_training_variance_stats(model, reference_feature_frame)
     schema_info = inspect_model_schema(model, reference_df=raw_reference)
     metadata = initialize_dataset_metadata(
@@ -240,6 +244,11 @@ def version() -> Dict[str, str]:
 @app.get("/materials", response_model=MaterialsOutput)
 def materials() -> Dict[str, list[str]]:
     return {"materials": get_material_names()}
+
+
+@app.get("/coatings", response_model=CoatingsOutput)
+def coatings() -> Dict[str, list[str]]:
+    return {"coatings": get_coating_names()}
 
 
 @app.post("/login", response_model=LoginResponse)

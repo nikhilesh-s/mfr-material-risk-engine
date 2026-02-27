@@ -112,6 +112,10 @@ class MaterialsOutput(BaseModel):
     materials: list[str]
 
 
+class CoatingsOutput(BaseModel):
+    coatings: list[str]
+
+
 class Phase3PredictResponse(BaseModel):
     resistanceScore: float
     effectiveResistance: float

@@ -12,7 +12,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import chemistryIcon from './assets/chemistry-svgrepo-com.svg';
 import { demoProfiles } from './demoProfiles';
-import { ApiError, getHealth, getMaterials, getVersion, predict } from './lib/api';
+import { ApiError, getCoatings, getHealth, getMaterials, getVersion, predict } from './lib/api';
 import type {
   ApiErrorDetail,
   HealthInfo,
@@ -46,7 +46,7 @@ type FormState = {
 };
 
 const INITIAL_FORM: FormState = {
-  material_name: 'Polyethylene (HDPE)',
+  material_name: '',
   coating_code: '',
   Density_g_cc: '1.25',
   Melting_Point_C: '220',
@@ -169,6 +169,7 @@ function App() {
   const [formData, setFormData] = useState<FormState>(INITIAL_FORM);
 
   const [materials, setMaterials] = useState<string[]>([]);
+  const [coatings, setCoatings] = useState<string[]>([]);
   const [health, setHealth] = useState<HealthInfo | null>(null);
   const [version, setVersion] = useState<VersionInfo | null>(null);
   const [result, setResult] = useState<PredictionResponse | null>(null);
@@ -177,6 +178,8 @@ function App() {
   const [startupMessage, setStartupMessage] = useState<string>('Checking backend health...');
   const [healthWarning, setHealthWarning] = useState<string | null>(null);
   const [healthError, setHealthError] = useState<string | null>(null);
+  const [materialsWarning, setMaterialsWarning] = useState<string | null>(null);
+  const [coatingsWarning, setCoatingsWarning] = useState<string | null>(null);
   const [authenticated, setAuthenticated] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [authError, setAuthError] = useState<string | null>(null);
@@ -201,10 +204,9 @@ function App() {
       setHealthWarning('Health check is taking longer than expected. You can continue and retry.');
     }, 8000);
 
-    const [healthRes, versionRes, materialsRes] = await Promise.allSettled([
+    const [healthRes, versionRes] = await Promise.allSettled([
       getHealth(),
       getVersion(),
-      getMaterials(),
     ]);
     window.clearTimeout(healthSoftTimeoutId);
 
@@ -233,15 +235,45 @@ function App() {
       setVersion(versionRes.value);
     }
 
+    setIsBootstrapping(false);
+  };
+
+  const loadLookupOptions = async () => {
+    const [materialsRes, coatingsRes] = await Promise.allSettled([
+      getMaterials(),
+      getCoatings(),
+    ]);
+
     if (materialsRes.status === 'fulfilled') {
       setMaterials(materialsRes.value.materials ?? []);
+      setMaterialsWarning(null);
+    } else {
+      setMaterials([]);
+      setMaterialsWarning('Material lookup is temporarily unavailable. Manual mode remains available.');
+      setInputMode('manual');
+      setFormData((prev) => ({ ...prev, material_name: '' }));
     }
-    setIsBootstrapping(false);
+
+    if (coatingsRes.status === 'fulfilled') {
+      setCoatings(coatingsRes.value.coatings ?? []);
+      setCoatingsWarning(null);
+    } else {
+      setCoatings([]);
+      setCoatingsWarning('Coating lookup is temporarily unavailable.');
+      setFormData((prev) => ({ ...prev, coating_code: '' }));
+    }
   };
 
   useEffect(() => {
     void refreshSystemState();
   }, []);
+
+  useEffect(() => {
+    if (!authenticated) {
+      return;
+    }
+    void loadLookupOptions();
+  }, [authenticated]);
 
   const handleLogin = () => {
     if (REQUIRED_PASSWORD && passwordInput === REQUIRED_PASSWORD) {
@@ -264,13 +296,10 @@ function App() {
   };
 
   const buildPayloadFromForm = (): PredictionRequest => {
+    const materialName = formData.material_name.trim();
     const coatingCode = formData.coating_code.trim();
 
-    if (inputMode === 'lookup') {
-      const materialName = formData.material_name.trim();
-      if (!materialName) {
-        throw new Error('Please provide a material name for lookup mode.');
-      }
+    if (materialName) {
       return {
         material_name: materialName,
         ...(coatingCode ? { coating_code: coatingCode } : {}),
@@ -359,6 +388,8 @@ function App() {
   const effectiveResistancePercent = toPercent(result?.effectiveResistance);
   const resistanceScorePercent = toPercent(result?.resistanceScore);
   const coatingModifierPercent = result?.coatingModifier == null ? null : result.coatingModifier * 100;
+  const hasMaterialSelection = formData.material_name.trim().length > 0;
+  const showCoatingDropdown = !coatingsWarning;
 
   const topDrivers = result?.interpretability.top_3_drivers ?? [];
   const maxDriverMagnitude = Math.max(
@@ -529,6 +560,18 @@ function App() {
           </div>
         )}
 
+        {materialsWarning && (
+          <div className="mb-4 px-4 py-3 rounded-xl bg-[#FFF2D8] text-[#6B4E00] text-sm">
+            {materialsWarning}
+          </div>
+        )}
+
+        {coatingsWarning && (
+          <div className="mb-4 px-4 py-3 rounded-xl bg-[#FFF2D8] text-[#6B4E00] text-sm">
+            {coatingsWarning}
+          </div>
+        )}
+
         <div className="flex justify-end mb-4 gap-2">
           <button
             onClick={handleLogout}
@@ -673,36 +716,56 @@ function App() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm text-[#232422]/80 mb-2">Material Name</label>
-                    <input
-                      type="text"
+                    <select
                       value={formData.material_name}
-                      onChange={(e) => handleInputChange('material_name', e.target.value)}
-                      placeholder="e.g., Polyethylene (HDPE)"
-                      list="material-options"
-                      className="w-full px-4 py-2 bg-[#F5F1EC] rounded-xl text-sm text-[#232422] focus:outline-none focus:ring-2 focus:ring-[#FFDC6A]"
-                    />
-                    <datalist id="material-options">
+                      onChange={(e) => {
+                        const selectedMaterial = e.target.value;
+                        handleInputChange('material_name', selectedMaterial);
+                        if (selectedMaterial.trim()) {
+                          setInputMode('lookup');
+                        } else {
+                          setInputMode('manual');
+                        }
+                      }}
+                      disabled={materials.length === 0}
+                      className="w-full px-4 py-2 bg-[#F5F1EC] rounded-xl text-sm text-[#232422] focus:outline-none focus:ring-2 focus:ring-[#FFDC6A] disabled:opacity-50"
+                    >
+                      <option value="">Select material</option>
                       {materials.map((material) => (
-                        <option key={material} value={material} />
+                        <option key={material} value={material}>
+                          {material}
+                        </option>
                       ))}
-                    </datalist>
+                    </select>
                   </div>
-                  <div>
-                    <label className="block text-sm text-[#232422]/80 mb-2">Coating Code (Optional)</label>
-                    <input
-                      type="text"
-                      value={formData.coating_code}
-                      onChange={(e) => handleInputChange('coating_code', e.target.value)}
-                      placeholder="e.g., 193-MAT-001"
-                      className="w-full px-4 py-2 bg-[#F5F1EC] rounded-xl text-sm text-[#232422] focus:outline-none focus:ring-2 focus:ring-[#FFDC6A]"
-                    />
-                  </div>
+                  {showCoatingDropdown && (
+                    <div>
+                      <label className="block text-sm text-[#232422]/80 mb-2">Coating Code (Optional)</label>
+                      <select
+                        value={formData.coating_code}
+                        onChange={(e) => handleInputChange('coating_code', e.target.value)}
+                        className="w-full px-4 py-2 bg-[#F5F1EC] rounded-xl text-sm text-[#232422] focus:outline-none focus:ring-2 focus:ring-[#FFDC6A]"
+                      >
+                        <option value="">No coating</option>
+                        {coatings.map((coating) => (
+                          <option key={coating} value={coating}>
+                            {coating}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
               <div className="grid grid-cols-12 gap-6">
-                <div className="col-span-6 bg-[#FEFEFE] rounded-3xl p-8">
+                <div className={`col-span-6 bg-[#FEFEFE] rounded-3xl p-8 ${hasMaterialSelection ? 'opacity-60' : ''}`}>
                   <h2 className="text-2xl font-light text-[#232422] mb-6">Thermal / Fire Behavior</h2>
+                  {hasMaterialSelection && (
+                    <p className="text-xs text-[#232422]/60 mb-4">
+                      Clear material selection in lookup mode to enable manual numeric input.
+                    </p>
+                  )}
                   <div className="space-y-4">
                     {THERMAL_FIELDS.map((field) => (
                       <div key={field.key} className="flex items-center gap-4">
@@ -712,7 +775,8 @@ function App() {
                             type="number"
                             value={formData[field.key]}
                             onChange={(e) => handleInputChange(field.key, e.target.value)}
-                            className="w-32 px-4 py-2 bg-[#F5F1EC] rounded-xl text-sm text-[#232422] text-right focus:outline-none focus:ring-2 focus:ring-[#FFDC6A]"
+                            disabled={hasMaterialSelection}
+                            className="w-32 px-4 py-2 bg-[#F5F1EC] rounded-xl text-sm text-[#232422] text-right focus:outline-none focus:ring-2 focus:ring-[#FFDC6A] disabled:opacity-60"
                           />
                           {field.unit && <span className="text-xs text-[#232422]/50 w-12">{field.unit}</span>}
                         </div>
@@ -721,7 +785,7 @@ function App() {
                   </div>
                 </div>
 
-                <div className="col-span-6 bg-[#FEFEFE] rounded-3xl p-8">
+                <div className={`col-span-6 bg-[#FEFEFE] rounded-3xl p-8 ${hasMaterialSelection ? 'opacity-60' : ''}`}>
                   <h2 className="text-2xl font-light text-[#232422] mb-6">Physical Properties</h2>
                   <div className="space-y-4">
                     {PHYSICAL_FIELDS.map((field) => (
@@ -732,7 +796,8 @@ function App() {
                             type="number"
                             value={formData[field.key]}
                             onChange={(e) => handleInputChange(field.key, e.target.value)}
-                            className="w-32 px-4 py-2 bg-[#F5F1EC] rounded-xl text-sm text-[#232422] text-right focus:outline-none focus:ring-2 focus:ring-[#FFDC6A]"
+                            disabled={hasMaterialSelection}
+                            className="w-32 px-4 py-2 bg-[#F5F1EC] rounded-xl text-sm text-[#232422] text-right focus:outline-none focus:ring-2 focus:ring-[#FFDC6A] disabled:opacity-60"
                           />
                           {field.unit && <span className="text-xs text-[#232422]/50 w-24">{field.unit}</span>}
                         </div>
@@ -740,19 +805,27 @@ function App() {
                     ))}
                   </div>
 
-                  <div className="mt-8 pt-8 border-t border-[#232422]/10">
-                    <h3 className="text-lg font-light text-[#232422] mb-4">Optional Coating</h3>
-                    <div className="flex items-center gap-4">
-                      <label className="flex-1 text-sm text-[#232422]/80">Coating Code</label>
-                      <input
-                        type="text"
-                        value={formData.coating_code}
-                        onChange={(e) => handleInputChange('coating_code', e.target.value)}
-                        className="w-40 px-4 py-2 bg-[#F5F1EC] rounded-xl text-sm text-[#232422] text-right focus:outline-none focus:ring-2 focus:ring-[#FFDC6A]"
-                      />
+                  {showCoatingDropdown && (
+                    <div className="mt-8 pt-8 border-t border-[#232422]/10">
+                      <h3 className="text-lg font-light text-[#232422] mb-4">Optional Coating</h3>
+                      <div className="flex items-center gap-4">
+                        <label className="flex-1 text-sm text-[#232422]/80">Coating Code</label>
+                        <select
+                          value={formData.coating_code}
+                          onChange={(e) => handleInputChange('coating_code', e.target.value)}
+                          className="w-52 px-4 py-2 bg-[#F5F1EC] rounded-xl text-sm text-[#232422] text-right focus:outline-none focus:ring-2 focus:ring-[#FFDC6A]"
+                        >
+                          <option value="">No coating</option>
+                          {coatings.map((coating) => (
+                            <option key={coating} value={coating}>
+                              {coating}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <p className="text-xs text-[#232422]/50 mt-2">Leave empty for base material analysis only</p>
                     </div>
-                    <p className="text-xs text-[#232422]/50 mt-2">Leave empty for base material analysis only</p>
-                  </div>
+                  )}
                 </div>
               </div>
             )}
@@ -779,7 +852,7 @@ function App() {
                 <div>
                   <h3 className="text-xl font-light text-[#FEFEFE] mb-2">Ready to Analyze</h3>
                   <p className="text-sm text-[#FEFEFE]/60">
-                    {inputMode === 'lookup'
+                    {hasMaterialSelection
                       ? 'Lookup material and optional coating, then run'
                       : 'Manual descriptors entered, then run'}
                   </p>
