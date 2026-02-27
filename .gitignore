@@ -20,3 +20,4 @@ __pycache__/
 validation_summary_*.json
 metadata/model_metadata_*.json
 models/model_*.pkl
+!models/model_v0.3-stable.pkl

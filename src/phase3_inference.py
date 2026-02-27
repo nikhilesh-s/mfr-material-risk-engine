@@ -12,7 +12,7 @@ import pandas as pd
 
 from .model import DATASET_VERSION
 
-MODEL_PATH = Path("models/model_v0.3-alpha.pkl")
+MODEL_PATH = Path("models/model_v0.3-stable.pkl")
 BOUNDS_SOURCE_PATH = Path("data/phase3_model/materials_phase3_ready.csv")
 MODEL_VERSION = DATASET_VERSION
 

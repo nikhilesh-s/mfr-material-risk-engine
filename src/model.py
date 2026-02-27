@@ -18,7 +18,7 @@ SUPPORTED_DATASET_VERSIONS = [
     "v0.3-stable",
 ]
 
-MODEL_ARTIFACT_PATH = Path("models/model_v0.3-alpha.pkl")
+MODEL_ARTIFACT_PATH = Path("models/model_v0.3-stable.pkl")
 
 
 def get_model_artifact_path(version: str) -> str:
