@@ -161,7 +161,10 @@ function App() {
   const [version, setVersion] = useState<VersionInfo | null>(null);
   const [result, setResult] = useState<PredictionResponse | null>(null);
   const [isBootstrapping, setIsBootstrapping] = useState(true);
+  const [showInitializing, setShowInitializing] = useState(true);
   const [startupMessage, setStartupMessage] = useState<string>('Checking backend health...');
+  const [healthWarning, setHealthWarning] = useState<string | null>(null);
+  const [healthError, setHealthError] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -170,21 +173,46 @@ function App() {
 
   const refreshSystemState = async () => {
     setIsBootstrapping(true);
+    setShowInitializing(true);
     setStartupMessage('Checking backend health...');
+    setHealthWarning(null);
+    setHealthError(null);
+
+    let healthSoftTimedOut = false;
+    const healthSoftTimeoutId = window.setTimeout(() => {
+      healthSoftTimedOut = true;
+      setIsBootstrapping(false);
+      setShowInitializing(false);
+      setHealthWarning('Health check is taking longer than expected. You can continue and retry.');
+    }, 8000);
+
     const [healthRes, versionRes, materialsRes] = await Promise.allSettled([
       getHealth(),
       getVersion(),
       getMaterials(),
     ]);
+    window.clearTimeout(healthSoftTimeoutId);
 
     if (healthRes.status === 'fulfilled') {
-      setHealth(healthRes.value);
-      if (healthRes.value.status !== 'ok' || !healthRes.value.model_loaded) {
+      const data = healthRes.value;
+      if (import.meta.env.DEV) console.log('Health response:', data);
+      setHealth(data);
+      if (!data || data.status !== 'ok') {
+        setShowInitializing(true);
         setStartupMessage('System initializing');
+        setHealthError('Health check returned non-ready status.');
+      } else {
+        setShowInitializing(false);
+        setHealthError(null);
+        setHealthWarning(null);
       }
     } else {
       setHealth(null);
-      setStartupMessage('System initializing');
+      setHealthError('Unable to reach backend health endpoint. Please retry.');
+      setStartupMessage('Health check failed.');
+      if (!healthSoftTimedOut) {
+        setShowInitializing(true);
+      }
     }
 
     if (versionRes.status === 'fulfilled') {
@@ -327,9 +355,7 @@ function App() {
       .sort((a, b) => b.absMagnitude - a.absMagnitude);
   }, [result]);
 
-  const systemReady = health?.status === 'ok' && health.model_loaded;
-
-  if (isBootstrapping || !systemReady) {
+  if ((isBootstrapping && showInitializing) || showInitializing) {
     return (
       <div className="min-h-screen bg-[#F5F1EC] flex items-center justify-center p-8">
         <div className="max-w-xl w-full bg-[#FEFEFE] rounded-3xl shadow-sm p-10 text-center">
@@ -338,6 +364,9 @@ function App() {
           <p className="text-[#232422]/60 mt-3">
             {startupMessage}
           </p>
+          {healthError && (
+            <p className="text-sm text-[#7F1D1D] mt-3">{healthError}</p>
+          )}
           <p className="text-sm text-[#232422]/50 mt-4">
             Dataset: {health?.dataset_version ?? version?.dataset_version ?? 'unknown'}
           </p>
@@ -403,6 +432,26 @@ function App() {
       </aside>
 
       <main className="flex-1 p-8">
+        {healthWarning && (
+          <div className="mb-4 px-4 py-3 rounded-xl bg-[#FFF2D8] text-[#6B4E00] text-sm flex items-center justify-between">
+            <span>{healthWarning}</span>
+            <button
+              onClick={() => {
+                void refreshSystemState();
+              }}
+              className="ml-4 px-3 py-1 bg-[#232422] text-[#FEFEFE] rounded-full text-xs hover:opacity-90 transition-opacity"
+            >
+              Retry health check
+            </button>
+          </div>
+        )}
+
+        {healthError && !showInitializing && (
+          <div className="mb-4 px-4 py-3 rounded-xl bg-[#FDE7E7] text-[#7F1D1D] text-sm">
+            {healthError}
+          </div>
+        )}
+
         <div className="flex justify-end mb-4 gap-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs bg-[#232422] text-[#FEFEFE]">
             Phase 3 – Research Build
