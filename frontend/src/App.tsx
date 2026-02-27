@@ -74,7 +74,9 @@ const PHYSICAL_FIELDS: Array<{ label: string; key: keyof FormState; unit: string
   { label: 'UL94 Flammability Rating', key: 'UL94_Flammability', unit: '' },
 ];
 
-const REQUIRED_NUMERIC_KEYS: Array<keyof ManualPredictionPayload> = [
+type ManualNumericKey = Exclude<keyof ManualPredictionPayload, 'coating_code'>;
+
+const REQUIRED_NUMERIC_KEYS: Array<ManualNumericKey> = [
   'Density_g_cc',
   'Melting_Point_C',
   'Specific_Heat_J_g_C',
@@ -103,7 +105,7 @@ function toPercent(value: number | null | undefined): number {
 }
 
 function prettyFeatureName(raw: string): string {
-  return raw.replaceAll('_', ' ');
+  return raw.split('_').join(' ');
 }
 
 function parse422Message(payload: unknown): string {
@@ -158,40 +160,60 @@ function App() {
   const [health, setHealth] = useState<HealthInfo | null>(null);
   const [version, setVersion] = useState<VersionInfo | null>(null);
   const [result, setResult] = useState<PredictionResponse | null>(null);
+  const [isBootstrapping, setIsBootstrapping] = useState(true);
+  const [startupMessage, setStartupMessage] = useState<string>('Checking backend health...');
 
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [interpretabilityNotice, setInterpretabilityNotice] = useState<string | null>(null);
   const [lastSubmissionSummary, setLastSubmissionSummary] = useState<string>('No prediction yet');
 
-  useEffect(() => {
-    let cancelled = false;
-    async function loadSystemState() {
-      const [healthRes, versionRes, materialsRes] = await Promise.allSettled([
-        getHealth(),
-        getVersion(),
-        getMaterials(),
-      ]);
+  const devLog = (...args: unknown[]) => {
+    if (import.meta.env.DEV) {
+      console.log(...args);
+    }
+  };
 
-      if (cancelled) {
-        return;
-      }
+  const refreshSystemState = async () => {
+    setIsBootstrapping(true);
+    setStartupMessage('Checking backend health...');
+    const [healthRes, versionRes, materialsRes] = await Promise.allSettled([
+      getHealth(),
+      getVersion(),
+      getMaterials(),
+    ]);
 
-      if (healthRes.status === 'fulfilled') {
-        setHealth(healthRes.value);
+    if (healthRes.status === 'fulfilled') {
+      setHealth(healthRes.value);
+      if (healthRes.value.status !== 'ok' || !healthRes.value.model_loaded) {
+        setStartupMessage('System initializing');
       }
-      if (versionRes.status === 'fulfilled') {
-        setVersion(versionRes.value);
-      }
-      if (materialsRes.status === 'fulfilled') {
-        setMaterials(materialsRes.value.materials ?? []);
-      }
+      devLog('health', healthRes.value);
+    } else {
+      setHealth(null);
+      setStartupMessage('System initializing');
+      devLog('health error', healthRes.reason);
     }
 
-    void loadSystemState();
-    return () => {
-      cancelled = true;
-    };
+    if (versionRes.status === 'fulfilled') {
+      setVersion(versionRes.value);
+      devLog('version', versionRes.value);
+    } else {
+      devLog('version error', versionRes.reason);
+    }
+
+    if (materialsRes.status === 'fulfilled') {
+      setMaterials(materialsRes.value.materials ?? []);
+      devLog('materials loaded', materialsRes.value.materials?.length ?? 0);
+    } else {
+      devLog('materials error', materialsRes.reason);
+    }
+    setIsBootstrapping(false);
+  };
+
+  useEffect(() => {
+    void refreshSystemState();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleInputChange = (key: keyof FormState, value: string) => {
@@ -213,7 +235,7 @@ function App() {
     }
 
     const missing: string[] = [];
-    const payload: Partial<ManualPredictionPayload> = {};
+    const payload: Partial<Record<ManualNumericKey, number>> = {};
 
     for (const key of REQUIRED_NUMERIC_KEYS) {
       const parsed = Number.parseFloat(formData[key]);
@@ -262,7 +284,9 @@ function App() {
       }
     } catch (error) {
       if (error instanceof ApiError) {
-        if (error.status === 404) {
+        if (error.code === 'TIMEOUT' || error.status === 408) {
+          setErrorMessage('Backend timeout — retry');
+        } else if (error.status === 404) {
           setErrorMessage('Material not found in database');
         } else if (error.status === 422) {
           setErrorMessage(parse422Message(error.payload));
@@ -318,6 +342,35 @@ function App() {
       .sort((a, b) => b.absMagnitude - a.absMagnitude);
   }, [result]);
 
+  const systemReady = health?.status === 'ok' && health.model_loaded;
+
+  if (isBootstrapping || !systemReady) {
+    return (
+      <div className="min-h-screen bg-[#F5F1EC] flex items-center justify-center p-8">
+        <div className="max-w-xl w-full bg-[#FEFEFE] rounded-3xl shadow-sm p-10 text-center">
+          <div className="w-14 h-14 mx-auto rounded-full border-4 border-[#FFDC6A] border-t-transparent animate-spin" />
+          <h1 className="text-3xl font-light text-[#232422] mt-6">System initializing</h1>
+          <p className="text-[#232422]/60 mt-3">
+            {startupMessage}
+          </p>
+          <p className="text-sm text-[#232422]/50 mt-4">
+            Dataset: {health?.dataset_version ?? version?.dataset_version ?? 'unknown'}
+          </p>
+          {!isBootstrapping && (
+            <button
+              onClick={() => {
+                void refreshSystemState();
+              }}
+              className="mt-6 px-6 py-2 bg-[#232422] text-[#FEFEFE] rounded-full text-sm hover:opacity-90 transition-opacity"
+            >
+              Retry health check
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#F5F1EC] flex">
       <aside className="w-20 bg-[#FEFEFE] flex flex-col items-center py-8 gap-8 rounded-r-3xl shadow-sm">
@@ -365,7 +418,10 @@ function App() {
       </aside>
 
       <main className="flex-1 p-8">
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-end mb-4 gap-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs bg-[#232422] text-[#FEFEFE]">
+            Phase 3 – Research Build
+          </div>
           <div
             className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs ${
               health?.model_loaded ? 'bg-[#DDEED8] text-[#1C5E20]' : 'bg-[#F7E2E2] text-[#7F1D1D]'
@@ -731,9 +787,15 @@ function App() {
                           <span className="text-[#232422] font-medium">{result?.dataset.version ?? health?.dataset_version ?? 'unknown'}</span>
                         </div>
                         <div className="flex items-center justify-between text-sm mt-2">
-                          <span className="text-[#232422]/60">Service / API Version</span>
+                          <span className="text-[#232422]/60">API Version</span>
                           <span className="text-[#232422] font-medium">
-                            {version?.service ?? 'Dravix Phase 3 Resistance API'} / {version?.api_version ?? '0.3.0'}
+                            {version?.api_version ?? '0.3.0'}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm mt-2">
+                          <span className="text-[#232422]/60">Build Hash</span>
+                          <span className="text-[#232422] font-medium">
+                            {version?.build_hash ?? 'unknown'}
                           </span>
                         </div>
                       </div>

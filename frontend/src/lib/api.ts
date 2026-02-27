@@ -6,26 +6,63 @@ import type {
   VersionInfo,
 } from '../types';
 
-const API_BASE_URL = 'https://mfr-material-risk-engine.onrender.com';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'https://mfr-material-risk-engine.onrender.com';
+
+const DEFAULT_TIMEOUT_MS = 10000;
 
 export class ApiError extends Error {
   status: number;
   payload: unknown;
+  code?: string;
 
-  constructor(message: string, status: number, payload: unknown) {
+  constructor(message: string, status: number, payload: unknown, code?: string) {
     super(message);
     this.name = 'ApiError';
     this.status = status;
     this.payload = payload;
+    this.code = code;
   }
 }
 
-async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, init);
+function devLog(...args: unknown[]) {
+  if (import.meta.env.DEV) {
+    console.log(...args);
+  }
+}
+
+async function requestJson<T>(
+  path: string,
+  init?: RequestInit,
+  timeoutMs: number = DEFAULT_TIMEOUT_MS,
+): Promise<T> {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
+
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...init,
+      signal: controller.signal,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(init?.headers ?? {}),
+      },
+    });
+  } catch (error) {
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      throw new ApiError('Backend timeout — retry', 408, null, 'TIMEOUT');
+    }
+    throw error;
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+
   const text = await response.text();
   const payload = text ? JSON.parse(text) : null;
 
   if (!response.ok) {
+    devLog('API error', path, response.status, payload);
     const message =
       (payload &&
         typeof payload === 'object' &&
@@ -36,6 +73,7 @@ async function requestJson<T>(path: string, init?: RequestInit): Promise<T> {
     throw new ApiError(message, response.status, payload);
   }
 
+  devLog('API success', path, payload);
   return payload as T;
 }
 
@@ -54,9 +92,6 @@ export function getMaterials(): Promise<MaterialsInfo> {
 export function predict(payload: PredictionRequest): Promise<PredictionResponse> {
   return requestJson<PredictionResponse>('/predict', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     body: JSON.stringify(payload),
-  });
+  }, DEFAULT_TIMEOUT_MS);
 }
