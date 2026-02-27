@@ -10,8 +10,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-from phase3_coating_modifier import get_coating_modifier
-from phase3_inference import (
+from src.phase3_coating_modifier import get_coating_modifier
+from src.phase3_inference import (
     COMBUSTION_COLUMNS,
     RESISTANCE_NEGATIVE_COLUMNS,
     build_feature_vector,
