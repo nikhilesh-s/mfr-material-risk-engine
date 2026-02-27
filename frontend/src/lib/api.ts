@@ -6,8 +6,12 @@ import type {
   VersionInfo,
 } from '../types';
 
-const API_BASE_URL =
+const RAW_BASE =
   import.meta.env.VITE_API_BASE_URL || 'https://mfr-material-risk-engine.onrender.com';
+
+const API_BASE_URL = RAW_BASE.endsWith('/')
+  ? RAW_BASE.slice(0, -1)
+  : RAW_BASE;
 
 const DEFAULT_TIMEOUT_MS = 10000;
 
