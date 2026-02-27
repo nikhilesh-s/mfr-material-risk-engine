@@ -13,13 +13,13 @@ from sklearn.metrics import mean_absolute_error, r2_score
 from sklearn.model_selection import KFold
 
 from api.main import RAW_DATA_PATH, app, load_model
-from model import (
+from src.model import (
     DATASET_VERSION,
     SUPPORTED_DATASET_VERSIONS,
     build_feature_matrix,
     export_model_metadata,
 )
-from utils import clean_fire_properties
+from src.utils import clean_fire_properties
 
 
 def _parse_args() -> argparse.Namespace:

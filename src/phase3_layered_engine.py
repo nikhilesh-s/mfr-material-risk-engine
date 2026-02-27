@@ -9,8 +9,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from phase3_coating_modifier import get_coating_modifier
-from phase3_inference import MODEL_VERSION, predict_material_resistance
+from .phase3_coating_modifier import get_coating_modifier
+from .phase3_inference import MODEL_VERSION, predict_material_resistance
 
 
 COATINGS_PATH = Path("data/phase3_clean/coatings_clean.csv")

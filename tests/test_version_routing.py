@@ -3,7 +3,7 @@ import importlib
 import pandas as pd
 import pytest
 
-import model as model_module
+import src.model as model_module
 
 
 def _reload_model_module():
