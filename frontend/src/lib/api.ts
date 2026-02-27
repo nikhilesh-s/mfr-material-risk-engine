@@ -25,12 +25,6 @@ export class ApiError extends Error {
   }
 }
 
-function devLog(...args: unknown[]) {
-  if (import.meta.env.DEV) {
-    console.log(...args);
-  }
-}
-
 async function requestJson<T>(
   path: string,
   init?: RequestInit,
@@ -62,7 +56,6 @@ async function requestJson<T>(
   const payload = text ? JSON.parse(text) : null;
 
   if (!response.ok) {
-    devLog('API error', path, response.status, payload);
     const message =
       (payload &&
         typeof payload === 'object' &&
@@ -73,7 +66,6 @@ async function requestJson<T>(
     throw new ApiError(message, response.status, payload);
   }
 
-  devLog('API success', path, payload);
   return payload as T;
 }
 

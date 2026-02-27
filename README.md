@@ -1,7 +1,7 @@
 # Dravix Resistance Engine v0.3-stable
 
 ## Model Overview
-`main` now serves a Phase 3 layered resistance engine from a persisted artifact (`models/model_v0.3-alpha.pkl`) exposed as dataset version `v0.3-stable`.
+`main` now serves a Phase 3 layered resistance engine from a persisted artifact (`models/model_v0.3-stable.pkl`) exposed as dataset version `v0.3-stable`.
 
 Inference flow:
 - Base material resistance is computed through `predict_material_resistance` (Phase 3 wrapper).
@@ -51,3 +51,9 @@ Compatibility note:
 - Phase 2 behavior is archived (not deleted) on `archive/v0.2-core`.
 - `main` is dedicated to `v0.3-stable` layered resistance inference.
 
+## Model Freeze (Phase 3)
+- Frozen dataset version: `v0.3-stable`
+- Frozen artifact: `models/model_v0.3-stable.pkl`
+- Runtime behavior: inference-only startup, no retraining
+- Contract guarantee: `/predict` response fields remain stable for Phase 3 rollout
+- Validation artifact set: `artifacts/phase3/` is the canonical export bundle for deck/reporting

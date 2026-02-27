@@ -168,12 +168,6 @@ function App() {
   const [interpretabilityNotice, setInterpretabilityNotice] = useState<string | null>(null);
   const [lastSubmissionSummary, setLastSubmissionSummary] = useState<string>('No prediction yet');
 
-  const devLog = (...args: unknown[]) => {
-    if (import.meta.env.DEV) {
-      console.log(...args);
-    }
-  };
-
   const refreshSystemState = async () => {
     setIsBootstrapping(true);
     setStartupMessage('Checking backend health...');
@@ -188,32 +182,23 @@ function App() {
       if (healthRes.value.status !== 'ok' || !healthRes.value.model_loaded) {
         setStartupMessage('System initializing');
       }
-      devLog('health', healthRes.value);
     } else {
       setHealth(null);
       setStartupMessage('System initializing');
-      devLog('health error', healthRes.reason);
     }
 
     if (versionRes.status === 'fulfilled') {
       setVersion(versionRes.value);
-      devLog('version', versionRes.value);
-    } else {
-      devLog('version error', versionRes.reason);
     }
 
     if (materialsRes.status === 'fulfilled') {
       setMaterials(materialsRes.value.materials ?? []);
-      devLog('materials loaded', materialsRes.value.materials?.length ?? 0);
-    } else {
-      devLog('materials error', materialsRes.reason);
     }
     setIsBootstrapping(false);
   };
 
   useEffect(() => {
     void refreshSystemState();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleInputChange = (key: keyof FormState, value: string) => {
