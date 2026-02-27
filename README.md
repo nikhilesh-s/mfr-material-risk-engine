@@ -1,125 +1,53 @@
-# Dravix Risk Engine v0.2-core
+# Dravix Resistance Engine v0.3-stable
 
 ## Model Overview
-Dravix Risk Engine provides deterministic fire-risk estimation from material fire-property inputs using a `RandomForestRegressor` served through a FastAPI backend.
+`main` now serves a Phase 3 layered resistance engine from a persisted artifact (`models/model_v0.3-alpha.pkl`) exposed as dataset version `v0.3-stable`.
 
-Core outputs include:
-- `riskScore` (rounded integer)
-- `riskClass`
-- `resistanceIndex`
-- `interpretation` (deterministic template)
-- `interpretability` (feature contributions, `top_5_features`, `top_3_drivers`)
-- `confidence` (tree-variance normalized score + label)
+Inference flow:
+- Base material resistance is computed through `predict_material_resistance` (Phase 3 wrapper).
+- Optional coating adjustment is applied via `get_coating_modifier` and bounded to `[0, 1]`.
+- Confidence is derived from per-tree prediction variance calibrated against startup baseline variance statistics.
+
+`/predict` response contract:
+- `resistanceScore`
+- `effectiveResistance`
+- `coatingModifier`
 - `dataset.version`
-
-Engineering freeze scope:
-- No changes to training logic
-- No changes to inference math
-- No changes to rounding logic
-- No changes to API contract during freeze
+- `interpretability` (`prediction`, `feature_contributions`, `top_3_drivers`)
+- `confidence` (`score`, `label`)
 
 ## Dataset Version
-Frozen dataset version tag:
-- `v0.2-core`
-
-Code references:
-- `src/model.py` defaults `DATASET_VERSION` to `v0.2-core`
-- `/predict` returns `dataset.version` for traceability
-
-## Dataset Versioning Architecture
-The repository now includes a versioned feature-construction scaffold for Phase 3 evolution without changing Phase 2 behavior.
-
-Current status:
-- `v0.2-core` remains the frozen default behavior
-- `v0.3-layered` routing scaffold exists as a placeholder
-- Version selection is controlled by `DRAVIX_DATASET_VERSION` (defaults to `v0.2-core`)
-- `v0.2-core` is restorable by commit hash `538893b`
-
-Implementation notes:
-- `src/model.py` routes feature-matrix construction through a version-aware builder
-- `src/feature_builders.py` contains the v0.2 builder and v0.3 placeholder
-- `validation_runner.py` reports the dataset version used and fails cleanly for unimplemented `v0.3-layered`
-- Manual model artifact helpers use versioned paths (`models/model_<dataset_version>.pkl`) to avoid cross-version overwrite
-- Validation summaries are written to `validation_summary_<dataset_version>.json`
-- Model metadata snapshots are written to `metadata/model_metadata_<dataset_version>.json`
+- Active version constant: `v0.3-stable` (`src/model.py`)
+- Artifact loaded: `models/model_v0.3-alpha.pkl` (treated as stable runtime artifact)
+- Phase 2 is preserved on branch: `archive/v0.2-core` at commit `538893b`
 
 ## Validation Results
-Validation is produced by the standalone reproducible pipeline (`validation_runner.py`) and exported to a versioned summary file (`validation_summary_<dataset_version>.json`).
-
-Latest frozen metrics (`v0.2-core`):
-- `n_samples`: `718`
-- `pearson_correlation`: `0.9981853936236091`
-- `r2_score`: `0.9963037863338758`
-- `mae`: `0.17640771809835684`
+Phase 3 validation artifacts are exported under `validation/phase3/`:
+- `validation_summary_v0.3-alpha.json`
+- `validation_predictions_v0.3-alpha.csv`
+- `validation_residuals_v0.3-alpha.csv`
+- `feature_importance_v0.3-alpha.csv`
+- `coating_impact_summary_v0.3-alpha.csv`
+- `coating_delta_distribution_v0.3-alpha.csv`
 
 ## Determinism Guarantee
-For identical inputs, the engine is expected to return identical outputs across repeated calls in the same build.
+For identical payloads, `/predict` is expected to return identical JSON in the same deployed build.
 
-Deterministic properties verified in local validation:
-- `riskScore` unchanged across repeated requests
-- `interpretability.prediction` unchanged across repeated requests
-- `interpretability` payload unchanged across repeated requests
-- `confidence` payload unchanged across repeated requests
-- `dataset.version` unchanged across repeated requests
-- Full response JSON identical across repeated requests
+Determinism controls:
+- Fixed artifact loading at startup (no retraining during inference)
+- No stochastic runtime operations in `/predict`
+- Random forest seeded during training (`random_state=42`) and used as a fixed artifact
+- Confidence computed deterministically from tree variance and fixed calibration stats
 
-Implementation notes:
-- Inference uses a trained model loaded once at startup
-- Interpretability and confidence scoring are deterministic functions of model outputs
-- No runtime randomness is introduced in `/predict`
-
-## Reproducibility
-Run the standalone validation pipeline:
-
-```bash
-python validation_runner.py
-```
-
-Run optional deterministic K-fold CV scaffold (default 5 folds shown explicitly):
-
-```bash
-python validation_runner.py --cv --folds 5
-```
-
-What it does:
-- Loads the same dataset used by the backend model startup
-- Reuses the current model-loading path
-- Generates predictions against ground-truth `risk_score`
-- Computes Pearson correlation, R², and MAE
-- Optionally runs deterministic K-fold CV and exports summary statistics
-- Writes `validation_summary_<dataset_version>.json`
-- Writes `metadata/model_metadata_<dataset_version>.json`
-
-Generated artifact:
-- `validation_summary_<dataset_version>.json` (indented JSON summary)
-- `metadata/model_metadata_<dataset_version>.json` (model + environment snapshot metadata)
-
-Determinism regression test (local by default, optional live via `API_BASE_URL`):
-
+Regression check:
 ```bash
 python regression_test_predict.py
-API_BASE_URL=https://your-service.onrender.com python regression_test_predict.py
 ```
-
-Feature builder/version-routing test scaffold:
-
-```bash
-pip install -r requirements-dev.txt
-pytest tests/test_version_routing.py
-```
-
-Phase 3 intake protocol:
-- `docs/phase3_dataset_intake_checklist.md`
 
 ## API Contract Stability
-Phase 2 engineering freeze preserves the existing `/predict` response contract and rounding behavior.
+`main` is now Phase 3 contract-first and no longer serves Phase 2 `riskScore` outputs.
 
-Stability commitments during freeze:
-- No removal of existing response fields
-- No changes to risk score calculation or rounding
-- No changes to interpretability math
-- No changes to uncertainty/confidence math
-- No new public debug endpoints
+Compatibility note:
+- Phase 2 behavior is archived (not deleted) on `archive/v0.2-core`.
+- `main` is dedicated to `v0.3-stable` layered resistance inference.
 
-Production clarity updates applied:
-- Startup diagnostic print utilities remain available for developer use but are not executed during API startup
