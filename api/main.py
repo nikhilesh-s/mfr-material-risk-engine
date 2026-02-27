@@ -173,6 +173,11 @@ def load_phase3_runtime() -> None:
     app.state.training_variance_mean = variance_stats["training_variance_mean"]
     app.state.training_variance_std = variance_stats["training_variance_std"]
 
+    print("=== PHASE 3 STARTUP CHECK ===")
+    print("Dataset version:", DATASET_VERSION)
+    print("Reference dataset path:", PHASE3_REFERENCE_PATH)
+    print("Model loaded successfully")
+
 
 @app.get("/health")
 def health() -> Dict[str, str]:
