@@ -10,7 +10,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from src.model import DATASET_VERSION
+from model import DATASET_VERSION
 
 MODEL_PATH = Path("models/model_v0.3-alpha.pkl")
 BOUNDS_SOURCE_PATH = Path("data/phase3_model/materials_phase3_ready.csv")
