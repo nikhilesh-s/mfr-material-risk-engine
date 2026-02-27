@@ -1,0 +1,188 @@
+Coating_Code,Material_Base,Density_g_cc,Hardness_Vickers,Melting_Point_C,Thermal_Conductivity_W_mK,Emissivity_Total,Primary_Use,Source_Domain
+193-MAT-001,Alumina-Titania,3.7,950.0,1840.0,1.5,0.9,High-wear dielectric applications,matweb.com
+193-MAT-002,Chromium-Oxide,5.2,1250.0,2435.0,2.1,0.85,Seal rings and chemical resistance,matweb.com
+193-MAT-003,Molybdenum,10.2,400.0,2623.0,138.0,0.15,Piston rings and scuff resistance,matweb.com
+193-MAT-004,Tungsten-Carbide-Cobalt,14.5,1150.0,2870.0,100.0,0.4,Abrasive and erosive wear,matweb.com
+193-MAT-005,Nickel-Chrome,8.1,350.0,1400.0,11.3,0.25,High-temp oxidation bond coat,matweb.com
+193-MAT-006,YSZ-Zirconia,5.9,800.0,2700.0,0.8,0.4,Thermal barrier coating (TBC),matweb.com
+193-MAT-007,Silicon-Carbide,3.21,2500.0,2730.0,120.0,0.92,Extreme hardness and stability,matweb.com
+193-MAT-008,Titanium-Nitride,5.22,2300.0,2930.0,19.0,0.15,Cutting tool wear resistance,matweb.com
+193-MAT-009,Cobalt-Chrome-Moly,8.3,600.0,1350.0,14.5,0.25,Biomedical implants,matweb.com
+193-MAT-010,Copper-Nickel,8.9,150.0,1170.0,29.0,0.05,Marine biofouling resistance,matweb.com
+193-MAT-011,Nickel-Aluminide,6.5,450.0,1638.0,75.0,0.3,Internal cooling oxidation,matweb.com
+193-MAT-012,Boron-Nitride,2.1,50.0,2973.0,30.0,0.8,High-temp release agent,matweb.com
+193-MAT-013,Hastelloy-C,8.9,250.0,1370.0,10.2,0.2,Pitting corrosion resistance,matweb.com
+193-MAT-014,Inconel-625,8.44,300.0,1290.0,9.8,0.25,General aerospace corrosion,matweb.com
+193-MAT-015,Stainless-Steel-316,8.0,220.0,1375.0,16.3,0.3,Food grade hygiene,matweb.com
+193-MAT-016,Tantalum,16.6,180.0,3017.0,57.0,0.1,Acid reactor lining,matweb.com
+193-MAT-017,Molybdenum-Disulfide,4.8,30.0,1185.0,19.0,0.85,Solid vacuum lubricant,matweb.com
+193-MAT-018,Aluminum-Bronze,7.5,180.0,1040.0,45.0,0.15,Anti-galling surfaces,matweb.com
+193-MAT-019,Hafnium-Oxide,9.68,1000.0,2758.0,1.1,0.85,High-k gate dielectrics,matweb.com
+193-MAT-020,Titanium-Dibodide,4.52,2800.0,3225.0,65.0,0.6,Aluminum smelting erosion,matweb.com
+193-MAT-021,Silicon-Nitride,3.44,1800.0,1900.0,30.0,0.88,High-speed bearings,matweb.com
+193-MAT-022,Chrome-Carbide-NiCr,6.8,1000.0,1260.0,12.0,0.6,High-temp erosion,matweb.com
+193-MAT-023,Tin-Babbitt,7.3,30.0,240.0,25.0,0.1,Journal bearing liners,matweb.com
+193-MAT-024,Iron-Aluminide,6.0,350.0,1300.0,18.0,0.4,Sulfidation resistance,matweb.com
+193-MAT-025,Titanium-Aluminide,3.8,550.0,1460.0,22.0,0.35,Lightweight engine valves,matweb.com
+193-MAT-026,Hard-Chrome,7.1,1000.0,1907.0,93.9,0.1,Hydraulic cylinder rods,matweb.com
+193-MAT-027,Pure-Silver,10.5,100.0,961.0,429.0,0.02,Electrical busbars,matweb.com
+193-MAT-028,Magnetite-Black-Oxide,7.8,20.0,1590.0,,0.88,Optical tooling,matweb.com
+193-MAT-029,Boron-Carbide,2.52,3000.0,2763.0,35.0,0.88,Neutron shielding,matweb.com
+193-MAT-030,Titania-TiO2,4.23,850.0,1843.0,11.8,0.92,Photocatalytic surfaces,matweb.com
+193-MAT-031,Moly-Silicide,6.31,900.0,2030.0,50.0,0.7,High-temp heating,matweb.com
+193-MAT-032,Barium-Titanate,6.02,500.0,1625.0,6.0,0.9,Capacitor film,matweb.com
+193-MAT-033,Zinc-Oxide,5.61,200.0,1975.0,54.0,0.85,Varistor protection,matweb.com
+193-MAT-034,Tin-Oxide,6.95,700.0,1630.0,,0.8,Conductive glass,matweb.com
+193-MAT-035,Pure-Copper,8.96,100.0,1085.0,401.0,0.05,Heat management,matweb.com
+193-MAT-036,Pure-Aluminum,2.7,50.0,660.0,237.0,0.05,Atmospheric corrosion,matweb.com
+193-MAT-037,Pure-Nickel,8.9,200.0,1455.0,90.9,0.1,Dimensional restoration,matweb.com
+193-MAT-038,Electrolytic-Iron,7.87,150.0,1538.0,80.4,0.15,Cast iron repair,matweb.com
+193-MAT-039,Cobalt-Pure,8.9,300.0,1495.0,100.0,0.15,Magnetic storage,matweb.com
+193-MAT-040,Permalloy-NiFe,8.3,400.0,1450.0,20.0,0.15,Magnetic shielding,matweb.com
+193-MAT-041,Invar-36,8.05,150.0,1425.0,10.1,0.2,Precision dimension,matweb.com
+193-MAT-042,Kovar-FeNiCo,8.36,160.0,1450.0,17.3,0.2,Glass-to-metal seals,matweb.com
+193-MAT-043,Moly-TZM,10.22,250.0,2620.0,126.0,0.18,Aerospace high-temp,matweb.com
+193-MAT-044,Titanium-G2,4.51,200.0,1665.0,16.4,0.15,Chemical heat exchange,matweb.com
+193-MAT-045,Zirconium-702,6.51,150.0,1850.0,22.0,0.2,Corrosive acid towers,matweb.com
+193-MAT-046,NiCr-80/20,8.4,200.0,1400.0,13.4,0.3,Heating elements,matweb.com
+193-MAT-047,Brass-70/30,8.53,80.0,950.0,121.0,0.1,Hardware/Ammunition,matweb.com
+193-MAT-048,Bronze-Phosphor,8.85,110.0,1050.0,47.0,0.12,Bearing bushes,matweb.com
+193-MAT-049,Copper-Beryllium,8.25,350.0,980.0,105.0,0.15,Non-sparking tools,matweb.com
+193-MAT-050,Hard-Gold,17.5,150.0,1064.0,318.0,0.05,Electronic contacts,matweb.com
+193-MAT-051,Soft-Gold,19.32,30.0,1064.0,317.0,0.05,Semiconductor bonding,matweb.com
+193-MAT-052,Pure-Platinum,21.45,80.0,1768.0,71.0,0.05,Catalytic labware,matweb.com
+193-MAT-053,Palladium,12.02,400.0,1555.0,71.0,0.1,Sensor catalysts,matweb.com
+193-MAT-054,Ruthenium,12.45,350.0,2334.0,117.0,0.1,High-reliability switches,matweb.com
+193-MAT-055,Stainless-Steel-310,7.89,180.0,1400.0,14.2,0.3,Furnace components,matweb.com
+193-MAT-056,Duplex-2205,7.82,290.0,1420.0,19.0,0.3,Marine processing,matweb.com
+193-MAT-057,Monel-400,8.8,180.0,1300.0,21.8,0.2,Hydrofluoric acid resist,matweb.com
+193-MAT-058,Al-Silicon-12,2.65,70.0,580.0,160.0,0.1,Piston coatings,matweb.com
+193-MAT-059,Nickel-Indium,8.0,200.0,,,0.2,Fretting contacts,matweb.com
+193-MAT-060,Zinc-Galvanize,7.14,50.0,419.0,116.0,0.2,Steel construction,matweb.com
+193-MAT-061,Manganese-Phosphate,3.1,80.0,,,0.95,Break-in gear lube,matweb.com
+193-MAT-062,Cordierite,2.6,700.0,1450.0,3.0,0.85,Kiln furniture,matweb.com
+193-MAT-063,Steatite,2.7,800.0,1350.0,2.5,0.85,Insulator spacers,matweb.com
+193-MAT-064,Vanadium-Carbide,5.77,2800.0,2810.0,,0.55,Press tool durability,matweb.com
+193-MAT-065,Tantalum-Carbide,14.3,1800.0,3880.0,22.0,0.5,Rocket nozzles,matweb.com
+193-MAT-066,Hafnium-Carbide,12.2,2600.0,3890.0,20.0,0.45,Ultra-high temp shield,matweb.com
+193-MAT-067,Yttrium-Oxide,5.01,500.0,2425.0,10.0,0.85,Etch resistance,matweb.com
+193-MAT-068,Silicon-Pure,2.33,800.0,1414.0,149.0,0.6,EBC bond coat,matweb.com
+193-MAT-069,Tantalum-Nitride,14.3,2200.0,3090.0,,0.25,Precision resistors,matweb.com
+193-MAT-070,Zircon-ZrSiO4,4.6,900.0,2550.0,5.0,0.8,Glass production,matweb.com
+193-MAT-071,Stellite-6-Alloy,8.4,480.0,1285.0,14.8,0.3,Valve hardfacing,matweb.com
+193-MAT-072,Haynes-188,8.95,300.0,1315.0,10.8,0.3,Combustor liners,matweb.com
+193-MAT-073,Waspaloy,8.19,400.0,1330.0,10.8,0.25,Turbine disks,matweb.com
+193-MAT-074,Inconel-718,8.19,380.0,1260.0,11.4,0.25,Cryogenic fasteners,matweb.com
+193-MAT-075,Hastelloy-X,8.22,250.0,1355.0,9.1,0.22,Burner cans,matweb.com
+193-MAT-076,Maraging-Steel,8.0,600.0,1413.0,20.0,0.4,Die casting tools,matweb.com
+193-MAT-077,Mullite,2.8,900.0,1840.0,3.3,0.9,Engine ceramics,matweb.com
+193-MAT-078,Magnesium-Zirconate,4.5,650.0,2120.0,1.2,0.88,Thermal shock barrier,matweb.com
+193-MAT-079,Zirconium-Diboride,6.08,2200.0,3245.0,60.0,0.7,Leading edge heat,matweb.com
+193-MAT-080,Titanium-Dibodide,4.52,2800.0,3225.0,65.0,0.6,Hard armor coat,matweb.com
+193-MAT-081,Nickel-Graphite,6.5,150.0,,15.0,0.8,Abradable seal,matweb.com
+193-MAT-082,Cadmium-Plate,8.64,40.0,321.0,92.0,0.1,Aircraft bolts,matweb.com
+193-MAT-083,Stainless-Steel-410,7.7,450.0,1480.0,24.9,0.3,Valve stems,matweb.com
+193-MAT-084,Titanium-G5,4.43,350.0,1600.0,6.7,0.3,Structural aerospace,matweb.com
+193-MAT-085,Zinc-Nickel,7.8,450.0,,,0.25,Brake line corrosion,matweb.com
+193-MAT-086,Lead-Free-Solder,7.4,15.0,217.0,55.0,0.1,PCBA joints,matweb.com
+193-MAT-087,Magnesium-AZ31,1.77,80.0,630.0,96.0,0.2,Lightweight auto,matweb.com
+193-MAT-088,Aluminum-Oxide,3.9,1100.0,2050.0,30.0,0.85,Wear insulation,matweb.com
+193-MAT-089,Chromium-Oxide-Pure,5.2,1250.0,2435.0,2.1,0.8,Acid pumps,matweb.com
+193-MAT-090,Molybdenum-Pure,10.2,400.0,2623.0,138.0,0.15,Hard-bearing coat,matweb.com
+193-MAT-091,Incoloy-800,7.94,150.0,1350.0,11.5,0.25,Heat treat equipment,matweb.com
+193-MAT-092,Nimonic-90,8.18,350.0,1350.0,11.5,0.25,Aero springs,matweb.com
+193-MAT-093,Rene-41,8.25,450.0,1300.0,10.0,0.3,Hot structure repair,matweb.com
+193-MAT-094,Haynes-25,9.13,280.0,1330.0,10.0,0.3,Static turbine parts,matweb.com
+193-MAT-095,Hastelloy-C276,8.89,210.0,1370.0,10.2,0.2,Chemical scrubbers,matweb.com
+193-MAT-096,Stainless-Steel-304,8.0,200.0,1400.0,16.2,0.3,Food containers,matweb.com
+193-MAT-097,Zinc-Phosphate,3.3,70.0,,,0.92,Paint base coat,matweb.com
+193-MAT-098,Indium-Tin-Oxide,7.14,600.0,1526.0,,0.8,Touchscreen layer,matweb.com
+193-MAT-099,Gallium-Nitride,6.15,1100.0,2500.0,130.0,0.8,Power semicon,matweb.com
+193-MAT-100,Silicon-Nitride-CVD,3.44,1800.0,1900.0,30.0,0.88,Ball bearings,matweb.com
+193-MPI-101,Quick-Dry-Primer,1.25,,,0.2,0.92,Steel structure base,mpi.net
+193-MPI-102,High-Gloss-Alkyd,1.15,20.0,,0.2,0.9,Machine shop finish,mpi.net
+193-MPI-103,Semi-Gloss-Enamel,1.1,15.0,,0.2,0.9,Commercial interior,mpi.net
+193-MPI-104,Flat-Acrylic-Latex,1.05,5.0,,0.1,0.94,Aesthetic wall coat,mpi.net
+193-MPI-105,Heat-Resistant-Alum,1.2,,427.0,,0.3,High-temp stack,mpi.net
+193-MPI-106,Zinc-Rich-Inorganic,3.4,80.0,,,0.92,Bridges/Marine steel,mpi.net
+193-MPI-107,Organic-Zinc-Primer,2.5,60.0,,,0.9,Shop coat primer,mpi.net
+193-MPI-108,Bituminous-Mastic,1.35,10.0,,0.7,0.96,Buried piping,mpi.net
+193-MPI-109,Chlorinated-Rubber,1.45,30.0,,0.2,0.95,Pool/Splash zones,mpi.net
+193-MPI-110,Coal-Tar-Epoxy,1.55,50.0,,0.2,0.96,Waste water lining,mpi.net
+193-MPI-111,Amine-Cure-Epoxy,1.4,110.0,,0.3,0.94,Chemical storage,mpi.net
+193-MPI-112,Novolac-Epoxy,1.45,95.0,,0.3,0.95,Acid containment,mpi.net
+193-MPI-113,Polyamide-Epoxy,1.3,85.0,,0.3,0.94,High-wear maintenance,mpi.net
+193-MPI-114,Moisture-Cure-Poly,1.1,70.0,,0.2,0.95,Low-temp application,mpi.net
+193-MPI-115,Aliphatic-Urethane,1.2,50.0,,0.2,0.92,UV stable topcoat,mpi.net
+193-MPI-116,Polysiloxane-Finish,1.5,100.0,,0.5,0.94,Hybrid marine coat,mpi.net
+193-MPI-117,Fire-Retard-Intum,1.4,20.0,,0.1,0.96,Passive fire protect,mpi.net
+193-MPI-118,Zinc-Silicate-LowVOC,3.5,85.0,,,0.92,Eco-coastal primer,mpi.net
+193-MPI-119,Acrylic-Urethane,1.15,45.0,,0.2,0.91,Fleet refinishing,mpi.net
+193-MPI-120,Epoxy-Phenolic,1.42,115.0,,0.3,0.94,Hot water immersion,mpi.net
+193-MPI-121,Polyaspartic,1.18,90.0,,0.2,0.94,Fast-cure flooring,mpi.net
+193-MPI-122,Elastomeric-Textured,1.25,5.0,,0.2,0.95,Crack-bridging wall,mpi.net
+193-MPI-123,Waterborne-Epoxy,1.12,65.0,,0.2,0.93,Food plant walls,mpi.net
+193-MPI-124,Silicone-Alum-600C,1.32,45.0,600.0,,0.35,Chimney/Boiler paint,mpi.net
+193-MPI-125,Wash-Primer-Vinyl,0.95,10.0,,,0.85,Aluminum pretreatment,mpi.net
+193-MPI-126,Self-Level-Epoxy,1.25,120.0,,0.3,0.94,Industrial flooring,mpi.net
+193-MPI-127,Glass-Flake-Epoxy,1.65,95.0,,0.8,0.94,Offshore platform splash,mpi.net
+193-MPI-128,Vinyl-Ester-Lining,1.2,85.0,,0.2,0.94,Process tank barrier,mpi.net
+193-MPI-129,Styrene-Acrylic,1.08,10.0,,0.1,0.93,Masonry sealer,mpi.net
+193-MPI-130,Polyurea-Spray,1.06,45.0,,0.2,0.95,Truck bed liners,mpi.net
+193-MAT-131,Zirconia-Mg-Stable,4.8,650.0,2120.0,1.2,0.85,Molten metal handling,matweb.com
+193-MAT-132,Chrome-Oxide-Silica,5.1,1350.0,,,0.9,Laser-engraved rolls,matweb.com
+193-MAT-133,Titania-Conductive,4.1,750.0,1843.0,8.0,0.9,Static dissipation,matweb.com
+193-MAT-134,Alumina-Dielectric,3.95,1200.0,2050.0,32.0,0.88,Pure electronic barrier,matweb.com
+193-MAT-135,Tungsten-Pure,19.3,450.0,3422.0,173.0,0.05,Fusion reactor wall,matweb.com
+193-MAT-136,Tantalum-CVD,16.65,220.0,3017.0,57.5,0.1,Semiconductor tubing,matweb.com
+193-MAT-137,Niobium-Pure,8.57,100.0,2477.0,53.7,0.15,SRF cavity coating,matweb.com
+193-MAT-138,Iridium-Coat,22.6,300.0,2446.0,147.0,0.1,High-temp spark tips,matweb.com
+193-MAT-139,Rhenium-Thruster,21.0,400.0,3186.0,48.0,0.15,Rocket nozzle coat,matweb.com
+193-MAT-140,Silver-Palladium,11.5,180.0,1200.0,,0.1,H2 purification film,matweb.com
+193-MAT-141,Platinum-Turbine,21.4,120.0,1768.0,71.0,0.05,Blade oxidation prot,matweb.com
+193-MAT-142,Gold-Flash,19.3,45.0,1064.0,310.0,0.05,Corrosion-free contacts,matweb.com
+193-MAT-143,Rhodium-Mirror,12.4,850.0,1964.0,150.0,0.1,Reflector coating,matweb.com
+193-MAT-144,Osmium-Contact,22.6,450.0,3033.0,88.0,0.1,Severe wear electrical,matweb.com
+193-MAT-145,Cu-Be-Conductive,8.3,400.0,980.0,105.0,0.15,Non-sparking spring,matweb.com
+193-MAT-146,Nickel-Phos-HighP,7.75,500.0,880.0,4.5,0.22,Memory disk surface,matweb.com
+193-MAT-147,Hard-Gold-Cobalt,17.6,200.0,1060.0,300.0,0.05,Sliding connector,matweb.com
+193-MAT-148,Brass-Cartridge,8.5,90.0,950.0,120.0,0.1,Ammunition case,matweb.com
+193-MAT-149,Bronze-Aluminum,7.6,200.0,1040.0,40.0,0.15,Valve seats,matweb.com
+193-MAT-150,Invar-LowExp,8.1,160.0,1430.0,10.1,0.2,Laser resonator frame,matweb.com
+193-MAT-151,Kovar-Sealing,8.35,170.0,1450.0,17.0,0.2,Electronic packaging,matweb.com
+193-MAT-152,Hastelloy-B,9.24,230.0,1350.0,11.0,0.2,Hydrochloric acid resist,matweb.com
+193-MAT-153,Stellite-21,8.33,450.0,1295.0,14.2,0.28,Medical prosthesis,matweb.com
+193-MAT-154,Tribaloy-800,8.6,750.0,1280.0,15.5,0.35,Corrosive sliding wear,matweb.com
+193-MAT-155,Colmonoy-6,7.8,750.0,1030.0,12.0,0.4,Hardfacing shaft,matweb.com
+193-MAT-156,Iron-Chrome-Boron,7.2,950.0,1200.0,,0.4,Chrome alternate spray,matweb.com
+193-MAT-157,WC-Ni-Resistant,14.1,1100.0,,70.0,0.4,Oil/Gas gate valve,matweb.com
+193-MAT-158,Chrome-Steel-Cast,7.75,550.0,1450.0,25.0,0.4,Slurry pump impeller,matweb.com
+193-MAT-159,Maraging-300,8.0,600.0,1413.0,20.0,0.4,High-stress tool repair,matweb.com
+193-MAT-160,Titanium-6-4,4.43,360.0,1600.0,6.7,0.3,Aero-engine components,matweb.com
+193-MAT-161,Zirconium-705,6.5,180.0,1845.0,20.0,0.2,Corrosion pressure vessel,matweb.com
+193-MAT-162,Stainless-310-Oxid,7.9,190.0,1400.0,14.0,0.3,Furnace baffle plate,matweb.com
+193-MAT-163,Duplex-Stainless,7.85,300.0,1420.0,19.0,0.3,Desalination plant,matweb.com
+193-MAT-164,Ni-Cr-Al-Y,7.8,400.0,1350.0,12.0,0.3,High-temp bond coat,matweb.com
+193-MAT-165,Co-Cr-Al-Y,7.5,450.0,1380.0,13.0,0.35,Turbine blade bond,matweb.com
+193-MAT-166,Fe-Cr-Al-Y,7.1,320.0,1500.0,15.0,0.4,Exhaust oxidation,matweb.com
+193-MAT-167,Barium-Titanate-Cer,6.0,550.0,1625.0,6.0,0.9,Dielectric capacitor,matweb.com
+193-MAT-168,Zinc-Oxide-Semic,5.6,250.0,1975.0,54.0,0.85,Transient surge protect,matweb.com
+193-MAT-169,Tin-Oxide-Trans,7.0,750.0,1630.0,,0.8,Heat-reflective glass,matweb.com
+193-MAT-170,ITO-Trans-Cond,7.15,650.0,1526.0,,0.8,Flat panel display,matweb.com
+193-MAT-171,Moly-Silicide-Heat,6.3,950.0,2030.0,52.0,0.7,Glass melting furnace,matweb.com
+193-MAT-172,Boron-Carbide-Armor,2.5,3100.0,2763.0,35.0,0.88,Lightweight armor,matweb.com
+193-MAT-173,Titania-Plasma,4.2,800.0,1843.0,11.0,0.92,Wear dielectric,matweb.com
+193-MAT-174,Yttria-Erosion,5.0,550.0,2425.0,10.0,0.85,Plasma chamber parts,matweb.com
+193-MAT-175,Silica-Pure-CVD,2.2,500.0,1710.0,1.4,0.93,Optical fiber cladding,matweb.com
+193-MAT-176,Silicon-Nitride-Bear,3.45,1850.0,1900.0,30.0,0.88,Ceramic engine ball,matweb.com
+193-MAT-177,Alumina-White-Die,3.9,1250.0,2050.0,30.0,0.9,High-voltage insulator,matweb.com
+193-MAT-178,Zirconium-Oxide-TBC,5.95,850.0,2700.0,0.9,0.4,Gas turbine vane,matweb.com
+193-MAT-179,Mullite-Refract,2.82,950.0,1840.0,3.5,0.9,Heat exchanger ceramic,matweb.com
+193-MAT-180,Cordierite-LowExp,2.65,750.0,1450.0,3.2,0.85,Auto catalyst support,matweb.com
+193-MAT-181,Steatite-Elec,2.75,850.0,1350.0,2.8,0.85,Heater support insulator,matweb.com
+193-MAT-182,Magnesium-Zirconate,4.55,700.0,2120.0,1.3,0.88,Rocket engine TBC,matweb.com
+193-MAT-183,Titanium-Dibodide,4.55,2900.0,3225.0,65.0,0.6,Tooling wear surface,matweb.com
+193-MAT-184,Zirconium-Diboride,6.1,2300.0,3245.0,60.0,0.7,Hypersonic heat shield,matweb.com
+193-MAT-185,Boron-Nitride-Lub,2.15,60.0,2973.0,30.0,0.8,High-temp solid lube,matweb.com
+193-MAT-186,Hafnium-Oxide-Die,9.7,1100.0,2758.0,1.2,0.85,IC gate insulator,matweb.com
+193-MAT-187,Vanadium-Carbide-Die,5.8,2900.0,2810.0,,0.55,Forming die protection,matweb.com
