@@ -1,4 +1,14 @@
-import { Activity, BarChart3, ChevronDown, ChevronUp, Flame, Microscope, Shield } from 'lucide-react';
+import {
+  Activity,
+  BarChart3,
+  BookOpen,
+  ChevronDown,
+  ChevronUp,
+  Flame,
+  LogOut,
+  Microscope,
+  Shield,
+} from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import chemistryIcon from './assets/chemistry-svgrepo-com.svg';
 import { demoProfiles } from './demoProfiles';
@@ -13,7 +23,7 @@ import type {
   VersionInfo,
 } from './types';
 
-type ViewMode = 'results' | 'home' | 'inputs';
+type ViewMode = 'results' | 'home' | 'inputs' | 'methodology';
 type InputMode = 'lookup' | 'manual';
 
 type FormState = {
@@ -93,6 +103,8 @@ const REQUIRED_NUMERIC_KEYS: Array<ManualNumericKey> = [
   'Flame_Spread_Index',
 ];
 
+const REQUIRED_PASSWORD = import.meta.env.VITE_APP_PASSWORD;
+
 function isLookupPayload(payload: PredictionRequest): payload is LookupPredictionPayload {
   return 'material_name' in payload;
 }
@@ -165,6 +177,9 @@ function App() {
   const [startupMessage, setStartupMessage] = useState<string>('Checking backend health...');
   const [healthWarning, setHealthWarning] = useState<string | null>(null);
   const [healthError, setHealthError] = useState<string | null>(null);
+  const [authenticated, setAuthenticated] = useState(false);
+  const [passwordInput, setPasswordInput] = useState('');
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -195,7 +210,6 @@ function App() {
 
     if (healthRes.status === 'fulfilled') {
       const data = healthRes.value;
-      if (import.meta.env.DEV) console.log('Health response:', data);
       setHealth(data);
       if (!data || data.status !== 'ok') {
         setShowInitializing(true);
@@ -228,6 +242,22 @@ function App() {
   useEffect(() => {
     void refreshSystemState();
   }, []);
+
+  const handleLogin = () => {
+    if (REQUIRED_PASSWORD && passwordInput === REQUIRED_PASSWORD) {
+      setAuthenticated(true);
+      setAuthError(null);
+      setPasswordInput('');
+      return;
+    }
+    setAuthError('Invalid credentials');
+  };
+
+  const handleLogout = () => {
+    setAuthenticated(false);
+    setAuthError(null);
+    setPasswordInput('');
+  };
 
   const handleInputChange = (key: keyof FormState, value: string) => {
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -385,6 +415,40 @@ function App() {
     );
   }
 
+  if (!authenticated) {
+    return (
+      <div className="min-h-screen bg-[#F5F1EC] flex items-center justify-center p-8">
+        <div className="max-w-xl w-full bg-[#FEFEFE] rounded-3xl shadow-sm p-10 text-center">
+          <h1 className="text-5xl font-light text-[#232422]">Dravix</h1>
+          <p className="text-[#232422]/60 mt-3">Phase 3 Research Platform</p>
+          <div className="mt-8 space-y-4">
+            <input
+              type="password"
+              value={passwordInput}
+              onChange={(e) => {
+                setPasswordInput(e.target.value);
+                if (authError) {
+                  setAuthError(null);
+                }
+              }}
+              placeholder="Enter access password"
+              className="w-full px-4 py-3 bg-[#F5F1EC] rounded-xl text-sm text-[#232422] focus:outline-none focus:ring-2 focus:ring-[#FFDC6A]"
+            />
+            {authError && (
+              <p className="text-sm text-[#7F1D1D]">{authError}</p>
+            )}
+            <button
+              onClick={handleLogin}
+              className="w-full px-6 py-3 bg-gradient-to-r from-[#FFDC6A] to-[#FF8D7C] text-[#232422] rounded-full font-medium hover:opacity-90 transition-opacity"
+            >
+              Login
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#F5F1EC] flex">
       <aside className="w-20 bg-[#FEFEFE] flex flex-col items-center py-8 gap-8 rounded-r-3xl shadow-sm">
@@ -428,6 +492,19 @@ function App() {
               }`}
             />
           </button>
+          <button
+            onClick={() => setCurrentView('methodology')}
+            className={`w-12 h-12 rounded-xl transition-colors flex items-center justify-center group ${
+              currentView === 'methodology' ? 'bg-[#F5F1EC]' : 'hover:bg-[#F5F1EC]'
+            }`}
+            title="Methodology"
+          >
+            <BookOpen
+              className={`w-5 h-5 ${
+                currentView === 'methodology' ? 'text-[#FF8D7C]' : 'text-[#232422] group-hover:text-[#FF8D7C]'
+              }`}
+            />
+          </button>
         </nav>
       </aside>
 
@@ -453,6 +530,13 @@ function App() {
         )}
 
         <div className="flex justify-end mb-4 gap-2">
+          <button
+            onClick={handleLogout}
+            className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs bg-[#232422] text-[#FEFEFE] hover:opacity-90 transition-opacity"
+          >
+            <LogOut className="w-3 h-3" />
+            Logout
+          </button>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs bg-[#232422] text-[#FEFEFE]">
             Phase 3 – Research Build
           </div>
@@ -478,6 +562,73 @@ function App() {
               <img src={chemistryIcon} alt="Dravix" className="w-32 h-32 mx-auto" />
               <h1 className="text-5xl font-light text-[#232422] mt-8">Dravix</h1>
               <p className="text-[#232422]/60 mt-4">Fire Risk Assessment Platform</p>
+            </div>
+          </div>
+        ) : currentView === 'methodology' ? (
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-[#FF8D7C] rounded-xl flex items-center justify-center">
+                  <BookOpen className="w-5 h-5 text-[#FEFEFE]" />
+                </div>
+                <h1 className="text-4xl font-light text-[#232422]">Methodology</h1>
+              </div>
+              <p className="text-[#232422]/60">Phase 3 research methodology and metadata reference</p>
+            </div>
+
+            <div className="bg-[#FEFEFE] rounded-3xl p-8 max-h-[72vh] overflow-y-auto space-y-8">
+              <section>
+                <h2 className="text-xl font-light text-[#232422] mb-2">A. Resistance Score</h2>
+                <p className="text-[#232422]/70 leading-relaxed">
+                  Resistance score is a relative predictive proxy derived from structured material descriptors.
+                  It supports comparative screening across materials and coating conditions and is not a
+                  regulatory certification outcome.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-light text-[#232422] mb-2">B. Confidence Score</h2>
+                <p className="text-[#232422]/70 leading-relaxed">
+                  Confidence is computed from tree-level variance characteristics relative to the training
+                  variance distribution. High, Medium, and Low labels are derived from calibrated percentile
+                  bands to provide uncertainty-aware inference context.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-light text-[#232422] mb-2">C. Interpretability</h2>
+                <p className="text-[#232422]/70 leading-relaxed">
+                  Interpretability is generated through tree-based contribution extraction and ranked into
+                  `top_3_drivers` by absolute contribution magnitude. Positive contributions indicate increasing
+                  resistance influence, while negative contributions indicate decreasing resistance influence.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-xl font-light text-[#232422] mb-3">D. Dataset Metadata</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div className="p-4 rounded-xl bg-[#F5F1EC]">
+                    <div className="text-[#232422]/60">Dataset Version</div>
+                    <div className="text-[#232422] mt-1">{version?.dataset_version ?? health?.dataset_version ?? 'Unknown'}</div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-[#F5F1EC]">
+                    <div className="text-[#232422]/60">Feature Count</div>
+                    <div className="text-[#232422] mt-1">
+                      {(version as VersionInfo & { feature_count?: number } | null)?.feature_count ?? 'Not exposed by API'}
+                    </div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-[#F5F1EC]">
+                    <div className="text-[#232422]/60">Target Column</div>
+                    <div className="text-[#232422] mt-1">
+                      {(version as VersionInfo & { target_column?: string } | null)?.target_column ?? 'Not exposed by API'}
+                    </div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-[#F5F1EC]">
+                    <div className="text-[#232422]/60">Build Timestamp</div>
+                    <div className="text-[#232422] mt-1">{version?.timestamp_utc ?? 'Unknown'}</div>
+                  </div>
+                </div>
+              </section>
             </div>
           </div>
         ) : currentView === 'inputs' ? (
