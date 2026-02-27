@@ -1,353 +1,130 @@
-"""Model training and inference helpers for the MFR risk model."""
+"""Phase 3 model runtime helpers for v0.3-stable inference."""
 
 from __future__ import annotations
 
-import json
-import os
 import pickle
-import subprocess
-import sys
-from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Any
 
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split
-from treeinterpreter import treeinterpreter as ti
 
-from .features import FEATURE_COLUMNS, add_derived_features, prepare_feature_frame
-from .feature_builders import build_features_v02, build_features_v03
-from .utils import clean_fire_properties
+PHASE3_REFERENCE_PATH = Path("data/phase3_model/materials_phase3_with_target_v2.csv")
+
+DATASET_VERSION = "v0.3-stable"
+MODEL_VERSION = DATASET_VERSION
 
 SUPPORTED_DATASET_VERSIONS = [
-    "v0.2-core",
-    "v0.3-layered",
+    "v0.3-stable",
 ]
 
-DATASET_VERSION = os.getenv("DRAVIX_DATASET_VERSION", "v0.2-core")
-_DIAGNOSTIC_FEATURE_NAMES: set[str] = set()
-
-
-def build_feature_matrix(dataframe: pd.DataFrame) -> pd.DataFrame:
-    """Return a version-aware feature matrix without changing prediction targets."""
-    if DATASET_VERSION == "v0.2-core":
-        return build_features_v02(dataframe)
-    if DATASET_VERSION == "v0.3-layered":
-        return build_features_v03(dataframe)
-    raise ValueError(
-        f"Unknown DATASET_VERSION: {DATASET_VERSION}. "
-        f"Supported: {', '.join(SUPPORTED_DATASET_VERSIONS)}"
-    )
+MODEL_ARTIFACT_PATH = Path("models/model_v0.3-alpha.pkl")
 
 
 def get_model_artifact_path(version: str) -> str:
-    """Return the versioned model artifact path used for manual persistence flows."""
+    """Return versioned model artifact path for explicit phase tags."""
     return str(Path("models") / f"model_{version}.pkl")
 
 
-def save_model_artifact(
-    model: RandomForestRegressor, version: str | None = None
-) -> str:
-    """Persist a trained model artifact for manual workflows (never called at API startup)."""
-    version_tag = version or DATASET_VERSION
-    path = Path(get_model_artifact_path(version_tag))
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("wb") as fh:
-        pickle.dump(model, fh)
-    return str(path)
+def load_phase3_model(model_path: Path | None = None) -> Any:
+    """Load the Phase 3 model artifact without retraining."""
+    path = model_path or MODEL_ARTIFACT_PATH
+    if not path.exists():
+        raise FileNotFoundError(f"Missing model artifact: {path}")
+    with path.open("rb") as fh:
+        model = pickle.load(fh)
+    if not hasattr(model, "predict"):
+        raise TypeError("Loaded artifact does not implement predict().")
+    if not hasattr(model, "feature_names_in_"):
+        raise ValueError("Loaded model is missing feature_names_in_.")
+    return model
 
 
-def _best_effort_git_commit_hash() -> str:
-    """Return the current git commit hash when available, otherwise 'unknown'."""
-    try:
-        commit_hash = subprocess.check_output(
-            ["git", "rev-parse", "HEAD"],
-            stderr=subprocess.DEVNULL,
-            text=True,
-        ).strip()
-        return commit_hash or "unknown"
-    except Exception:
-        return "unknown"
-
-
-def export_model_metadata(
-    model: RandomForestRegressor,
-    n_samples: int,
-    version: str | None = None,
-) -> str:
-    """Export informational model metadata for validation/manual training workflows."""
-    version_tag = version or DATASET_VERSION
-    feature_names = (
-        list(model.feature_names_in_) if hasattr(model, "feature_names_in_") else []
-    )
-    metadata = {
-        "dataset_version": version_tag,
-        "n_samples": int(n_samples),
-        "feature_count": int(len(feature_names)),
-        "feature_names": feature_names,
-        "model_type": type(model).__name__,
-        "python_version": sys.version,
-        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
-        "git_commit_hash": _best_effort_git_commit_hash(),
-    }
-    output_path = Path("metadata") / f"model_metadata_{version_tag}.json"
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-    with output_path.open("w", encoding="utf-8") as fh:
-        json.dump(metadata, fh, indent=2)
-    return str(output_path)
-
-
-def inspect_model_schema(model: RandomForestRegressor) -> None:
-    """Print a startup-only schema summary inferred from trained model features."""
-    feature_names = (
-        list(model.feature_names_in_) if hasattr(model, "feature_names_in_") else []
-    )
-    global _DIAGNOSTIC_FEATURE_NAMES
-    _DIAGNOSTIC_FEATURE_NAMES = set(feature_names)
-    categorical_features = [
-        name
-        for name in feature_names
-        if name.startswith("Material_Name_") or "_type_" in name
-    ]
-    numeric_features = [name for name in feature_names if name not in categorical_features]
-    potential_target_candidates = [
-        name
-        for name in feature_names
-        if any(token in name.lower() for token in ("target", "label", "risk", "score"))
-    ]
-
-    print("-----------------------------------")
-    print("DATASET SCHEMA SUMMARY")
-    print(f"Version: {DATASET_VERSION}")
-    print(f"Total Features: {len(feature_names)}")
-    print(f"Numeric Features: {len(numeric_features)}")
-    print(f"Categorical Features: {len(categorical_features)}")
-    print(f"Potential Target Candidates: {len(potential_target_candidates)}")
-    print("-----------------------------------")
-    print(f"Numeric Preview (first 5): {numeric_features[:5]}")
-    print(f"Categorical Preview (first 5): {categorical_features[:5]}")
-    print(f"Target Candidate Preview (first 5): {potential_target_candidates[:5]}")
-
-
-def detect_target_candidates(dataframe: pd.DataFrame) -> None:
-    """Print a variance-based list of likely regression targets for diagnostics."""
-    numeric_df = dataframe.select_dtypes(include=["number"])
-    variances = numeric_df.var()
-    feature_name_set = _DIAGNOSTIC_FEATURE_NAMES
-    candidate_variances = variances[~variances.index.isin(feature_name_set)]
-    candidate_variances = candidate_variances.sort_values(ascending=False)
-    top_candidates = candidate_variances.head(5)
-
-    print("-----------------------------------")
-    print("TARGET CANDIDATE ANALYSIS")
-    print("Top 5 Numeric Columns by Variance:")
-    if top_candidates.empty:
-        print("(none)")
+def _extract_estimator(model: Any) -> Any:
+    if hasattr(model, "named_steps") and "model" in model.named_steps:
+        estimator = model.named_steps["model"]
     else:
-        for idx, (column_name, variance) in enumerate(top_candidates.items(), start=1):
-            print(f"{idx}) {column_name} (variance={float(variance):.6f})")
-    print("-----------------------------------")
+        estimator = model
+    if not hasattr(estimator, "estimators_"):
+        raise ValueError("Random-forest estimator with estimators_ is required.")
+    return estimator
 
 
-def train_risk_model(
-    df: pd.DataFrame, random_state: int = 42
-) -> Tuple[RandomForestRegressor, Tuple[pd.DataFrame, pd.Series]]:
-    """Fit a RandomForestRegressor on the provided dataset and return the model."""
-    dataset = add_derived_features(df)
-    X = dataset[FEATURE_COLUMNS]
-    y = dataset["risk_score"]
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=random_state
+def _transform_features(model: Any, feature_frame: pd.DataFrame) -> np.ndarray:
+    feature_names = list(model.feature_names_in_)
+    aligned = feature_frame.reindex(columns=feature_names)
+
+    if hasattr(model, "named_steps") and "imputer" in model.named_steps:
+        imputer = model.named_steps["imputer"]
+        transformed = imputer.transform(aligned)
+        return np.asarray(transformed)
+
+    # Fallback for non-pipeline artifacts.
+    return np.asarray(aligned.to_numpy(dtype=float))
+
+
+def compute_tree_variance(model: Any, feature_frame: pd.DataFrame) -> float:
+    """Compute per-sample tree prediction variance for a single-row feature frame."""
+    estimator = _extract_estimator(model)
+    transformed = _transform_features(model, feature_frame)
+    if transformed.shape[0] != 1:
+        raise ValueError("compute_tree_variance expects a single-row feature frame.")
+    tree_predictions = np.array(
+        [float(tree.predict(transformed)[0]) for tree in estimator.estimators_],
+        dtype=float,
     )
-    model = RandomForestRegressor(random_state=random_state)
-    model.fit(X_train, y_train)
-    return model, (X_test, y_test)
+    return float(np.var(tree_predictions))
 
 
-def classify_risk(score: float) -> str:
-    """Map a numeric risk score to Low, Medium, or High."""
-    if score < 35:
-        return "Low"
-    if score < 65:
-        return "Medium"
-    return "High"
+def compute_training_variance_stats(model: Any, feature_frame: pd.DataFrame) -> dict[str, float]:
+    """Compute training-time variance mean/std once for confidence calibration."""
+    estimator = _extract_estimator(model)
+    transformed = _transform_features(model, feature_frame)
 
-
-def predict_risk(
-    model: RandomForestRegressor, example: Dict[str, float]
-) -> Dict[str, object]:
-    """Run inference for ``example`` and return UI-ready risk outputs."""
-    # Support both raw input-style examples and cleaned feature rows.
-    synthetic_keys = {
-        "material_type",
-        "temperature_c",
-        "exposure_time_min",
-        "environment_factor",
-    }
-    example_payload = dict(example)
-
-    if synthetic_keys.issubset(example_payload.keys()):
-        feature_frame = prepare_feature_frame(example_payload)
-    else:
-        example_payload.pop("risk_score", None)
-        feature_frame = pd.DataFrame([example_payload])
-        if hasattr(model, "feature_names_in_"):
-            for col in model.feature_names_in_:
-                if col not in feature_frame.columns:
-                    feature_frame[col] = 0.0
-            feature_frame = feature_frame[list(model.feature_names_in_)]
-
-    raw_prediction = float(model.predict(feature_frame)[0])
-    tree_predictions = [
-        float(tree.predict(feature_frame)[0]) for tree in model.estimators_
-    ]
-    variance = float(np.var(tree_predictions))
-    confidence_score = float(np.clip(1.0 / (1.0 + variance), 0.0, 1.0))
-    if confidence_score >= 0.75:
-        confidence_label = "High"
-    elif confidence_score >= 0.5:
-        confidence_label = "Medium"
-    else:
-        confidence_label = "Low"
-    confidence = {
-        "score": confidence_score,
-        "label": confidence_label,
-    }
-
-    _, bias, contributions = ti.predict(model, feature_frame)
-    bias_value = float(np.asarray(bias[0]).squeeze())
-    contribution_values = np.atleast_1d(np.asarray(contributions[0]).squeeze())
-
-    feature_names = (
-        list(model.feature_names_in_)
-        if hasattr(model, "feature_names_in_")
-        else list(feature_frame.columns)
-    )
-    feature_contributions = {
-        feature_name: float(contribution)
-        for feature_name, contribution in zip(feature_names, contribution_values)
-    }
-    sorted_contributions = sorted(
-        feature_contributions.items(), key=lambda x: abs(x[1]), reverse=True
-    )
-    top_5_features = [
-        {"feature": feature_name, "contribution": float(contribution)}
-        for feature_name, contribution in sorted_contributions
-        if float(contribution) != 0.0
-    ][:5]
-    top_3_drivers = top_5_features[:3]
-    interpretability = {
-        "prediction": raw_prediction,
-        "bias": bias_value,
-        "feature_contributions": feature_contributions,
-        "top_5_features": top_5_features,
-        "top_3_drivers": top_3_drivers,
-    }
-
-    risk_score = int(round(raw_prediction))
-    risk_class = classify_risk(risk_score)
-    resistance_index = int(round(100 - risk_score))
-
-    material_label = str(example.get("material_type", "material"))
-    if risk_class == "Low":
-        comparison = (
-            f"Performs better than baseline {material_label} samples at this heat exposure."
-        )
-    elif risk_class == "Medium":
-        comparison = (
-            f"Performs in line with typical {material_label} behavior under similar exposure."
-        )
-    else:
-        comparison = (
-            f"Shows elevated risk compared to more fire-resistant {material_label} options."
-        )
-
-    def _driver_clause(driver: Dict[str, object]) -> str:
-        contribution = float(driver["contribution"])
-        direction = (
-            "increased predicted risk" if contribution > 0 else "reduced predicted risk"
-        )
-        return f'{driver["feature"]} which {direction}'
-
-    driver_clauses = [_driver_clause(driver) for driver in top_3_drivers[:2]]
-    if len(driver_clauses) >= 2:
-        driver_sentence = (
-            f"Primary drivers include {driver_clauses[0]}, and {driver_clauses[1]}."
-        )
-    elif len(driver_clauses) == 1:
-        driver_sentence = f"Primary driver is {driver_clauses[0]}."
-    else:
-        driver_sentence = (
-            "Primary non-zero feature drivers were not identified for this prediction."
-        )
-    interpretation = (
-        f"{driver_sentence} These exposure characteristics strongly influence the "
-        "relative fire risk assessment."
-    )
-
+    tree_matrix = np.vstack([tree.predict(transformed) for tree in estimator.estimators_])
+    sample_variances = np.var(tree_matrix, axis=0)
     return {
-        "riskScore": risk_score,
-        "riskClass": risk_class,
-        "resistanceIndex": resistance_index,
-        "comparison": comparison,
-        "interpretation": interpretation,
-        "interpretability": interpretability,
-        "confidence": confidence,
+        "training_variance_mean": float(np.mean(sample_variances)),
+        "training_variance_std": float(np.std(sample_variances)),
     }
 
 
-def train_risk_score_model(
-    df: pd.DataFrame, random_state: int = 42
-) -> Tuple[RandomForestRegressor, Dict[str, float], pd.DataFrame]:
-    """Train a RandomForestRegressor to predict the proxy risk score."""
-    cleaned, _ = clean_fire_properties(df)
-    if "risk_score" not in cleaned.columns:
-        raise ValueError("risk_score is missing from the cleaned dataset.")
+def _variance_to_confidence_score(
+    variance: float,
+    training_variance_mean: float,
+    training_variance_std: float,
+) -> float:
+    # Lower-than-baseline variance -> higher confidence.
+    if np.isclose(training_variance_std, 0.0):
+        score = 1.0 if variance <= training_variance_mean else 0.0
+    else:
+        z = (variance - training_variance_mean) / training_variance_std
+        score = 1.0 / (1.0 + np.exp(z))
+    return float(np.clip(score, 0.0, 1.0))
 
-    X = build_feature_matrix(cleaned)
-    feature_cols = list(X.columns)
-    y = cleaned["risk_score"]
 
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=random_state
+def _confidence_label(score: float) -> str:
+    if score > 0.75:
+        return "High"
+    if score >= 0.4:
+        return "Medium"
+    return "Low"
+
+
+def compute_confidence(
+    model: Any,
+    feature_frame: pd.DataFrame,
+    training_variance_mean: float,
+    training_variance_std: float,
+) -> dict[str, float | str]:
+    """Return calibrated deterministic confidence from tree variance."""
+    variance = compute_tree_variance(model, feature_frame)
+    score = _variance_to_confidence_score(
+        variance=variance,
+        training_variance_mean=training_variance_mean,
+        training_variance_std=training_variance_std,
     )
-    model = RandomForestRegressor(random_state=random_state)
-    model.fit(X_train, y_train)
-
-    metrics = {
-        "train_r2": model.score(X_train, y_train),
-        "test_r2": model.score(X_test, y_test),
+    return {
+        "score": score,
+        "label": _confidence_label(score),
     }
-
-    importances = pd.DataFrame(
-        {
-            "feature": feature_cols,
-            "importance": model.feature_importances_,
-        }
-    ).sort_values("importance", ascending=False)
-
-    return model, metrics, importances
-
-
-def train_model(
-    df: pd.DataFrame, random_state: int = 42
-) -> Tuple[RandomForestRegressor, Dict[str, float]]:
-    """Train the proxy risk score model and return the fitted model with metrics."""
-    if "risk_score" in df.columns:
-        X = build_feature_matrix(df)
-        y = df["risk_score"]
-        X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.2, random_state=random_state
-        )
-        model = RandomForestRegressor(random_state=random_state)
-        model.fit(X_train, y_train)
-        metrics = {
-            "train_r2": model.score(X_train, y_train),
-            "test_r2": model.score(X_test, y_test),
-        }
-        return model, metrics
-
-    model, metrics, _ = train_risk_score_model(df, random_state=random_state)
-    return model, metrics
