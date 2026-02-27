@@ -1,0 +1,387 @@
+{
+  "dataset_version": "v0.3-stable",
+  "request_schema": {
+    "description": "Descriptor input schema for Phase 3 resistance prediction.",
+    "examples": [
+      {
+        "Autoignition_Temp_C": 450.0,
+        "CTE_um_m_C": 95.0,
+        "Char_Yield_pct": 12.0,
+        "Decomp_Temp_C": 300.0,
+        "Density_g_cc": 1.25,
+        "Flame_Spread_Index": 40.0,
+        "Flash_Point_C": 320.0,
+        "Heat_of_Combustion_MJ_kg": 28.0,
+        "Limiting_Oxygen_Index_pct": 19.0,
+        "Melting_Point_C": 220.0,
+        "Smoke_Density_Ds": 120.0,
+        "Specific_Heat_J_g_C": 1.5,
+        "Thermal_Cond_W_mK": 0.21,
+        "UL94_Flammability": 1.0,
+        "coating_code": "COAT-001"
+      },
+      {
+        "coating_code": "COAT-001",
+        "material_name": "Polyethylene (HDPE)"
+      }
+    ],
+    "properties": {
+      "Density_g_cc": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Density G Cc"
+      },
+      "Melting_Point_C": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Melting Point C"
+      },
+      "Specific_Heat_J_g_C": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Specific Heat J G C"
+      },
+      "Thermal_Cond_W_mK": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Thermal Cond W Mk"
+      },
+      "CTE_um_m_C": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Cte Um M C"
+      },
+      "Flash_Point_C": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Flash Point C"
+      },
+      "Autoignition_Temp_C": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Autoignition Temp C"
+      },
+      "UL94_Flammability": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Ul94 Flammability"
+      },
+      "Limiting_Oxygen_Index_pct": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Limiting Oxygen Index Pct"
+      },
+      "Smoke_Density_Ds": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Smoke Density Ds"
+      },
+      "Char_Yield_pct": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Char Yield Pct"
+      },
+      "Decomp_Temp_C": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Decomp Temp C"
+      },
+      "Heat_of_Combustion_MJ_kg": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Heat Of Combustion Mj Kg"
+      },
+      "Flame_Spread_Index": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Flame Spread Index"
+      },
+      "material_name": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Material Name"
+      },
+      "coating_code": {
+        "anyOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "default": null,
+        "title": "Coating Code"
+      }
+    },
+    "title": "Phase3Input",
+    "type": "object"
+  },
+  "response_schema": {
+    "$defs": {
+      "ConfidenceOutput": {
+        "properties": {
+          "score": {
+            "title": "Score",
+            "type": "number"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "score",
+          "label"
+        ],
+        "title": "ConfidenceOutput",
+        "type": "object"
+      },
+      "DatasetOutput": {
+        "properties": {
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version"
+        ],
+        "title": "DatasetOutput",
+        "type": "object"
+      },
+      "InterpretabilityOutput": {
+        "properties": {
+          "prediction": {
+            "title": "Prediction",
+            "type": "number"
+          },
+          "feature_contributions": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Feature Contributions",
+            "type": "object"
+          },
+          "top_3_drivers": {
+            "items": {
+              "$ref": "#/$defs/TopDriverOutput"
+            },
+            "title": "Top 3 Drivers",
+            "type": "array"
+          },
+          "display_names": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Display Names"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Error"
+          }
+        },
+        "required": [
+          "prediction",
+          "feature_contributions",
+          "top_3_drivers"
+        ],
+        "title": "InterpretabilityOutput",
+        "type": "object"
+      },
+      "TopDriverOutput": {
+        "properties": {
+          "feature": {
+            "title": "Feature",
+            "type": "string"
+          },
+          "contribution": {
+            "title": "Contribution",
+            "type": "number"
+          },
+          "direction": {
+            "title": "Direction",
+            "type": "string"
+          },
+          "abs_magnitude": {
+            "title": "Abs Magnitude",
+            "type": "number"
+          }
+        },
+        "required": [
+          "feature",
+          "contribution",
+          "direction",
+          "abs_magnitude"
+        ],
+        "title": "TopDriverOutput",
+        "type": "object"
+      }
+    },
+    "properties": {
+      "resistanceScore": {
+        "title": "Resistancescore",
+        "type": "number"
+      },
+      "effectiveResistance": {
+        "title": "Effectiveresistance",
+        "type": "number"
+      },
+      "coatingModifier": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ],
+        "title": "Coatingmodifier"
+      },
+      "dataset": {
+        "$ref": "#/$defs/DatasetOutput"
+      },
+      "interpretability": {
+        "$ref": "#/$defs/InterpretabilityOutput"
+      },
+      "confidence": {
+        "$ref": "#/$defs/ConfidenceOutput"
+      }
+    },
+    "required": [
+      "resistanceScore",
+      "effectiveResistance",
+      "coatingModifier",
+      "dataset",
+      "interpretability",
+      "confidence"
+    ],
+    "title": "Phase3PredictResponse",
+    "type": "object"
+  }
+}

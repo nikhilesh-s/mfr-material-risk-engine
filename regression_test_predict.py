@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import os
-import sys
 import urllib.error
 import urllib.request
 from typing import Any
@@ -13,7 +12,21 @@ from typing import Any
 API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000").rstrip("/")
 PREDICT_URL = f"{API_BASE_URL}/predict"
 PAYLOAD = {
-    "MATERIAL": "PMMA",
+    "Density_g_cc": 1.25,
+    "Melting_Point_C": 220.0,
+    "Specific_Heat_J_g_C": 1.5,
+    "Thermal_Cond_W_mK": 0.21,
+    "CTE_um_m_C": 95.0,
+    "Flash_Point_C": 320.0,
+    "Autoignition_Temp_C": 450.0,
+    "UL94_Flammability": 1.0,
+    "Limiting_Oxygen_Index_pct": 19.0,
+    "Smoke_Density_Ds": 120.0,
+    "Char_Yield_pct": 12.0,
+    "Decomp_Temp_C": 300.0,
+    "Heat_of_Combustion_MJ_kg": 28.0,
+    "Flame_Spread_Index": 40.0,
+    "coating_code": None,
 }
 
 
@@ -31,15 +44,12 @@ def _post_json(url: str, payload: dict[str, Any]) -> dict[str, Any]:
 
 def _required_path_values() -> list[tuple[str, ...]]:
     return [
-        ("riskScore",),
-        ("riskClass",),
-        ("resistanceIndex",),
-        ("interpretation",),
+        ("resistanceScore",),
+        ("effectiveResistance",),
+        ("coatingModifier",),
         ("interpretability",),
         ("interpretability", "prediction"),
-        ("interpretability", "bias"),
         ("interpretability", "feature_contributions"),
-        ("interpretability", "top_5_features"),
         ("interpretability", "top_3_drivers"),
         ("confidence",),
         ("confidence", "score"),
@@ -127,8 +137,8 @@ def main() -> int:
     print(
         json.dumps(
             {
-                "riskScore": response_one.get("riskScore"),
-                "riskClass": response_one.get("riskClass"),
+                "resistanceScore": response_one.get("resistanceScore"),
+                "effectiveResistance": response_one.get("effectiveResistance"),
                 "dataset_version": response_one.get("dataset", {}).get("version"),
                 "confidence": response_one.get("confidence"),
             },

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
 import numpy as np
@@ -9,7 +11,14 @@ import pandas as pd
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, model_validator
+
+from src.api_contract import (
+    LoginInput,
+    LoginResponse,
+    MaterialsOutput,
+    Phase3Input,
+    Phase3PredictResponse,
+)
 
 from src.phase3_coating_modifier import get_coating_modifier
 from src.phase3_inference import (
@@ -21,8 +30,10 @@ from src.phase3_inference import (
 )
 from src.model import (
     DATASET_VERSION,
+    MODEL_ARTIFACT_PATH,
     PHASE3_REFERENCE_PATH,
     compute_confidence,
+    compute_feature_interpretability,
     compute_training_variance_stats,
     get_material_descriptors,
     get_material_names,
@@ -34,97 +45,13 @@ from src.model import (
 ADMIN_EMAIL = "admin@dravix.ai"
 ADMIN_PASSWORD = "Q9v$2mL!7xK@4pR#8tN^6dH"
 MOCK_SESSION_TOKEN = "mock-session-token"
-
-
-class Phase3Input(BaseModel):
-    """Descriptor input schema for Phase 3 resistance prediction."""
-
-    Density_g_cc: Optional[float] = None
-    Melting_Point_C: Optional[float] = None
-    Specific_Heat_J_g_C: Optional[float] = None
-    Thermal_Cond_W_mK: Optional[float] = None
-    CTE_um_m_C: Optional[float] = None
-    Flash_Point_C: Optional[float] = None
-    Autoignition_Temp_C: Optional[float] = None
-    UL94_Flammability: Optional[float] = None
-    Limiting_Oxygen_Index_pct: Optional[float] = None
-    Smoke_Density_Ds: Optional[float] = None
-    Char_Yield_pct: Optional[float] = None
-    Decomp_Temp_C: Optional[float] = None
-    Heat_of_Combustion_MJ_kg: Optional[float] = None
-    Flame_Spread_Index: Optional[float] = None
-    material_name: Optional[str] = None
-    coating_code: Optional[str] = None
-
-    @model_validator(mode="after")
-    def validate_input_mode(self) -> "Phase3Input":
-        if self.material_name is not None and self.material_name.strip():
-            return self
-
-        numeric_fields = [
-            "Density_g_cc",
-            "Melting_Point_C",
-            "Specific_Heat_J_g_C",
-            "Thermal_Cond_W_mK",
-            "CTE_um_m_C",
-            "Flash_Point_C",
-            "Autoignition_Temp_C",
-            "UL94_Flammability",
-            "Limiting_Oxygen_Index_pct",
-            "Smoke_Density_Ds",
-            "Char_Yield_pct",
-            "Decomp_Temp_C",
-            "Heat_of_Combustion_MJ_kg",
-            "Flame_Spread_Index",
-        ]
-        missing = [name for name in numeric_fields if getattr(self, name) is None]
-        if missing:
-            raise ValueError(
-                "All numeric descriptor fields are required when material_name is not provided."
-            )
-        return self
-
-
-class DatasetOutput(BaseModel):
-    version: str
-
-
-class InterpretabilityOutput(BaseModel):
-    prediction: float
-    feature_contributions: Dict[str, float]
-    top_3_drivers: list[dict[str, Any]]
-
-
-class ConfidenceOutput(BaseModel):
-    score: float
-    label: str
-
-
-class MaterialsOutput(BaseModel):
-    materials: list[str]
-
-
-class Phase3PredictResponse(BaseModel):
-    resistanceScore: float
-    effectiveResistance: float
-    coatingModifier: Optional[float]
-    dataset: DatasetOutput
-    interpretability: InterpretabilityOutput
-    confidence: ConfidenceOutput
-
-
-class LoginInput(BaseModel):
-    email: str
-    password: str
-
-
-class LoginResponse(BaseModel):
-    token: str
+API_VERSION = "0.3.0"
+BUILD_HASH = os.getenv("RENDER_GIT_COMMIT") or os.getenv("GIT_COMMIT") or "unknown"
 
 
 app = FastAPI(
     title="Dravix Phase 3 Resistance API",
-    version="0.3.0",
+    version=API_VERSION,
     docs_url="/docs",
     openapi_url="/openapi.json",
 )
@@ -141,6 +68,49 @@ app.add_middleware(
 
 def _stable_float(value: float, digits: int = 12) -> float:
     return float(round(float(value), digits))
+
+
+def _fallback_interpretability(
+    prediction: float,
+    feature_names: list[str],
+    error_message: str,
+) -> dict[str, Any]:
+    feature_contributions = {feature_name: 0.0 for feature_name in feature_names}
+    if not feature_contributions:
+        feature_contributions = {"_unavailable": 0.0}
+    display_names = {
+        feature_name: feature_name for feature_name in feature_contributions
+    }
+
+    top_3_drivers = [
+        {
+            "feature": feature_name,
+            "contribution": 0.0,
+            "direction": "increases_resistance",
+            "abs_magnitude": 0.0,
+        }
+        for feature_name in list(feature_contributions.keys())[:3]
+    ]
+    while len(top_3_drivers) < 3:
+        top_3_drivers.append(
+            {
+                "feature": "_unavailable",
+                "contribution": 0.0,
+                "direction": "increases_resistance",
+                "abs_magnitude": 0.0,
+            }
+        )
+
+    return {
+        "prediction": _stable_float(prediction),
+        "feature_contributions": feature_contributions,
+        "top_3_drivers": top_3_drivers,
+        "display_names": display_names,
+        "error": {
+            "type": "interpretability_error",
+            "message": error_message,
+        },
+    }
 
 
 def _manual_payload_dict(payload: Phase3Input) -> dict[str, Any]:
@@ -223,28 +193,47 @@ def load_phase3_runtime() -> None:
         bounds=bounds,
     )
     load_material_lookup()
-    schema_info = inspect_model_schema(model, reference_df=raw_reference)
-    metadata = initialize_dataset_metadata(model, schema_info=schema_info)
     variance_stats = compute_training_variance_stats(model, reference_feature_frame)
+    schema_info = inspect_model_schema(model, reference_df=raw_reference)
+    metadata = initialize_dataset_metadata(
+        model,
+        schema_info=schema_info,
+        variance_stats=variance_stats,
+    )
 
     app.state.model = model
     app.state.feature_names = feature_names
     app.state.training_variance_mean = variance_stats["training_variance_mean"]
     app.state.training_variance_std = variance_stats["training_variance_std"]
+    app.state.training_variance_p25 = variance_stats["training_variance_p25"]
+    app.state.training_variance_p50 = variance_stats["training_variance_p50"]
+    app.state.training_variance_p75 = variance_stats["training_variance_p75"]
     app.state.dataset_metadata = metadata
+    app.state.model_loaded = True
+    app.state.lookup_loaded = len(get_material_names()) > 0
+    app.state.started_at_utc = datetime.now(timezone.utc).isoformat()
 
 
 @app.get("/health")
-def health() -> Dict[str, str]:
-    return {"status": "ok"}
+def health() -> Dict[str, Any]:
+    return {
+        "status": "ok",
+        "dataset_version": DATASET_VERSION,
+        "model_loaded": bool(getattr(app.state, "model_loaded", False)),
+        "lookup_loaded": bool(getattr(app.state, "lookup_loaded", False)),
+    }
 
 
 @app.get("/version")
 def version() -> Dict[str, str]:
     return {
         "service": "Dravix Phase 3 Resistance API",
-        "version": "0.3.0",
+        "version": API_VERSION,
+        "api_version": API_VERSION,
         "dataset_version": DATASET_VERSION,
+        "model_artifact": MODEL_ARTIFACT_PATH.name,
+        "build_hash": BUILD_HASH,
+        "timestamp_utc": str(getattr(app.state, "started_at_utc", "unknown")),
     }
 
 
@@ -283,11 +272,51 @@ def predict(input: Phase3Input) -> Dict[str, Any]:
     base_resistance = float(base_result["resistance_score"])
 
     feature_vector = build_feature_vector(payload_data)
+    try:
+        interpretability_data = compute_feature_interpretability(
+            model=app.state.model,
+            feature_frame=feature_vector,
+        )
+        feature_contributions = {
+            feature_name: _stable_float(contribution)
+            for feature_name, contribution in interpretability_data["feature_contributions"].items()
+        }
+        display_names = {
+            str(feature_name): str(display_name)
+            for feature_name, display_name in interpretability_data.get(
+                "display_names",
+                {},
+            ).items()
+        }
+        top_3_drivers = [
+            {
+                "feature": str(driver["feature"]),
+                "contribution": _stable_float(driver["contribution"]),
+                "direction": str(driver["direction"]),
+                "abs_magnitude": _stable_float(driver["abs_magnitude"]),
+            }
+            for driver in interpretability_data["top_3_drivers"]
+        ]
+        interpretability = {
+            "prediction": _stable_float(base_resistance),
+            "feature_contributions": feature_contributions,
+            "top_3_drivers": top_3_drivers,
+            "display_names": display_names,
+        }
+    except Exception as exc:
+        interpretability = _fallback_interpretability(
+            prediction=base_resistance,
+            feature_names=list(app.state.feature_names),
+            error_message=str(exc),
+        )
+
     confidence = compute_confidence(
         model=app.state.model,
         feature_frame=feature_vector,
         training_variance_mean=float(app.state.training_variance_mean),
         training_variance_std=float(app.state.training_variance_std),
+        training_variance_p25=float(app.state.training_variance_p25),
+        training_variance_p75=float(app.state.training_variance_p75),
     )
 
     coating_modifier: float | None = None
@@ -311,11 +340,7 @@ def predict(input: Phase3Input) -> Dict[str, Any]:
         "effectiveResistance": stable_effective,
         "coatingModifier": stable_modifier,
         "dataset": {"version": DATASET_VERSION},
-        "interpretability": {
-            "prediction": stable_base,
-            "feature_contributions": {},
-            "top_3_drivers": [],
-        },
+        "interpretability": interpretability,
         "confidence": {
             "score": _stable_float(float(confidence["score"])),
             "label": str(confidence["label"]),

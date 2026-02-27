@@ -1,30 +1,23 @@
-import importlib
+from __future__ import annotations
 
-import pandas as pd
-import pytest
-
-import src.model as model_module
-
-
-def _reload_model_module():
-    return importlib.reload(model_module)
-
-
-def test_default_dataset_version_is_v02_core(monkeypatch):
-    monkeypatch.delenv("DRAVIX_DATASET_VERSION", raising=False)
-    module = _reload_model_module()
-    assert module.DATASET_VERSION == "v0.2-core"
+from src.model import (
+    DATASET_VERSION,
+    MATERIALS_LOOKUP_PATH,
+    MODEL_ARTIFACT_PATH,
+    PHASE3_REFERENCE_PATH,
+    SUPPORTED_DATASET_VERSIONS,
+)
 
 
-def test_env_selects_v03_layered(monkeypatch):
-    monkeypatch.setenv("DRAVIX_DATASET_VERSION", "v0.3-layered")
-    module = _reload_model_module()
-    assert module.DATASET_VERSION == "v0.3-layered"
+def test_dataset_version_is_v03_stable() -> None:
+    assert DATASET_VERSION == "v0.3-stable"
 
 
-def test_v03_builder_placeholder_raises(monkeypatch):
-    monkeypatch.setenv("DRAVIX_DATASET_VERSION", "v0.3-layered")
-    module = _reload_model_module()
-    sample = pd.DataFrame({"risk_score": [1.0]})
-    with pytest.raises(NotImplementedError, match="v0.3-layered not yet implemented"):
-        module.build_feature_matrix(sample)
+def test_supported_versions_include_active_version() -> None:
+    assert DATASET_VERSION in SUPPORTED_DATASET_VERSIONS
+
+
+def test_runtime_paths_exist() -> None:
+    assert MODEL_ARTIFACT_PATH.exists()
+    assert PHASE3_REFERENCE_PATH.exists()
+    assert MATERIALS_LOOKUP_PATH.exists()

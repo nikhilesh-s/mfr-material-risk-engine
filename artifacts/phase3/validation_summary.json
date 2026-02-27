@@ -1,0 +1,26 @@
+{
+  "dataset_version": "v0.3-stable",
+  "reference_dataset": "/Users/niks/Documents/GitHub/mfr-material-risk-engine/data/phase3_model/materials_phase3_with_target_v2.csv",
+  "model_artifact": "/Users/niks/Documents/GitHub/mfr-material-risk-engine/models/model_v0.3-stable.pkl",
+  "n_samples": 1771,
+  "metrics": {
+    "target_column": "Base_Resistance_Target",
+    "pearson_correlation": 0.9971771555733013,
+    "r2_score": 0.9942678879251557,
+    "mae": 0.0023332345282051836,
+    "mse": 4.0220332200153085e-05,
+    "residual_distribution": {
+      "mean": 0.000245509253198671,
+      "std": 0.006337196336452494,
+      "min": -0.045599016089324484,
+      "max": 0.08648767360114185
+    }
+  },
+  "variance_distribution": {
+    "mean": 0.00016432823964902165,
+    "std": 0.00048039654875623984,
+    "p25": 1.0624692927989697e-07,
+    "p50": 4.547852449772394e-06,
+    "p75": 0.00014097596111113856
+  }
+}

@@ -9,8 +9,9 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from .utils import repo_path
 
-INPUT_PATH = Path("data/phase3_clean/coatings_clean.csv")
+INPUT_PATH = repo_path("data", "phase3_clean", "coatings_clean.csv")
 
 COATING_DESCRIPTOR_COLUMNS = [
     "Melting_Point_C",

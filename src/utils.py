@@ -7,10 +7,17 @@ from typing import Dict, List, Tuple
 
 import pandas as pd
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
 
 TEXT_HEAVY_COLUMNS = ["PRE TEST CMT", "POST TEST CMT", "POST TEST CMT.1"]
 DROP_COLUMNS = ["Unnamed: 24"]
 META_COLUMNS = ["Source_File", "LABORATORY", "TEST IDENT", "OPERATOR"]
+
+
+def repo_path(*parts: str) -> Path:
+    """Return an absolute path anchored at repository root."""
+    return REPO_ROOT.joinpath(*parts)
 
 
 def map_material_type(material_text: str) -> str:
