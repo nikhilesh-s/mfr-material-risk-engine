@@ -16,6 +16,12 @@ const API_BASE_URL = RAW_BASE.endsWith('/')
 
 const DEFAULT_TIMEOUT_MS = 10000;
 
+export interface NonJsonSuccessPayload {
+  ok: false;
+  status: number;
+  rawText: string;
+}
+
 export class ApiError extends Error {
   status: number;
   payload: unknown;
@@ -27,6 +33,28 @@ export class ApiError extends Error {
     this.status = status;
     this.payload = payload;
     this.code = code;
+  }
+}
+
+function parseResponsePayload(text: string, status: number): {
+  payload: unknown | NonJsonSuccessPayload | null;
+  parseFailed: boolean;
+} {
+  if (!text.trim()) {
+    return { payload: null, parseFailed: false };
+  }
+
+  try {
+    return { payload: JSON.parse(text), parseFailed: false };
+  } catch {
+    return {
+      payload: {
+        ok: false,
+        status,
+        rawText: text,
+      },
+      parseFailed: true,
+    };
   }
 }
 
@@ -58,24 +86,31 @@ async function requestJson<T>(
   }
 
   const text = await response.text();
-  const payload = text ? JSON.parse(text) : null;
+  const { payload, parseFailed } = parseResponsePayload(text, response.status);
 
   if (!response.ok) {
-    const message =
-      (payload &&
+    const message = (() => {
+      if (
+        payload &&
         typeof payload === 'object' &&
         'detail' in payload &&
-        typeof (payload as { detail?: unknown }).detail === 'string' &&
-        (payload as { detail: string }).detail) ||
-      `Request failed with status ${response.status}`;
+        typeof (payload as { detail?: unknown }).detail === 'string'
+      ) {
+        return (payload as { detail: string }).detail;
+      }
+      if (parseFailed && text.trim()) {
+        return `Request failed with status ${response.status} (non-JSON response)`;
+      }
+      return `Request failed with status ${response.status}`;
+    })();
     throw new ApiError(message, response.status, payload);
   }
 
   return payload as T;
 }
 
-export function getHealth(): Promise<HealthInfo> {
-  return requestJson<HealthInfo>('/health');
+export function getHealth(): Promise<HealthInfo | NonJsonSuccessPayload | null> {
+  return requestJson<HealthInfo | NonJsonSuccessPayload | null>('/health');
 }
 
 export function getVersion(): Promise<VersionInfo> {

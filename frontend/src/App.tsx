@@ -15,6 +15,7 @@ import { useEffect, useMemo, useState } from 'react';
 import chemistryIcon from './assets/chemistry-svgrepo-com.svg';
 import { demoProfiles } from './demoProfiles';
 import { ApiError, getCoatings, getHealth, getMaterials, getVersion, predict } from './lib/api';
+import type { NonJsonSuccessPayload } from './lib/api';
 import type {
   ApiErrorDetail,
   HealthInfo,
@@ -180,6 +181,31 @@ function toFormStateFromPayload(payload: PredictionRequest, current: FormState):
   return next;
 }
 
+function isHealthInfo(value: unknown): value is HealthInfo {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+  const candidate = value as Partial<HealthInfo>;
+  return (
+    typeof candidate.status === 'string'
+    && typeof candidate.dataset_version === 'string'
+    && typeof candidate.model_loaded === 'boolean'
+    && typeof candidate.lookup_loaded === 'boolean'
+  );
+}
+
+function isNonJsonSuccessPayload(value: unknown): value is NonJsonSuccessPayload {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+  const candidate = value as Partial<NonJsonSuccessPayload>;
+  return (
+    candidate.ok === false
+    && typeof candidate.status === 'number'
+    && typeof candidate.rawText === 'string'
+  );
+}
+
 function App() {
   const [currentView, setCurrentView] = useState<ViewMode>('results');
   const [isExpanded, setIsExpanded] = useState(true);
@@ -192,10 +218,10 @@ function App() {
   const [version, setVersion] = useState<VersionInfo | null>(null);
   const [result, setResult] = useState<PredictionResponse | null>(null);
   const [isBootstrapping, setIsBootstrapping] = useState(true);
-  const [showInitializing, setShowInitializing] = useState(true);
+  const [initBlocked, setInitBlocked] = useState(false);
   const [startupMessage, setStartupMessage] = useState<string>('Checking backend health...');
   const [healthWarning, setHealthWarning] = useState<string | null>(null);
-  const [healthError, setHealthError] = useState<string | null>(null);
+  const [initError, setInitError] = useState<string | null>(null);
   const [materialsWarning, setMaterialsWarning] = useState<string | null>(null);
   const [coatingsWarning, setCoatingsWarning] = useState<string | null>(null);
   const [authenticated, setAuthenticated] = useState(false);
@@ -216,53 +242,92 @@ function App() {
   const [lastPayload, setLastPayload] = useState<PredictionRequest | null>(null);
   const [copyToastMessage, setCopyToastMessage] = useState<string | null>(null);
 
-  const refreshSystemState = async () => {
-    setIsBootstrapping(true);
-    setShowInitializing(true);
+  const logHealthPath = (path: string, details?: unknown) => {
+    if (import.meta.env.DEV) {
+      console.log(`[health] ${path}`, details);
+    }
+  };
+
+  const refreshSystemState = async (isInitialLoad: boolean = false) => {
+    if (isInitialLoad) {
+      setIsBootstrapping(true);
+    }
     setStartupMessage('Checking backend health...');
     setHealthWarning(null);
-    setHealthError(null);
+    setInitError(null);
 
-    let healthSoftTimedOut = false;
+    let settled = false;
     const healthSoftTimeoutId = window.setTimeout(() => {
-      healthSoftTimedOut = true;
-      setIsBootstrapping(false);
-      setShowInitializing(false);
+      if (settled) {
+        return;
+      }
+      if (isInitialLoad) {
+        setIsBootstrapping(false);
+      }
+      setInitBlocked(false);
+      setInitError('Health check timed out. Please retry.');
       setHealthWarning('Health check is taking longer than expected. You can continue and retry.');
+      setStartupMessage('Health check timed out.');
+      logHealthPath('rejected:timeout');
     }, 8000);
 
     const [healthRes, versionRes] = await Promise.allSettled([
       getHealth(),
       getVersion(),
     ]);
+    settled = true;
     window.clearTimeout(healthSoftTimeoutId);
 
     if (healthRes.status === 'fulfilled') {
       const data = healthRes.value;
-      setHealth(data);
-      if (!data || data.status !== 'ok') {
-        setShowInitializing(true);
-        setStartupMessage('System initializing');
-        setHealthError('Health check returned non-ready status.');
+      if (isHealthInfo(data)) {
+        setHealth(data);
+        if (data.status !== 'ok') {
+          setInitBlocked(true);
+          setStartupMessage('System initializing');
+          setInitError(null);
+          setHealthWarning(null);
+          logHealthPath('success:unhealthy', data);
+        } else {
+          setInitBlocked(false);
+          setStartupMessage('System ready.');
+          setInitError(null);
+          setHealthWarning(null);
+          logHealthPath('success:ok', data);
+        }
+      } else if (isNonJsonSuccessPayload(data)) {
+        setHealth(null);
+        setInitBlocked(false);
+        setStartupMessage('Health response parsing issue.');
+        setInitError('Health endpoint returned a non-JSON response. Please retry.');
+        setHealthWarning('Health response could not be parsed. You can continue and retry.');
+        logHealthPath('rejected:parse', data);
       } else {
-        setShowInitializing(false);
-        setHealthError(null);
-        setHealthWarning(null);
+        setHealth(null);
+        setInitBlocked(false);
+        setStartupMessage('Health response invalid.');
+        setInitError('Health endpoint returned an invalid payload. Please retry.');
+        setHealthWarning('Health response was not in the expected format.');
+        logHealthPath('rejected:invalid_payload', data);
       }
     } else {
       setHealth(null);
-      setHealthError('Unable to reach backend health endpoint. Please retry.');
+      setInitBlocked(false);
+      setInitError('Unable to reach backend health endpoint. Please retry.');
+      setHealthWarning('Health check failed. You can continue and retry.');
       setStartupMessage('Health check failed.');
-      if (!healthSoftTimedOut) {
-        setShowInitializing(true);
-      }
+      logHealthPath('rejected:fetch', healthRes.reason);
     }
 
     if (versionRes.status === 'fulfilled') {
       setVersion(versionRes.value);
+    } else {
+      logHealthPath('version:rejected', versionRes.reason);
     }
 
-    setIsBootstrapping(false);
+    if (isInitialLoad) {
+      setIsBootstrapping(false);
+    }
   };
 
   const loadLookupOptions = async () => {
@@ -292,7 +357,7 @@ function App() {
   };
 
   useEffect(() => {
-    void refreshSystemState();
+    void refreshSystemState(true);
   }, []);
 
   useEffect(() => {
@@ -546,7 +611,7 @@ function App() {
       .sort((a, b) => b.absMagnitude - a.absMagnitude);
   }, [result]);
 
-  if ((isBootstrapping && showInitializing) || showInitializing) {
+  if (isBootstrapping || initBlocked) {
     return (
       <div className="min-h-screen bg-[#F5F1EC] flex items-center justify-center p-8">
         <div className="max-w-xl w-full bg-[#FEFEFE] rounded-3xl shadow-sm p-10 text-center">
@@ -555,13 +620,13 @@ function App() {
           <p className="text-[#232422]/60 mt-3">
             {startupMessage}
           </p>
-          {healthError && (
-            <p className="text-sm text-[#7F1D1D] mt-3">{healthError}</p>
+          {initError && (
+            <p className="text-sm text-[#7F1D1D] mt-3">{initError}</p>
           )}
           <p className="text-sm text-[#232422]/50 mt-4">
             Dataset: {health?.dataset_version ?? version?.dataset_version ?? 'unknown'}
           </p>
-          {!isBootstrapping && (
+          {initBlocked && (
             <button
               onClick={() => {
                 void refreshSystemState();
@@ -729,9 +794,9 @@ function App() {
           </div>
         )}
 
-        {healthError && !showInitializing && (
+        {initError && !initBlocked && !isBootstrapping && (
           <div className="mb-4 px-4 py-3 rounded-xl bg-[#FDE7E7] text-[#7F1D1D] text-sm">
-            {healthError}
+            {initError}
           </div>
         )}
 
