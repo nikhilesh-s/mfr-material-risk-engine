@@ -22,13 +22,16 @@ Inference flow:
 - Phase 2 is preserved on branch: `archive/v0.2-core` at commit `538893b`
 
 ## Validation Results
-Phase 3 validation artifacts are exported under `validation/phase3/`:
-- `validation_summary_v0.3-alpha.json`
-- `validation_predictions_v0.3-alpha.csv`
-- `validation_residuals_v0.3-alpha.csv`
-- `feature_importance_v0.3-alpha.csv`
-- `coating_impact_summary_v0.3-alpha.csv`
-- `coating_delta_distribution_v0.3-alpha.csv`
+Phase 3 validation artifacts are exported under `artifacts/phase3/`:
+- `validation_summary.json`
+- `validation_predictions.csv`
+- `validation_residuals.csv`
+- `plot_residual_hist.png`
+- `plot_pred_vs_actual.png`
+- `plot_confidence_distribution.png`
+- `plot_top_features_global.png`
+- `coating_impact_summary.csv`
+- `api_contract_snapshot.json`
 
 ## Determinism Guarantee
 For identical payloads, `/predict` is expected to return identical JSON in the same deployed build.
@@ -50,6 +53,14 @@ python regression_test_predict.py
 Compatibility note:
 - Phase 2 behavior is archived (not deleted) on `archive/v0.2-core`.
 - `main` is dedicated to `v0.3-stable` layered resistance inference.
+- Frozen API contract: `docs/API_CONTRACT_v0.3-stable.md`
+
+## Deployment
+- Backend deployment target (Render): repository root with `uvicorn api.main:app`.
+- Frontend deployment target (Vercel): `frontend/` only.
+- Legacy UI folders are retained for historical reference and are not deploy targets:
+  - `mfr-risk-model/ui/`
+  - `mfr-risk-model/dravix_updated_ui/`
 
 ## Model Freeze (Phase 3)
 - Frozen dataset version: `v0.3-stable`
@@ -61,7 +72,7 @@ Compatibility note:
 ## Phase 3 Freeze Manifest
 - Model artifact: `models/model_v0.3-stable.pkl`
 - Dataset file: `data/phase3_model/materials_phase3_with_target_v2.csv`
-- Target column: `effectiveResistance`
+- Target column: `Base_Resistance_Target`
 - Git tag: `v0.3-stable`
 - Validation metrics:
   - Pearson correlation: `0.9971771555733013`

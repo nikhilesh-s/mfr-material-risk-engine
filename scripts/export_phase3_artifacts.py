@@ -224,7 +224,7 @@ def _export_plots(
 
 
 def _export_coating_summary() -> Path:
-    precomputed = repo_path("validation", "phase3", "coating_impact_summary_v0.3-alpha.csv")
+    precomputed = repo_path("validation", "phase3", "coating_impact_summary_v0.3-stable.csv")
     if precomputed.exists():
         shutil.copyfile(precomputed, COATING_IMPACT_PATH)
         return COATING_IMPACT_PATH

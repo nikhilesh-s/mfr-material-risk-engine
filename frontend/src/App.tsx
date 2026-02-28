@@ -11,7 +11,7 @@ import {
   Plus,
   Shield,
 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import chemistryIcon from './assets/chemistry-svgrepo-com.svg';
 import { demoProfiles } from './demoProfiles';
 import { ApiError, getCoatings, getHealth, getMaterials, getVersion, predict } from './lib/api';
@@ -242,13 +242,7 @@ function App() {
   const [lastPayload, setLastPayload] = useState<PredictionRequest | null>(null);
   const [copyToastMessage, setCopyToastMessage] = useState<string | null>(null);
 
-  const logHealthPath = (path: string, details?: unknown) => {
-    if (import.meta.env.DEV) {
-      console.log(`[health] ${path}`, details);
-    }
-  };
-
-  const refreshSystemState = async (isInitialLoad: boolean = false) => {
+  const refreshSystemState = useCallback(async (isInitialLoad: boolean = false) => {
     if (isInitialLoad) {
       setIsBootstrapping(true);
     }
@@ -268,7 +262,6 @@ function App() {
       setInitError('Health check timed out. Please retry.');
       setHealthWarning('Health check is taking longer than expected. You can continue and retry.');
       setStartupMessage('Health check timed out.');
-      logHealthPath('rejected:timeout');
     }, 8000);
 
     const [healthRes, versionRes] = await Promise.allSettled([
@@ -287,13 +280,11 @@ function App() {
           setStartupMessage('System initializing');
           setInitError(null);
           setHealthWarning(null);
-          logHealthPath('success:unhealthy', data);
         } else {
           setInitBlocked(false);
           setStartupMessage('System ready.');
           setInitError(null);
           setHealthWarning(null);
-          logHealthPath('success:ok', data);
         }
       } else if (isNonJsonSuccessPayload(data)) {
         setHealth(null);
@@ -301,14 +292,12 @@ function App() {
         setStartupMessage('Health response parsing issue.');
         setInitError('Health endpoint returned a non-JSON response. Please retry.');
         setHealthWarning('Health response could not be parsed. You can continue and retry.');
-        logHealthPath('rejected:parse', data);
       } else {
         setHealth(null);
         setInitBlocked(false);
         setStartupMessage('Health response invalid.');
         setInitError('Health endpoint returned an invalid payload. Please retry.');
         setHealthWarning('Health response was not in the expected format.');
-        logHealthPath('rejected:invalid_payload', data);
       }
     } else {
       setHealth(null);
@@ -316,19 +305,16 @@ function App() {
       setInitError('Unable to reach backend health endpoint. Please retry.');
       setHealthWarning('Health check failed. You can continue and retry.');
       setStartupMessage('Health check failed.');
-      logHealthPath('rejected:fetch', healthRes.reason);
     }
 
     if (versionRes.status === 'fulfilled') {
       setVersion(versionRes.value);
-    } else {
-      logHealthPath('version:rejected', versionRes.reason);
     }
 
     if (isInitialLoad) {
       setIsBootstrapping(false);
     }
-  };
+  }, []);
 
   const loadLookupOptions = async () => {
     const [materialsRes, coatingsRes] = await Promise.allSettled([
@@ -358,7 +344,7 @@ function App() {
 
   useEffect(() => {
     void refreshSystemState(true);
-  }, []);
+  }, [refreshSystemState]);
 
   useEffect(() => {
     document.title = 'Dravix';

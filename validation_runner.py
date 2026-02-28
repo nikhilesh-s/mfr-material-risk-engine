@@ -14,7 +14,7 @@ from src.model import DATASET_VERSION, PHASE3_REFERENCE_PATH, load_phase3_model
 VALIDATION_OUTPUT_PATH = Path("validation_summary.json")
 VALIDATION_PREDICTIONS_PATH = Path("validation_predictions.csv")
 VALIDATION_RESIDUALS_PATH = Path("validation_residuals.csv")
-FROZEN_TARGET_COLUMN = "effectiveResistance"
+FROZEN_TARGET_COLUMN = "Base_Resistance_Target"
 
 
 def _rank_candidate_target_columns(
