@@ -7,32 +7,30 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from sklearn.metrics import mean_absolute_error, r2_score
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 from src.model import DATASET_VERSION, PHASE3_REFERENCE_PATH, load_phase3_model
 
 VALIDATION_OUTPUT_PATH = Path("validation_summary.json")
+VALIDATION_PREDICTIONS_PATH = Path("validation_predictions.csv")
+VALIDATION_RESIDUALS_PATH = Path("validation_residuals.csv")
+FROZEN_TARGET_COLUMN = "effectiveResistance"
 
 
-def _detect_target_column(
+def _rank_candidate_target_columns(
     dataframe: pd.DataFrame,
     feature_names: list[str],
-) -> str:
-    preferred_targets = ["Base_Resistance_Target", "risk_score"]
-    for target in preferred_targets:
-        if target in dataframe.columns and target not in feature_names:
-            return target
-
+) -> list[str]:
     numeric_non_feature_columns = [
         column
         for column in dataframe.select_dtypes(include=["number"]).columns
         if column not in set(feature_names)
     ]
     if not numeric_non_feature_columns:
-        raise ValueError("Unable to detect target column from reference dataset.")
+        return []
 
     variances = dataframe[numeric_non_feature_columns].var(ddof=0, numeric_only=True)
-    return str(variances.sort_values(ascending=False).index[0])
+    return variances.sort_values(ascending=False).index.astype(str).tolist()
 
 
 def _pearson(y_true: np.ndarray, y_pred: np.ndarray) -> float:
@@ -57,8 +55,15 @@ def main() -> None:
             + ", ".join(missing_feature_columns)
         )
 
-    target_column = _detect_target_column(reference_df, feature_names)
-    y_all = pd.to_numeric(reference_df[target_column], errors="coerce")
+    candidate_targets = _rank_candidate_target_columns(reference_df, feature_names)
+    if FROZEN_TARGET_COLUMN not in reference_df.columns:
+        top_candidates = ", ".join(candidate_targets[:5]) if candidate_targets else "none"
+        raise ValueError(
+            "Frozen target column is missing from reference dataset: "
+            f"{FROZEN_TARGET_COLUMN}. Top candidate numeric columns: {top_candidates}"
+        )
+
+    y_all = pd.to_numeric(reference_df[FROZEN_TARGET_COLUMN], errors="coerce")
     valid_mask = y_all.notna()
 
     X = reference_df.loc[valid_mask, feature_names]
@@ -67,21 +72,48 @@ def main() -> None:
         raise ValueError("No valid target rows available for validation metrics.")
 
     preds = model.predict(X)
+    residuals = y_true - preds
 
     validation_summary = {
         "dataset_version": DATASET_VERSION,
         "n_samples": int(len(y_true)),
-        "target_column": target_column,
+        "target_column": FROZEN_TARGET_COLUMN,
+        "candidate_target_columns": candidate_targets[:5],
         "pearson_correlation": _pearson(y_true, preds),
         "r2_score": float(r2_score(y_true, preds)),
         "mae": float(mean_absolute_error(y_true, preds)),
+        "mse": float(mean_squared_error(y_true, preds)),
+        "residual_distribution": {
+            "mean": float(np.mean(residuals)),
+            "std": float(np.std(residuals)),
+            "min": float(np.min(residuals)),
+            "max": float(np.max(residuals)),
+        },
     }
+
+    predictions_df = pd.DataFrame(
+        {
+            "y_true": y_true,
+            "y_pred": preds,
+        }
+    )
+    predictions_df.to_csv(VALIDATION_PREDICTIONS_PATH, index=False)
+
+    residuals_df = pd.DataFrame(
+        {
+            "residual": residuals,
+            "absolute_residual": np.abs(residuals),
+        }
+    )
+    residuals_df.to_csv(VALIDATION_RESIDUALS_PATH, index=False)
 
     with VALIDATION_OUTPUT_PATH.open("w", encoding="utf-8") as output_file:
         json.dump(validation_summary, output_file, indent=2)
 
     print(json.dumps(validation_summary, indent=2))
     print(f"Wrote {VALIDATION_OUTPUT_PATH}")
+    print(f"Wrote {VALIDATION_PREDICTIONS_PATH}")
+    print(f"Wrote {VALIDATION_RESIDUALS_PATH}")
 
 
 if __name__ == "__main__":

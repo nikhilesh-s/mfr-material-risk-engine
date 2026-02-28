@@ -1,7 +1,15 @@
 {
-  "dataset_version": "v0.2-core",
-  "n_samples": 718,
-  "pearson_correlation": 0.9981853936236091,
-  "r2_score": 0.9963037863338758,
-  "mae": 0.17640771809835684
+  "dataset_version": "v0.3-stable",
+  "n_samples": 1771,
+  "target_column": "effectiveResistance",
+  "pearson_correlation": 0.9971771555733013,
+  "r2_score": 0.9942678879251557,
+  "mae": 0.0023332345282051823,
+  "mse": 4.022033220015312e-05,
+  "residual_distribution": {
+    "mean": 0.0002455092531986713,
+    "std": 0.006337196336452497,
+    "min": -0.04559901608932443,
+    "max": 0.08648767360114173
+  }
 }

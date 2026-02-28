@@ -18,7 +18,7 @@ Inference flow:
 
 ## Dataset Version
 - Active version constant: `v0.3-stable` (`src/model.py`)
-- Artifact loaded: `models/model_v0.3-alpha.pkl` (treated as stable runtime artifact)
+- Artifact loaded: `models/model_v0.3-stable.pkl`
 - Phase 2 is preserved on branch: `archive/v0.2-core` at commit `538893b`
 
 ## Validation Results
@@ -57,3 +57,13 @@ Compatibility note:
 - Runtime behavior: inference-only startup, no retraining
 - Contract guarantee: `/predict` response fields remain stable for Phase 3 rollout
 - Validation artifact set: `artifacts/phase3/` is the canonical export bundle for deck/reporting
+
+## Phase 3 Freeze Manifest
+- Model artifact: `models/model_v0.3-stable.pkl`
+- Dataset file: `data/phase3_model/materials_phase3_with_target_v2.csv`
+- Target column: `effectiveResistance`
+- Git tag: `v0.3-stable`
+- Validation metrics:
+  - Pearson correlation: `0.9971771555733013`
+  - R²: `0.9942678879251557`
+  - MAE: `0.0023332345282051823`

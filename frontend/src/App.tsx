@@ -213,6 +213,8 @@ function App() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [interpretabilityNotice, setInterpretabilityNotice] = useState<string | null>(null);
   const [lastSubmissionSummary, setLastSubmissionSummary] = useState<string>('No prediction yet');
+  const [lastPayload, setLastPayload] = useState<PredictionRequest | null>(null);
+  const [copyToastMessage, setCopyToastMessage] = useState<string | null>(null);
 
   const refreshSystemState = async () => {
     setIsBootstrapping(true);
@@ -303,6 +305,18 @@ function App() {
     }
     void loadLookupOptions();
   }, [authenticated]);
+
+  useEffect(() => {
+    if (!copyToastMessage) {
+      return;
+    }
+    const timeoutId = window.setTimeout(() => {
+      setCopyToastMessage(null);
+    }, 1200);
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [copyToastMessage]);
 
   const handleLogin = () => {
     if (REQUIRED_PASSWORD && passwordInput === REQUIRED_PASSWORD) {
@@ -428,6 +442,7 @@ function App() {
       const payload = overridePayload ?? buildPayloadFromForm();
       const prediction = await predict(payload);
       setResult(prediction);
+      setLastPayload(payload);
       setLastSubmissionSummary(summarizePayload(payload));
       setCurrentView('results');
 
@@ -473,11 +488,44 @@ function App() {
   const hasMaterialSelection = formData.material_name.trim().length > 0;
   const showCoatingDropdown = !coatingsWarning;
 
-  const topDrivers = result?.interpretability.top_3_drivers ?? [];
+  const topDrivers = useMemo(
+    () => result?.interpretability.top_3_drivers ?? [],
+    [result],
+  );
+  const explanationText = useMemo(() => {
+    if (topDrivers.length === 0) {
+      return 'The predicted fire-resistance profile is primarily influenced by available model descriptors.';
+    }
+
+    const driverNames = topDrivers.slice(0, 3).map((driver) => prettyFeatureName(driver.feature));
+    let driverList = driverNames[0];
+    if (driverNames.length === 2) {
+      driverList = `${driverNames[0]} and ${driverNames[1]}`;
+    } else if (driverNames.length >= 3) {
+      driverList = `${driverNames[0]}, ${driverNames[1]}, and ${driverNames[2]}`;
+    }
+
+    const topDriver = topDrivers[0];
+    const topDriverDirection = topDriver.direction === 'increases_resistance' ? 'increasing' : 'decreasing';
+    return `The predicted fire-resistance profile is primarily influenced by ${driverList}, with ${prettyFeatureName(topDriver.feature)} contributing most significantly in a ${topDriverDirection} direction.`;
+  }, [topDrivers]);
+
   const maxDriverMagnitude = Math.max(
     1e-12,
     ...topDrivers.map((driver) => Math.max(Math.abs(driver.abs_magnitude), 1e-12)),
   );
+
+  const copyJson = async (value: unknown) => {
+    if (!value) {
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(value, null, 2));
+      setCopyToastMessage('Copied');
+    } catch {
+      setErrorMessage('Clipboard copy failed. Please retry.');
+    }
+  };
 
   const contributionRows = useMemo(() => {
     if (!result?.interpretability.feature_contributions) {
@@ -1120,6 +1168,26 @@ function App() {
                 <h1 className="text-4xl font-light text-[#232422]">Fire Risk Assessment</h1>
               </div>
               <p className="text-[#232422]/60">Material: {lastSubmissionSummary}</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <button
+                  onClick={() => {
+                    void copyJson(lastPayload);
+                  }}
+                  disabled={!lastPayload}
+                  className="px-4 py-2 rounded-full text-xs bg-[#232422] text-[#FEFEFE] hover:opacity-90 disabled:opacity-40 transition-opacity"
+                >
+                  Copy Payload
+                </button>
+                <button
+                  onClick={() => {
+                    void copyJson(result);
+                  }}
+                  disabled={!result}
+                  className="px-4 py-2 rounded-full text-xs bg-[#232422] text-[#FEFEFE] hover:opacity-90 disabled:opacity-40 transition-opacity"
+                >
+                  Copy Response
+                </button>
+              </div>
             </div>
 
             {interpretabilityNotice && (
@@ -1164,6 +1232,9 @@ function App() {
                         API: {version?.api_version ?? '0.3.0'} / Dataset: {result?.dataset.version ?? health?.dataset_version ?? 'unknown'}
                       </span>
                     </div>
+                  </div>
+                  <div className="mt-5 text-sm text-[#232422]/75 leading-relaxed max-w-3xl">
+                    {explanationText}
                   </div>
                 </div>
               </div>
@@ -1302,6 +1373,11 @@ function App() {
                 </div>
               </div>
             </div>
+          </div>
+        )}
+        {copyToastMessage && (
+          <div className="fixed bottom-6 right-6 px-4 py-2 rounded-full bg-[#232422] text-[#FEFEFE] text-sm shadow-md">
+            {copyToastMessage}
           </div>
         )}
       </main>
