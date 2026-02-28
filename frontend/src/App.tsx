@@ -5,8 +5,10 @@ import {
   ChevronDown,
   ChevronUp,
   Flame,
+  Lock,
   LogOut,
   Microscope,
+  Plus,
   Shield,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -25,6 +27,13 @@ import type {
 
 type ViewMode = 'results' | 'home' | 'inputs' | 'methodology';
 type InputMode = 'lookup' | 'manual';
+type MethodologyTab =
+  | 'public'
+  | 'algorithm_overview'
+  | 'confidence_calibration'
+  | 'dataset_construction'
+  | 'mkl_modeling_layer'
+  | 'interpretability_logic';
 
 type FormState = {
   material_name: string;
@@ -104,6 +113,15 @@ const REQUIRED_NUMERIC_KEYS: Array<ManualNumericKey> = [
 ];
 
 const REQUIRED_PASSWORD = import.meta.env.VITE_APP_PASSWORD;
+const REQUIRED_ADVANCED_PASSWORD = import.meta.env.VITE_ADVANCED_PASSWORD;
+
+const ADVANCED_METHOD_TABS: Array<{ key: Exclude<MethodologyTab, 'public'>; label: string }> = [
+  { key: 'algorithm_overview', label: 'Algorithm Overview' },
+  { key: 'confidence_calibration', label: 'Confidence Calibration' },
+  { key: 'dataset_construction', label: 'Dataset Construction' },
+  { key: 'mkl_modeling_layer', label: 'MKL / Modeling Layer' },
+  { key: 'interpretability_logic', label: 'Interpretability Logic' },
+];
 
 function isLookupPayload(payload: PredictionRequest): payload is LookupPredictionPayload {
   return 'material_name' in payload;
@@ -183,6 +201,13 @@ function App() {
   const [authenticated, setAuthenticated] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [authError, setAuthError] = useState<string | null>(null);
+  const [methodologyTab, setMethodologyTab] = useState<MethodologyTab>('public');
+  const [advancedMenuOpen, setAdvancedMenuOpen] = useState(false);
+  const [advancedLoginOpen, setAdvancedLoginOpen] = useState(false);
+  const [advancedAuthenticated, setAdvancedAuthenticated] = useState(false);
+  const [advancedPasswordInput, setAdvancedPasswordInput] = useState('');
+  const [advancedAuthError, setAdvancedAuthError] = useState<string | null>(null);
+  const [pendingAdvancedTab, setPendingAdvancedTab] = useState<Exclude<MethodologyTab, 'public'> | null>(null);
 
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -269,6 +294,10 @@ function App() {
   }, []);
 
   useEffect(() => {
+    document.title = 'Dravix';
+  }, []);
+
+  useEffect(() => {
     if (!authenticated) {
       return;
     }
@@ -289,6 +318,59 @@ function App() {
     setAuthenticated(false);
     setAuthError(null);
     setPasswordInput('');
+    setAdvancedAuthenticated(false);
+    setAdvancedMenuOpen(false);
+    setAdvancedLoginOpen(false);
+    setAdvancedPasswordInput('');
+    setAdvancedAuthError(null);
+    setPendingAdvancedTab(null);
+    setMethodologyTab('public');
+  };
+
+  const openPublicMethodology = () => {
+    setCurrentView('methodology');
+    setMethodologyTab('public');
+    setAdvancedLoginOpen(false);
+    setPendingAdvancedTab(null);
+    setAdvancedAuthError(null);
+  };
+
+  const handleAdvancedTabSelect = (tab: Exclude<MethodologyTab, 'public'>) => {
+    setCurrentView('methodology');
+    if (advancedAuthenticated) {
+      setMethodologyTab(tab);
+      setAdvancedMenuOpen(false);
+      return;
+    }
+    setPendingAdvancedTab(tab);
+    setAdvancedLoginOpen(true);
+    setAdvancedMenuOpen(false);
+    setAdvancedAuthError(null);
+    setAdvancedPasswordInput('');
+  };
+
+  const unlockAdvancedMethodology = () => {
+    if (!REQUIRED_ADVANCED_PASSWORD) {
+      setAdvancedAuthError('Advanced methodology password is not configured.');
+      return;
+    }
+    if (advancedPasswordInput === REQUIRED_ADVANCED_PASSWORD) {
+      setAdvancedAuthenticated(true);
+      setAdvancedAuthError(null);
+      setAdvancedPasswordInput('');
+      setAdvancedLoginOpen(false);
+      setMethodologyTab(pendingAdvancedTab ?? 'algorithm_overview');
+      return;
+    }
+    setAdvancedAuthError('Invalid credentials');
+  };
+
+  const lockAdvancedMethodology = () => {
+    setAdvancedAuthenticated(false);
+    setAdvancedAuthError(null);
+    setAdvancedPasswordInput('');
+    setPendingAdvancedTab(null);
+    setMethodologyTab('public');
   };
 
   const handleInputChange = (key: keyof FormState, value: string) => {
@@ -449,9 +531,11 @@ function App() {
   if (!authenticated) {
     return (
       <div className="min-h-screen bg-[#F5F1EC] flex items-center justify-center p-8">
-        <div className="max-w-xl w-full bg-[#FEFEFE] rounded-3xl shadow-sm p-10 text-center">
-          <h1 className="text-5xl font-light text-[#232422]">Dravix</h1>
-          <p className="text-[#232422]/60 mt-3">Phase 3 Research Platform</p>
+        <div className="max-w-2xl w-full bg-[#FEFEFE] rounded-3xl shadow-sm p-12 text-center">
+          <h1 className="text-6xl font-semibold tracking-tight text-[#232422]">Dravix v3</h1>
+          <p className="text-[#232422]/65 mt-4 text-lg leading-relaxed max-w-xl mx-auto">
+            An early-stage materials fire-risk screening and prioritization engine currently in its third phase of development.
+          </p>
           <div className="mt-8 space-y-4">
             <input
               type="password"
@@ -484,7 +568,10 @@ function App() {
     <div className="min-h-screen bg-[#F5F1EC] flex">
       <aside className="w-20 bg-[#FEFEFE] flex flex-col items-center py-8 gap-8 rounded-r-3xl shadow-sm">
         <button
-          onClick={() => setCurrentView('home')}
+          onClick={() => {
+            setCurrentView('home');
+            setAdvancedMenuOpen(false);
+          }}
           className="w-12 h-12 bg-[#232422] rounded-2xl flex items-center justify-center hover:opacity-90 transition-opacity"
         >
           <img src={chemistryIcon} alt="Dravix" className="w-6 h-6" />
@@ -492,7 +579,10 @@ function App() {
 
         <nav className="flex flex-col gap-6 mt-8">
           <button
-            onClick={() => setCurrentView('inputs')}
+            onClick={() => {
+              setCurrentView('inputs');
+              setAdvancedMenuOpen(false);
+            }}
             className={`w-12 h-12 rounded-xl transition-colors flex items-center justify-center group ${
               currentView === 'inputs' ? 'bg-[#F5F1EC]' : 'hover:bg-[#F5F1EC]'
             }`}
@@ -512,7 +602,10 @@ function App() {
             />
           </button>
           <button
-            onClick={() => setCurrentView('results')}
+            onClick={() => {
+              setCurrentView('results');
+              setAdvancedMenuOpen(false);
+            }}
             className={`w-12 h-12 rounded-xl transition-colors flex items-center justify-center group ${
               currentView === 'results' ? 'bg-[#F5F1EC]' : 'hover:bg-[#F5F1EC]'
             }`}
@@ -524,7 +617,10 @@ function App() {
             />
           </button>
           <button
-            onClick={() => setCurrentView('methodology')}
+            onClick={() => {
+              openPublicMethodology();
+              setAdvancedMenuOpen(false);
+            }}
             className={`w-12 h-12 rounded-xl transition-colors flex items-center justify-center group ${
               currentView === 'methodology' ? 'bg-[#F5F1EC]' : 'hover:bg-[#F5F1EC]'
             }`}
@@ -536,6 +632,37 @@ function App() {
               }`}
             />
           </button>
+          <div className="relative">
+            <button
+              onClick={() => setAdvancedMenuOpen((prev) => !prev)}
+              className={`w-12 h-12 rounded-xl transition-colors flex items-center justify-center group ${
+                advancedMenuOpen ? 'bg-[#F5F1EC]' : 'hover:bg-[#F5F1EC]'
+              }`}
+              title="Advanced Methodology"
+            >
+              <Plus
+                className={`w-5 h-5 ${
+                  advancedMenuOpen ? 'text-[#FF8D7C]' : 'text-[#232422] group-hover:text-[#FF8D7C]'
+                }`}
+              />
+            </button>
+            {advancedMenuOpen && (
+              <div className="absolute left-16 top-0 z-30 w-60 bg-[#FEFEFE] rounded-2xl shadow-lg border border-[#232422]/10 p-3 space-y-1">
+                <div className="px-2 py-1 text-xs uppercase tracking-wide text-[#232422]/50">
+                  Advanced Methodology
+                </div>
+                {ADVANCED_METHOD_TABS.map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => handleAdvancedTabSelect(tab.key)}
+                    className="w-full text-left px-3 py-2 rounded-xl text-sm text-[#232422] hover:bg-[#F5F1EC] transition-colors"
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </nav>
       </aside>
 
@@ -609,69 +736,182 @@ function App() {
           </div>
         ) : currentView === 'methodology' ? (
           <div className="max-w-7xl mx-auto">
-            <div className="mb-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-[#FF8D7C] rounded-xl flex items-center justify-center">
-                  <BookOpen className="w-5 h-5 text-[#FEFEFE]" />
+            <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-[#FF8D7C] rounded-xl flex items-center justify-center">
+                    <BookOpen className="w-5 h-5 text-[#FEFEFE]" />
+                  </div>
+                  <h1 className="text-4xl font-light text-[#232422]">Methodology</h1>
                 </div>
-                <h1 className="text-4xl font-light text-[#232422]">Methodology</h1>
+                <p className="text-[#232422]/60">Public and restricted methodology references for Phase 3.</p>
               </div>
-              <p className="text-[#232422]/60">Phase 3 research methodology and metadata reference</p>
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  onClick={() => setMethodologyTab('public')}
+                  className={`px-4 py-2 rounded-full text-sm transition-colors ${
+                    methodologyTab === 'public'
+                      ? 'bg-[#232422] text-[#FEFEFE]'
+                      : 'bg-[#FEFEFE] text-[#232422] hover:bg-[#EAE4DB]'
+                  }`}
+                >
+                  Public
+                </button>
+                {advancedAuthenticated && ADVANCED_METHOD_TABS.map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setMethodologyTab(tab.key)}
+                    className={`px-4 py-2 rounded-full text-sm transition-colors ${
+                      methodologyTab === tab.key
+                        ? 'bg-[#232422] text-[#FEFEFE]'
+                        : 'bg-[#FEFEFE] text-[#232422] hover:bg-[#EAE4DB]'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+                {advancedAuthenticated && (
+                  <button
+                    onClick={lockAdvancedMethodology}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm bg-[#FEFEFE] text-[#232422] hover:bg-[#EAE4DB] transition-colors"
+                  >
+                    <Lock className="w-4 h-4" />
+                    Lock Advanced
+                  </button>
+                )}
+              </div>
             </div>
 
-            <div className="bg-[#FEFEFE] rounded-3xl p-8 max-h-[72vh] overflow-y-auto space-y-8">
-              <section>
-                <h2 className="text-xl font-light text-[#232422] mb-2">A. Resistance Score</h2>
-                <p className="text-[#232422]/70 leading-relaxed">
-                  Resistance score is a relative predictive proxy derived from structured material descriptors.
-                  It supports comparative screening across materials and coating conditions and is not a
-                  regulatory certification outcome.
+            {advancedLoginOpen && !advancedAuthenticated && (
+              <div className="mb-6 bg-[#FEFEFE] rounded-3xl p-6 border border-[#232422]/10">
+                <h3 className="text-lg font-light text-[#232422]">Restricted Methodology Access</h3>
+                <p className="text-sm text-[#232422]/60 mt-2">
+                  Enter the secondary password to unlock advanced methodology tabs.
                 </p>
-              </section>
-
-              <section>
-                <h2 className="text-xl font-light text-[#232422] mb-2">B. Confidence Score</h2>
-                <p className="text-[#232422]/70 leading-relaxed">
-                  Confidence is computed from tree-level variance characteristics relative to the training
-                  variance distribution. High, Medium, and Low labels are derived from calibrated percentile
-                  bands to provide uncertainty-aware inference context.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="text-xl font-light text-[#232422] mb-2">C. Interpretability</h2>
-                <p className="text-[#232422]/70 leading-relaxed">
-                  Interpretability is generated through tree-based contribution extraction and ranked into
-                  `top_3_drivers` by absolute contribution magnitude. Positive contributions indicate increasing
-                  resistance influence, while negative contributions indicate decreasing resistance influence.
-                </p>
-              </section>
-
-              <section>
-                <h2 className="text-xl font-light text-[#232422] mb-3">D. Dataset Metadata</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                  <div className="p-4 rounded-xl bg-[#F5F1EC]">
-                    <div className="text-[#232422]/60">Dataset Version</div>
-                    <div className="text-[#232422] mt-1">{version?.dataset_version ?? health?.dataset_version ?? 'Unknown'}</div>
-                  </div>
-                  <div className="p-4 rounded-xl bg-[#F5F1EC]">
-                    <div className="text-[#232422]/60">Feature Count</div>
-                    <div className="text-[#232422] mt-1">
-                      {(version as VersionInfo & { feature_count?: number } | null)?.feature_count ?? 'Not exposed by API'}
-                    </div>
-                  </div>
-                  <div className="p-4 rounded-xl bg-[#F5F1EC]">
-                    <div className="text-[#232422]/60">Target Column</div>
-                    <div className="text-[#232422] mt-1">
-                      {(version as VersionInfo & { target_column?: string } | null)?.target_column ?? 'Not exposed by API'}
-                    </div>
-                  </div>
-                  <div className="p-4 rounded-xl bg-[#F5F1EC]">
-                    <div className="text-[#232422]/60">Build Timestamp</div>
-                    <div className="text-[#232422] mt-1">{version?.timestamp_utc ?? 'Unknown'}</div>
-                  </div>
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <input
+                    type="password"
+                    value={advancedPasswordInput}
+                    onChange={(e) => {
+                      setAdvancedPasswordInput(e.target.value);
+                      if (advancedAuthError) {
+                        setAdvancedAuthError(null);
+                      }
+                    }}
+                    placeholder="Secondary password"
+                    className="w-72 max-w-full px-4 py-2 bg-[#F5F1EC] rounded-xl text-sm text-[#232422] focus:outline-none focus:ring-2 focus:ring-[#FFDC6A]"
+                  />
+                  <button
+                    onClick={unlockAdvancedMethodology}
+                    className="px-5 py-2 bg-gradient-to-r from-[#FFDC6A] to-[#FF8D7C] text-[#232422] rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
+                  >
+                    Unlock
+                  </button>
+                  <button
+                    onClick={() => {
+                      setAdvancedLoginOpen(false);
+                      setPendingAdvancedTab(null);
+                      setAdvancedPasswordInput('');
+                      setAdvancedAuthError(null);
+                    }}
+                    className="px-5 py-2 bg-[#232422] text-[#FEFEFE] rounded-full text-sm hover:opacity-90 transition-opacity"
+                  >
+                    Cancel
+                  </button>
                 </div>
-              </section>
+                {advancedAuthError && (
+                  <p className="text-sm text-[#7F1D1D] mt-3">{advancedAuthError}</p>
+                )}
+              </div>
+            )}
+
+            <div className="bg-[#FEFEFE] rounded-3xl p-8 max-h-[72vh] overflow-y-auto transition-all duration-200">
+              {methodologyTab === 'public' && (
+                <div className="space-y-8">
+                  <section>
+                    <h2 className="text-xl font-light text-[#232422] mb-2">Section 1 — What Dravix Does</h2>
+                    <p className="text-[#232422]/70 leading-relaxed">
+                      Dravix is designed for early-stage materials screening where teams need a consistent
+                      relative fire-risk proxy for ranking options. It supports prioritization decisions and is
+                      not a certification tool or a substitute for standards-based fire qualification testing.
+                    </p>
+                  </section>
+
+                  <section>
+                    <h2 className="text-xl font-light text-[#232422] mb-2">Section 2 — Performance Bands</h2>
+                    <p className="text-[#232422]/70 leading-relaxed">
+                      Confidence bands are derived from training variance percentiles. High confidence reflects
+                      lower predictive variance than the p25 threshold, Medium confidence is the interquartile
+                      band between p25 and p75, and Low confidence corresponds to the upper variance quartile
+                      above p75.
+                    </p>
+                  </section>
+
+                  <section>
+                    <h2 className="text-xl font-light text-[#232422] mb-2">Section 3 — What Resistance Score Means</h2>
+                    <p className="text-[#232422]/70 leading-relaxed">
+                      The resistance score is a relative 0–1 proxy generated from descriptor-driven model
+                      inference. It is intended for comparative prioritization across materials and coating
+                      configurations rather than absolute fire-rating interpretation.
+                    </p>
+                  </section>
+                </div>
+              )}
+
+              {methodologyTab === 'algorithm_overview' && advancedAuthenticated && (
+                <section className="space-y-4">
+                  <h2 className="text-2xl font-light text-[#232422]">Algorithm Overview</h2>
+                  <p className="text-[#232422]/70 leading-relaxed">
+                    The current engine uses a RandomForestRegressor artifact in frozen production mode. Inference
+                    is deterministic for identical inputs, model parameters are fixed at startup, and runtime
+                    retraining is not performed.
+                  </p>
+                </section>
+              )}
+
+              {methodologyTab === 'confidence_calibration' && advancedAuthenticated && (
+                <section className="space-y-4">
+                  <h2 className="text-2xl font-light text-[#232422]">Confidence Calibration</h2>
+                  <p className="text-[#232422]/70 leading-relaxed">
+                    Confidence is calibrated from the training variance distribution. Thresholds are percentile-
+                    based, with High below p25, Medium between p25 and p75, and Low above p75, providing an
+                    uncertainty-aware interpretation of each prediction.
+                  </p>
+                </section>
+              )}
+
+              {methodologyTab === 'dataset_construction' && advancedAuthenticated && (
+                <section className="space-y-4">
+                  <h2 className="text-2xl font-light text-[#232422]">Dataset Construction</h2>
+                  <p className="text-[#232422]/70 leading-relaxed">
+                    Phase 3 dataset construction targets roughly 718 materials with engineered combustion and
+                    physical descriptors, explicit target-column identification, and reproducible validation
+                    metrics including Pearson correlation, R², and MAE.
+                  </p>
+                </section>
+              )}
+
+              {methodologyTab === 'mkl_modeling_layer' && advancedAuthenticated && (
+                <section className="space-y-4">
+                  <h2 className="text-2xl font-light text-[#232422]">MKL / Modeling Layer</h2>
+                  <p className="text-[#232422]/70 leading-relaxed">
+                    The Material Knowledge Layer abstracts descriptor mapping into a stable interface supporting
+                    both lookup-driven material retrieval and manual descriptor override paths for controlled
+                    what-if analysis.
+                  </p>
+                </section>
+              )}
+
+              {methodologyTab === 'interpretability_logic' && advancedAuthenticated && (
+                <section className="space-y-4">
+                  <h2 className="text-2xl font-light text-[#232422]">Interpretability Logic</h2>
+                  <p className="text-[#232422]/70 leading-relaxed">
+                    Local interpretability uses treeinterpreter to extract per-feature contribution values from
+                    the loaded tree ensemble. Top drivers are ranked by absolute contribution magnitude, and the
+                    top three are surfaced with signed directional effects.
+                  </p>
+                </section>
+              )}
             </div>
           </div>
         ) : currentView === 'inputs' ? (
