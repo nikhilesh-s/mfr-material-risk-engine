@@ -61,9 +61,12 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "https://dravix-engine.materiamse.com",
         "https://mfr-material-risk-engine.vercel.app",
         "http://localhost:5173",
+        "http://localhost:3000",
     ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
