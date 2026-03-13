@@ -1,0 +1,31 @@
+flowchart LR
+    %% The tree ensemble captures different ignition-relevant interactions.
+    %% Individual trees can emphasize threshold effects, nonlinear couplings,
+    %% and descriptor combinations that matter for comparative screening.
+
+    FEAT[Material Features<br/>physical, thermal, and composition descriptors]
+
+    subgraph ENS[Decision Tree Ensemble]
+        direction LR
+        T1[Tree A]
+        T2[Tree B]
+        TN[Tree N]
+    end
+
+    FEAT --> T1
+    FEAT --> T2
+    FEAT --> TN
+
+    T1 --> AGG[Aggregated Prediction]
+    T2 --> AGG
+    TN --> AGG
+
+    AGG --> PROXY[Relative Fire-Risk Proxy]
+
+    classDef standard fill:#f8fafc,stroke:#374151,color:#111827,stroke-width:1.5px;
+    classDef ensemble fill:#e0f2fe,stroke:#0369a1,color:#0c4a6e,stroke-width:2px;
+    classDef output fill:#dcfce7,stroke:#15803d,color:#14532d,stroke-width:2px;
+
+    class FEAT,AGG standard;
+    class T1,T2,TN ensemble;
+    class PROXY output;

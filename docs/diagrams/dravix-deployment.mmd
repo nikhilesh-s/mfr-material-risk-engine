@@ -1,0 +1,16 @@
+flowchart LR
+    UI[Frontend UI] --> API[FastAPI API Endpoint<br/>POST /predict]
+    API --> INF[Inference Service<br/>stateless deterministic runtime]
+    INF --> MODEL[Frozen ML Model Artifact]
+
+    DATA[(Dataset Storage)] -. lookup data / metadata .-> INF
+    TRAIN[Future Training Pipeline<br/>offline, not part of v0.3.0 runtime] -. artifact refresh .-> MODEL
+    TRAIN -. dataset preparation .-> DATA
+
+    classDef active fill:#f8fafc,stroke:#374151,color:#111827,stroke-width:1.5px;
+    classDef model fill:#dbeafe,stroke:#1d4ed8,color:#1e3a8a,stroke-width:2px;
+    classDef optional fill:#f3f4f6,stroke:#9ca3af,color:#6b7280,stroke-dasharray: 5 5;
+
+    class UI,API,INF active;
+    class MODEL model;
+    class DATA,TRAIN optional;

@@ -1,0 +1,14 @@
+flowchart LR
+    ING[1. Input Ingestion] --> SCH[2. Schema Validation]
+    SCH --> NORM[3. Feature Normalization]
+    NORM --> ENG[4. Feature Engineering]
+    ENG --> INF[5. Model Inference]
+    INF --> RISK[6. Risk Contextualization]
+    RISK --> INT[7. Interpretability Generation]
+    INT --> OUT[8. Output Generation]
+
+    classDef standard fill:#f8fafc,stroke:#374151,color:#111827,stroke-width:1.5px;
+    classDef central fill:#dbeafe,stroke:#1d4ed8,color:#1e3a8a,stroke-width:3px;
+
+    class ING,SCH,NORM,ENG,RISK,INT,OUT standard;
+    class INF central;

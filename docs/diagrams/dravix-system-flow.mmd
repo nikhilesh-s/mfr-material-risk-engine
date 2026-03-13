@@ -1,0 +1,17 @@
+flowchart LR
+    IN[Structured Material Descriptors] --> VAL[Validation]
+    VAL --> FE[Feature Engineering]
+    FE --> MI[ML Inference]
+    MI --> RC[Risk Contextualization]
+    RC --> INT[Interpretability]
+    INT --> OUT[Outputs<br/>risk signal, class, confidence, explanation]
+
+    CTRL[Control Logic<br/>version rules, confidence thresholds,<br/>formatting policy] -.-> INT
+
+    classDef core fill:#f8fafc,stroke:#1f2937,color:#111827,stroke-width:1.5px;
+    classDef model fill:#dbeafe,stroke:#1d4ed8,color:#1e3a8a,stroke-width:2px;
+    classDef control fill:#f3f4f6,stroke:#6b7280,color:#4b5563,stroke-dasharray: 5 5;
+
+    class IN,VAL,FE,RC,INT,OUT core;
+    class MI model;
+    class CTRL control;
