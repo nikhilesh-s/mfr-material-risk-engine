@@ -7,14 +7,6 @@ type MaterialScreeningProps = {
   materials: string[];
 };
 
-const DEMO_MATERIALS = [
-  'ABS',
-  'Polycarbonate',
-  'Nylon 6',
-  'PEEK',
-  'Glass Fiber Reinforced PC',
-];
-
 function MaterialScreening({ materials }: MaterialScreeningProps) {
   const [query, setQuery] = useState('');
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
@@ -48,12 +40,6 @@ function MaterialScreening({ materials }: MaterialScreeningProps) {
   }, [materials, query]);
 
   const topCandidate = result?.ranking[0] ?? null;
-
-  const loadDemoMaterials = () => {
-    const availableDemoMaterials = DEMO_MATERIALS.filter((material) => materials.includes(material));
-    setSelectedMaterials(availableDemoMaterials);
-    setErrorMessage(null);
-  };
 
   const toggleMaterial = (material: string) => {
     setSelectedMaterials((current) => (
@@ -115,7 +101,7 @@ function MaterialScreening({ materials }: MaterialScreeningProps) {
       return;
     }
 
-    const header = ['rank', 'material', 'resistance', 'confidence'];
+    const header = ['rank', 'material', 'resistanceScore', 'confidence'];
     const rows = result.ranking.map((row) => [
       row.rank,
       row.material,
@@ -173,14 +159,6 @@ function MaterialScreening({ materials }: MaterialScreeningProps) {
               Clear All
             </button>
           </div>
-
-          <button
-            type="button"
-            onClick={loadDemoMaterials}
-            className="mb-3 px-4 py-2 rounded-full bg-[#F5F1EC] text-sm text-[#232422] hover:bg-[#E8E0D3] transition-colors"
-          >
-            Load Demo Materials
-          </button>
 
           <input
             type="text"

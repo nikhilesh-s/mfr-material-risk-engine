@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { ArrowDownRight, ArrowUpRight, FlaskConical, Minus } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, Download, FlaskConical, Minus } from 'lucide-react';
 import { ApiError, simulateMaterial } from '../lib/api';
 import type {
   SimulationFieldKey,
@@ -24,9 +24,9 @@ const ADJUSTMENT_FIELDS: Array<{
     placeholder: '24 or +15%',
   },
   {
-    key: 'Thermal_Cond_W_mK',
-    label: 'Thermal Conductivity (W/m·K)',
-    placeholder: '0.28 or -10%',
+    key: 'Heat_of_Combustion_MJ_kg',
+    label: 'Heat of Combustion (MJ/kg)',
+    placeholder: '28 or -10%',
   },
   {
     key: 'Char_Yield_pct',
@@ -42,7 +42,7 @@ const ADJUSTMENT_FIELDS: Array<{
 
 const INITIAL_ADJUSTMENTS: AdjustmentState = {
   Limiting_Oxygen_Index_pct: '',
-  Thermal_Cond_W_mK: '',
+  Heat_of_Combustion_MJ_kg: '',
   Char_Yield_pct: '',
   Decomp_Temp_C: '',
 };
@@ -122,6 +122,36 @@ function MaterialSimulation({ materials }: MaterialSimulationProps) {
     } finally {
       setLoading(false);
     }
+  };
+
+  const exportCSV = () => {
+    if (!result || !baseMaterial.trim()) {
+      return;
+    }
+
+    const header = ['material', 'baseline', 'modified', 'delta', 'percent_change'];
+    const row = [
+      baseMaterial,
+      result.baseline.resistanceScore,
+      result.modified.resistanceScore,
+      result.change.delta,
+      result.change.percent_change ?? '',
+    ];
+
+    const csvContent = [header, row]
+      .map((entry) => entry.join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.download = 'dravix_simulation.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const changeIndicator = result ? (
@@ -216,6 +246,15 @@ function MaterialSimulation({ materials }: MaterialSimulationProps) {
             >
               Reset
             </button>
+            <button
+              type="button"
+              onClick={exportCSV}
+              disabled={!result}
+              className="px-5 py-3 bg-[#F5F1EC] text-[#232422] rounded-full font-medium hover:bg-[#E8E0D3] disabled:opacity-45 disabled:hover:bg-[#F5F1EC] transition-colors inline-flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Export CSV
+            </button>
           </div>
 
           {errorMessage && (
@@ -245,6 +284,9 @@ function MaterialSimulation({ materials }: MaterialSimulationProps) {
                     <div className="text-xs uppercase tracking-[0.14em] text-[#FEFEFE]/45">Percent Change</div>
                     <div className="text-lg text-[#FEFEFE] mt-2">{changeDisplay}</div>
                   </div>
+                </div>
+                <div className="mt-4 text-sm text-[#FEFEFE]/70">
+                  Delta: {result.change.delta > 0 ? '+' : ''}{result.change.delta.toFixed(3)}
                 </div>
               </div>
             ) : (
@@ -286,6 +328,9 @@ function MaterialSimulation({ materials }: MaterialSimulationProps) {
                   <div className="text-sm text-[#6B4E00]/70">Change</div>
                   <div className="text-3xl font-light text-[#6B4E00] mt-1">
                     {changeDisplay}
+                  </div>
+                  <div className="text-sm text-[#6B4E00]/70 mt-2">
+                    Delta {result.change.delta > 0 ? '+' : ''}{result.change.delta.toFixed(3)}
                   </div>
                 </div>
               </div>

@@ -46,7 +46,7 @@ export interface RankResponse {
 
 export type SimulationFieldKey =
   | 'Limiting_Oxygen_Index_pct'
-  | 'Thermal_Cond_W_mK'
+  | 'Heat_of_Combustion_MJ_kg'
   | 'Char_Yield_pct'
   | 'Decomp_Temp_C';
 
