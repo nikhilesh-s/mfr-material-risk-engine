@@ -23,6 +23,54 @@ export interface LookupPredictionPayload {
 
 export type PredictionRequest = ManualPredictionPayload | LookupPredictionPayload;
 
+export interface RankRequest {
+  materials: Array<LookupPredictionPayload | ManualPredictionPayload>;
+}
+
+export interface RankedMaterial {
+  rank: number;
+  material: string;
+  resistanceScore: number;
+  confidence: string;
+}
+
+export interface RankError {
+  material: string;
+  error: string;
+}
+
+export interface RankResponse {
+  ranking: RankedMaterial[];
+  errors: RankError[];
+}
+
+export type SimulationFieldKey =
+  | 'Limiting_Oxygen_Index_pct'
+  | 'Thermal_Cond_W_mK'
+  | 'Char_Yield_pct'
+  | 'Decomp_Temp_C';
+
+export interface SimulationRequest {
+  base_material: LookupPredictionPayload | ManualPredictionPayload;
+  modifications: Partial<Record<SimulationFieldKey, number | string>>;
+}
+
+export interface SimulationPrediction {
+  resistanceScore: number;
+  confidence: string;
+}
+
+export interface SimulationChange {
+  delta: number;
+  percent_change: number | null;
+}
+
+export interface SimulationResponse {
+  baseline: SimulationPrediction;
+  modified: SimulationPrediction;
+  change: SimulationChange;
+}
+
 export interface Driver {
   feature: string;
   contribution: number;

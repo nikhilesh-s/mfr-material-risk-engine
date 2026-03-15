@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 from datetime import datetime, timezone
 from typing import Any, Dict, Optional
@@ -19,6 +20,10 @@ from src.api_contract import (
     MaterialsOutput,
     Phase3Input,
     Phase3PredictResponse,
+    RankRequest,
+    RankResponse,
+    SimulationRequest,
+    SimulationResponse,
 )
 
 from src.phase3_coating_modifier import get_coating_modifier
@@ -145,6 +150,127 @@ def _manual_payload_dict(payload: Phase3Input) -> dict[str, Any]:
         for source_name, feature_name in source_to_feature.items()
         if source_name in raw
     }
+
+
+def _rank_material_label(payload: Phase3Input, index: int) -> str:
+    if payload.material_name is not None and payload.material_name.strip():
+        return payload.material_name.strip()
+    return f"manual_input_{index}"
+
+
+def _extract_rank_error_message(response: JSONResponse) -> str:
+    try:
+        payload = json.loads(response.body.decode("utf-8"))
+    except (AttributeError, UnicodeDecodeError, json.JSONDecodeError):
+        return "prediction failed"
+
+    if isinstance(payload, dict):
+        error_value = payload.get("error")
+        if isinstance(error_value, str) and error_value.strip():
+            return error_value
+        detail_value = payload.get("detail")
+        if isinstance(detail_value, str) and detail_value.strip():
+            return detail_value
+    return "prediction failed"
+
+
+def _resolve_phase3_payload(payload: Phase3Input) -> dict[str, Any]:
+    if not hasattr(app.state, "model"):
+        raise HTTPException(status_code=500, detail="Model runtime is not initialized.")
+
+    if payload.material_name is not None and payload.material_name.strip():
+        payload_data = get_material_descriptors(
+            payload.material_name,
+            feature_names=list(app.state.feature_names),
+        )
+        if payload_data is None:
+            raise HTTPException(status_code=404, detail="Material not found in database")
+        return payload_data
+
+    return _manual_payload_dict(payload)
+
+
+def _predict_resistance_and_confidence(payload_data: dict[str, Any]) -> tuple[float, str]:
+    prediction = predict_material_resistance(payload_data)
+    resistance_score = float(prediction["resistance_score"])
+    feature_vector = build_feature_vector(payload_data)
+    confidence = compute_confidence(
+        model=app.state.model,
+        feature_frame=feature_vector,
+        training_variance_mean=float(app.state.training_variance_mean),
+        training_variance_std=float(app.state.training_variance_std),
+        training_variance_p25=float(app.state.training_variance_p25),
+        training_variance_p75=float(app.state.training_variance_p75),
+    )
+    return resistance_score, str(confidence["label"])
+
+
+def _apply_simulation_modifications(
+    payload_data: dict[str, Any],
+    modifications: dict[str, float | str],
+) -> dict[str, Any]:
+    source_to_feature = {
+        "Density_g_cc": "Density (g/cc)",
+        "Melting_Point_C": "Melting Point (°C)",
+        "Specific_Heat_J_g_C": "Specific Heat (J/g-°C)",
+        "Thermal_Cond_W_mK": "Thermal Cond. (W/m-K)",
+        "CTE_um_m_C": "CTE (µm/m-°C)",
+        "Flash_Point_C": "Flash Point (°C)",
+        "Autoignition_Temp_C": "Autoignition Temp (°C)",
+        "UL94_Flammability": "UL94 Flammability",
+        "Limiting_Oxygen_Index_pct": "Limiting Oxygen Index (%)",
+        "Smoke_Density_Ds": "Smoke Density (Ds)",
+        "Char_Yield_pct": "Char Yield (%)",
+        "Decomp_Temp_C": "Decomp. Temp (°C)",
+        "Heat_of_Combustion_MJ_kg": "Heat of Combustion (MJ/kg)",
+        "Flame_Spread_Index": "Flame Spread Index",
+    }
+
+    modified_payload = dict(payload_data)
+    for source_field, raw_change in modifications.items():
+        if source_field not in source_to_feature:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Unsupported modification field: {source_field}",
+            )
+
+        feature_name = source_to_feature[source_field]
+        if isinstance(raw_change, str):
+            change_str = raw_change.strip()
+            if not change_str.endswith("%"):
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Invalid percentage adjustment for {source_field}",
+                )
+            try:
+                percent_delta = float(change_str[:-1])
+            except ValueError as exc:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Invalid percentage adjustment for {source_field}",
+                ) from exc
+
+            current_value = modified_payload.get(feature_name)
+            if current_value is None or pd.isna(current_value):
+                raise HTTPException(
+                    status_code=400,
+                    detail=(
+                        f"Cannot apply percentage adjustment to missing field: {source_field}"
+                    ),
+                )
+            modified_payload[feature_name] = float(current_value) * (
+                1.0 + percent_delta / 100.0
+            )
+        else:
+            try:
+                modified_payload[feature_name] = float(raw_change)
+            except (TypeError, ValueError) as exc:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Invalid modification value for {source_field}",
+                ) from exc
+
+    return modified_payload
 
 
 def _build_oriented_feature_frame(
@@ -356,5 +482,97 @@ def predict(input: Phase3Input) -> Dict[str, Any]:
         "confidence": {
             "score": _stable_float(float(confidence["score"])),
             "label": str(confidence["label"]),
+        },
+    }
+
+
+@app.post("/rank", response_model=RankResponse)
+def rank(request: RankRequest) -> Dict[str, Any]:
+    ranking_rows: list[dict[str, Any]] = []
+    errors: list[dict[str, str]] = []
+
+    for index, material_input in enumerate(request.materials, start=1):
+        material_label = _rank_material_label(material_input, index)
+
+        try:
+            prediction_result = predict(material_input)
+        except HTTPException as exc:
+            detail = exc.detail
+            if isinstance(detail, str) and detail.strip():
+                error_message = detail
+            else:
+                error_message = "prediction failed"
+            errors.append({"material": material_label, "error": error_message})
+            continue
+        except Exception:
+            errors.append({"material": material_label, "error": "prediction failed"})
+            continue
+
+        if isinstance(prediction_result, JSONResponse):
+            errors.append(
+                {
+                    "material": material_label,
+                    "error": _extract_rank_error_message(prediction_result),
+                }
+            )
+            continue
+
+        ranking_rows.append(
+            {
+                "material": material_label,
+                "resistanceScore": _stable_float(
+                    float(prediction_result["resistanceScore"])
+                ),
+                "confidence": str(prediction_result["confidence"]["label"]),
+            }
+        )
+
+    ranking_rows.sort(key=lambda item: item["resistanceScore"])
+    ranking = [
+        {"rank": rank_index, **row}
+        for rank_index, row in enumerate(ranking_rows, start=1)
+    ]
+
+    return {
+        "ranking": ranking,
+        "errors": errors,
+    }
+
+
+@app.post("/simulate", response_model=SimulationResponse)
+def simulate(request: SimulationRequest) -> Dict[str, Any]:
+    base_payload = _resolve_phase3_payload(request.base_material)
+    modified_payload = _apply_simulation_modifications(
+        payload_data=base_payload,
+        modifications=request.modifications,
+    )
+
+    baseline_score, baseline_confidence = _predict_resistance_and_confidence(base_payload)
+    modified_score, modified_confidence = _predict_resistance_and_confidence(
+        modified_payload
+    )
+
+    delta = modified_score - baseline_score
+    if np.isclose(baseline_score, 0.0):
+        percent_change: float | None = None
+    else:
+        percent_change = (delta / baseline_score) * 100.0
+
+    return {
+        "baseline": {
+            "resistanceScore": _stable_float(baseline_score),
+            "confidence": baseline_confidence,
+        },
+        "modified": {
+            "resistanceScore": _stable_float(modified_score),
+            "confidence": modified_confidence,
+        },
+        "change": {
+            "delta": _stable_float(delta),
+            "percent_change": (
+                None
+                if percent_change is None
+                else _stable_float(percent_change)
+            ),
         },
     }

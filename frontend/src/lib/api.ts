@@ -2,6 +2,10 @@ import type {
   CoatingsInfo,
   HealthInfo,
   MaterialsInfo,
+  RankRequest,
+  RankResponse,
+  SimulationRequest,
+  SimulationResponse,
   PredictionRequest,
   PredictionResponse,
   VersionInfo,
@@ -127,6 +131,20 @@ export function getCoatings(): Promise<CoatingsInfo> {
 
 export function predict(payload: PredictionRequest): Promise<PredictionResponse> {
   return requestJson<PredictionResponse>('/predict', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }, DEFAULT_TIMEOUT_MS);
+}
+
+export function rankMaterials(payload: RankRequest): Promise<RankResponse> {
+  return requestJson<RankResponse>('/rank', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }, DEFAULT_TIMEOUT_MS);
+}
+
+export function simulateMaterial(payload: SimulationRequest): Promise<SimulationResponse> {
+  return requestJson<SimulationResponse>('/simulate', {
     method: 'POST',
     body: JSON.stringify(payload),
   }, DEFAULT_TIMEOUT_MS);

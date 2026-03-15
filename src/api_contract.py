@@ -125,6 +125,48 @@ class Phase3PredictResponse(BaseModel):
     confidence: ConfidenceOutput
 
 
+class RankRequest(BaseModel):
+    materials: list[Phase3Input]
+
+
+class RankedMaterial(BaseModel):
+    rank: int
+    material: str
+    resistanceScore: float
+    confidence: str
+
+
+class RankError(BaseModel):
+    material: str
+    error: str
+
+
+class RankResponse(BaseModel):
+    ranking: list[RankedMaterial]
+    errors: list[RankError] = Field(default_factory=list)
+
+
+class SimulationRequest(BaseModel):
+    base_material: Phase3Input
+    modifications: Dict[str, float | str]
+
+
+class SimulationPredictionOutput(BaseModel):
+    resistanceScore: float
+    confidence: str
+
+
+class SimulationChangeOutput(BaseModel):
+    delta: float
+    percent_change: Optional[float]
+
+
+class SimulationResponse(BaseModel):
+    baseline: SimulationPredictionOutput
+    modified: SimulationPredictionOutput
+    change: SimulationChangeOutput
+
+
 class LoginInput(BaseModel):
     email: str
     password: str

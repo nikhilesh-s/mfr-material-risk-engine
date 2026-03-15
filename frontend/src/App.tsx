@@ -1,5 +1,7 @@
 import {
   Activity,
+  ArrowDownRight,
+  ArrowUpRight,
   BarChart3,
   BookOpen,
   ChevronDown,
@@ -13,6 +15,8 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import chemistryIcon from './assets/chemistry-svgrepo-com.svg';
+import MaterialScreening from './components/MaterialScreening';
+import MaterialSimulation from './components/MaterialSimulation';
 import { demoProfiles } from './demoProfiles';
 import { ApiError, getCoatings, getHealth, getMaterials, getVersion, predict } from './lib/api';
 import type { NonJsonSuccessPayload } from './lib/api';
@@ -35,6 +39,11 @@ type MethodologyTab =
   | 'dataset_construction'
   | 'mkl_modeling_layer'
   | 'interpretability_logic';
+type UseCaseKey =
+  | 'general_screening'
+  | 'ev_battery_enclosure'
+  | 'fire_resistant_building_polymer'
+  | 'aerospace_interior_material';
 
 type FormState = {
   material_name: string;
@@ -122,6 +131,38 @@ const ADVANCED_METHOD_TABS: Array<{ key: Exclude<MethodologyTab, 'public'>; labe
   { key: 'dataset_construction', label: 'Dataset Construction' },
   { key: 'mkl_modeling_layer', label: 'MKL / Modeling Layer' },
   { key: 'interpretability_logic', label: 'Interpretability Logic' },
+];
+
+const USE_CASE_OPTIONS: Array<{
+  value: UseCaseKey;
+  label: string;
+  helper: string;
+  context: string;
+}> = [
+  {
+    value: 'general_screening',
+    label: 'General Screening',
+    helper: 'General-purpose fire-resistance screening for candidate materials.',
+    context: 'Dravix is currently framing outputs for broad candidate screening.',
+  },
+  {
+    value: 'ev_battery_enclosure',
+    label: 'EV Battery Enclosure',
+    helper: 'Prioritize materials for battery-adjacent thermal and ignition-risk environments.',
+    context: 'Dravix is currently framing outputs for battery-adjacent polymer screening.',
+  },
+  {
+    value: 'fire_resistant_building_polymer',
+    label: 'Fire-Resistant Building Polymer',
+    helper: 'Frame results around structural and construction material selection.',
+    context: 'Dravix is currently framing outputs for construction-focused polymer screening.',
+  },
+  {
+    value: 'aerospace_interior_material',
+    label: 'Aerospace Interior Material',
+    helper: 'Frame results around lightweight interior materials with fire-safety constraints.',
+    context: 'Dravix is currently framing outputs for lightweight cabin-interior screening.',
+  },
 ];
 
 function isLookupPayload(payload: PredictionRequest): payload is LookupPredictionPayload {
@@ -234,6 +275,7 @@ function App() {
   const [advancedPasswordInput, setAdvancedPasswordInput] = useState('');
   const [advancedAuthError, setAdvancedAuthError] = useState<string | null>(null);
   const [pendingAdvancedTab, setPendingAdvancedTab] = useState<Exclude<MethodologyTab, 'public'> | null>(null);
+  const [selectedUseCase, setSelectedUseCase] = useState<UseCaseKey>('general_screening');
 
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -538,6 +580,8 @@ function App() {
   const coatingModifierPercent = result?.coatingModifier == null ? null : result.coatingModifier * 100;
   const hasMaterialSelection = formData.material_name.trim().length > 0;
   const showCoatingDropdown = !coatingsWarning;
+  const activeUseCase = USE_CASE_OPTIONS.find((option) => option.value === selectedUseCase) ?? USE_CASE_OPTIONS[0];
+  const interpretabilityDisplayNames = result?.interpretability.display_names ?? {};
 
   const topDrivers = useMemo(
     () => result?.interpretability.top_3_drivers ?? [],
@@ -548,7 +592,9 @@ function App() {
       return 'The predicted fire-resistance profile is primarily influenced by available model descriptors.';
     }
 
-    const driverNames = topDrivers.slice(0, 3).map((driver) => prettyFeatureName(driver.feature));
+    const driverNames = topDrivers.slice(0, 3).map((driver) => (
+      interpretabilityDisplayNames[driver.feature] ?? prettyFeatureName(driver.feature)
+    ));
     let driverList = driverNames[0];
     if (driverNames.length === 2) {
       driverList = `${driverNames[0]} and ${driverNames[1]}`;
@@ -558,8 +604,9 @@ function App() {
 
     const topDriver = topDrivers[0];
     const topDriverDirection = topDriver.direction === 'increases_resistance' ? 'increasing' : 'decreasing';
-    return `The predicted fire-resistance profile is primarily influenced by ${driverList}, with ${prettyFeatureName(topDriver.feature)} contributing most significantly in a ${topDriverDirection} direction.`;
-  }, [topDrivers]);
+    const topDriverName = interpretabilityDisplayNames[topDriver.feature] ?? prettyFeatureName(topDriver.feature);
+    return `The predicted fire-resistance profile is primarily influenced by ${driverList}, with ${topDriverName} contributing most significantly in a ${topDriverDirection} direction.`;
+  }, [interpretabilityDisplayNames, topDrivers]);
 
   const maxDriverMagnitude = Math.max(
     1e-12,
@@ -1023,6 +1070,31 @@ function App() {
               <p className="text-[#232422]/60">Enter material properties for fire risk assessment</p>
             </div>
 
+            <div className="rounded-3xl border border-[#232422]/10 bg-[#FEFEFE] p-8 mb-6 text-center">
+              <h2 className="text-2xl font-semibold text-[#232422]">Dravix Fire Risk Screening Engine</h2>
+              <p className="text-sm text-[#232422]/70 mt-2 max-w-3xl mx-auto">
+                Dravix screens and prioritizes materials for fire resistance before expensive physical testing.
+              </p>
+            </div>
+
+            <div className="rounded-3xl border border-[#232422]/10 bg-[#FEFEFE] p-6 mb-8">
+              <h3 className="text-lg font-semibold text-[#232422] mb-4">Dravix Engineering Workflow</h3>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                {[
+                  'Import candidate materials',
+                  'Run fire-risk screening',
+                  'Identify safest candidates',
+                  'Explore design improvements',
+                  'Send top materials to testing',
+                ].map((step, index) => (
+                  <div key={step} className="rounded-2xl bg-[#F5F1EC] px-4 py-4">
+                    <div className="text-xs uppercase tracking-[0.16em] text-[#232422]/45">Step {index + 1}</div>
+                    <div className="text-sm text-[#232422]/80 mt-2 leading-relaxed">{step}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="mb-6 bg-[#24262E] rounded-3xl p-6">
               <h3 className="text-sm font-medium text-[#FEFEFE] mb-4">Input Mode</h3>
               <div className="flex gap-3">
@@ -1208,6 +1280,40 @@ function App() {
                 </button>
               </div>
             </div>
+
+            <div className="mt-8 bg-[#FEFEFE] rounded-3xl p-6 border border-[#232422]/10">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <h3 className="text-2xl font-light text-[#232422]">Use Case</h3>
+                  <p className="text-sm text-[#232422]/60 mt-2">
+                    Use Case: {activeUseCase.label}
+                  </p>
+                  <p className="text-sm text-[#232422]/70 mt-1">
+                    {activeUseCase.context}
+                  </p>
+                </div>
+                <div className="w-full max-w-sm">
+                  <label className="block text-sm text-[#232422]/80 mb-2">Workflow framing</label>
+                  <select
+                    value={selectedUseCase}
+                    onChange={(e) => setSelectedUseCase(e.target.value as UseCaseKey)}
+                    className="w-full px-4 py-3 bg-[#F5F1EC] rounded-2xl text-sm text-[#232422] focus:outline-none focus:ring-2 focus:ring-[#FFDC6A]"
+                  >
+                    {USE_CASE_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="mt-4 rounded-2xl bg-[#F5F1EC] px-4 py-4 text-sm text-[#232422]/70">
+                {activeUseCase.helper}
+              </div>
+            </div>
+
+            <MaterialScreening materials={materials} />
+            <MaterialSimulation materials={materials} />
           </div>
         ) : (
           <div className="max-w-7xl mx-auto">
@@ -1292,33 +1398,49 @@ function App() {
 
               <div className="col-span-4 bg-[#24262E] rounded-3xl p-6 min-h-[320px]">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-light text-[#FEFEFE]">Key Drivers</h3>
+                  <div>
+                    <h3 className="text-lg font-light text-[#FEFEFE]">Top Drivers of Fire Resistance</h3>
+                    <div className="text-sm text-[#FEFEFE]/55 mt-1">Visualized from the live local explanation payload</div>
+                  </div>
                   <span className="text-sm text-[#FEFEFE]/60">Top 3</span>
                 </div>
 
                 <div className="space-y-4">
                   {topDrivers.map((driver) => {
                     const width = (Math.abs(driver.abs_magnitude) / maxDriverMagnitude) * 100;
+                    const isPositive = driver.direction === 'increases_resistance' || driver.contribution >= 0;
+                    const displayName = interpretabilityDisplayNames[driver.feature] ?? prettyFeatureName(driver.feature);
+                    const effectLabel = isPositive
+                      ? (width >= 75 ? 'strong positive effect' : 'positive effect')
+                      : (width >= 75 ? 'strong negative effect' : 'increases fire risk');
                     return (
-                      <div key={driver.feature} className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm text-[#FEFEFE] truncate pr-2">{prettyFeatureName(driver.feature)}</span>
-                          <span className="text-sm text-[#FFDC6A] font-medium">{driver.contribution.toFixed(6)}</span>
+                      <div
+                        key={driver.feature}
+                        className={`space-y-2 rounded-2xl px-4 py-4 ${
+                          isPositive ? 'bg-[#DDEED8] text-[#1C5E20]' : 'bg-[#FDE7E7] text-[#7F1D1D]'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2 min-w-0">
+                            {isPositive ? <ArrowUpRight className="w-4 h-4 shrink-0" /> : <ArrowDownRight className="w-4 h-4 shrink-0" />}
+                            <span className="text-sm font-medium truncate pr-2">{displayName}</span>
+                          </div>
+                          <span className="text-sm font-medium">{driver.contribution.toFixed(6)}</span>
                         </div>
-                        <div className="h-2 bg-[#FEFEFE]/10 rounded-full overflow-hidden">
+                        <div className="h-2 bg-black/10 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-[#FFDC6A] to-[#FF8D7C] rounded-full"
+                            className={`h-full rounded-full ${isPositive ? 'bg-[#2E7D32]' : 'bg-[#C0392B]'}`}
                             style={{ width: `${width}%` }}
                           />
                         </div>
-                        <div className="text-xs text-[#FEFEFE]/60">{driver.direction}</div>
+                        <div className="text-xs opacity-80">{effectLabel}</div>
                       </div>
                     );
                   })}
                 </div>
 
                 <div className="mt-6 pt-6 border-t border-[#FEFEFE]/10">
-                  <div className="text-xs text-[#FEFEFE]/60">Top contributors from tree-based local explanation</div>
+                  <div className="text-xs text-[#FEFEFE]/60">Positive drivers support predicted resistance; negative drivers indicate added fire-risk pressure.</div>
                 </div>
               </div>
 
