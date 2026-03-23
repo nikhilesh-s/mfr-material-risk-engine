@@ -1,342 +1,248 @@
-import { useMemo, useState } from 'react';
-import { ArrowDownRight, ArrowUpRight, Download, FlaskConical, Minus } from 'lucide-react';
+import { ArrowLeftRight, Sparkles } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { ApiError, simulateMaterial } from '../lib/api';
-import type {
-  SimulationFieldKey,
-  SimulationRequest,
-  SimulationResponse,
-} from '../types';
+import SensitivitySliders, { SLIDER_FIELDS } from './SensitivitySliders';
+import SimulationDeltaIndicator from './SimulationDeltaIndicator';
+import { designSystem } from '../theme/designSystem';
+import type { SimulationFieldKey, SimulationRequest, SimulationResponse } from '../types';
+import { USE_CASES } from '../useCases';
 
 type MaterialSimulationProps = {
   materials: string[];
 };
 
-type AdjustmentState = Record<SimulationFieldKey, string>;
+type SliderState = Record<SimulationFieldKey, number>;
 
-const ADJUSTMENT_FIELDS: Array<{
-  key: SimulationFieldKey;
-  label: string;
-  placeholder: string;
-}> = [
-  {
-    key: 'Limiting_Oxygen_Index_pct',
-    label: 'Limiting Oxygen Index (%)',
-    placeholder: '24 or +15%',
-  },
-  {
-    key: 'Heat_of_Combustion_MJ_kg',
-    label: 'Heat of Combustion (MJ/kg)',
-    placeholder: '28 or -10%',
-  },
-  {
-    key: 'Char_Yield_pct',
-    label: 'Char Yield (%)',
-    placeholder: '18 or +12%',
-  },
-  {
-    key: 'Decomp_Temp_C',
-    label: 'Decomposition Temperature (°C)',
-    placeholder: '340 or +8%',
-  },
-];
-
-const INITIAL_ADJUSTMENTS: AdjustmentState = {
-  Limiting_Oxygen_Index_pct: '',
-  Heat_of_Combustion_MJ_kg: '',
-  Char_Yield_pct: '',
-  Decomp_Temp_C: '',
+const INITIAL_SLIDER_STATE: SliderState = {
+  Limiting_Oxygen_Index_pct: 0,
+  Thermal_Cond_W_mK: 0,
+  Heat_of_Combustion_MJ_kg: 0,
+  Char_Yield_pct: 0,
+  Decomp_Temp_C: 0,
 };
 
 function buildSimulationPayload(
   material: string,
-  adjustments: AdjustmentState,
+  useCase: string,
+  adjustments: SliderState,
 ): SimulationRequest {
   const modifications: SimulationRequest['modifications'] = {};
-
-  for (const field of ADJUSTMENT_FIELDS) {
-    const raw = adjustments[field.key].trim();
-    if (!raw) {
+  for (const field of SLIDER_FIELDS) {
+    const delta = adjustments[field.key];
+    if (delta === 0) {
       continue;
     }
-
-    if (raw.endsWith('%')) {
-      modifications[field.key] = raw;
-      continue;
-    }
-
-    const numericValue = Number.parseFloat(raw);
-    if (Number.isNaN(numericValue)) {
-      throw new Error(`Invalid adjustment for ${field.label}`);
-    }
-    modifications[field.key] = numericValue;
+    modifications[field.key] = `${delta}%`;
   }
-
   return {
-    base_material: { material_name: material },
+    use_case: useCase,
+    base_material: { material_name: material, use_case: useCase },
     modifications,
   };
 }
 
 function MaterialSimulation({ materials }: MaterialSimulationProps) {
   const [baseMaterial, setBaseMaterial] = useState('');
-  const [adjustments, setAdjustments] = useState<AdjustmentState>(INITIAL_ADJUSTMENTS);
+  const [useCase, setUseCase] = useState<string>(USE_CASES[0]);
+  const [adjustments, setAdjustments] = useState<SliderState>(INITIAL_SLIDER_STATE);
   const [result, setResult] = useState<SimulationResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const delta = result?.change.delta ?? 0;
-  const isImprovement = delta > 0;
-  const isDegradation = delta < 0;
-  const changeDisplay = useMemo(() => {
-    if (!result) {
-      return 'No simulation yet';
-    }
-    if (result.change.percent_change == null) {
-      return 'Change unavailable';
-    }
-    const sign = result.change.percent_change > 0 ? '+' : '';
-    return `${sign}${result.change.percent_change.toFixed(1)}%`;
-  }, [result]);
 
   const runSimulation = async () => {
     if (!baseMaterial.trim()) {
       setErrorMessage('Select a base material first.');
       return;
     }
-
     setLoading(true);
     setErrorMessage(null);
-
     try {
-      const payload = buildSimulationPayload(baseMaterial, adjustments);
+      const payload = buildSimulationPayload(baseMaterial, useCase, adjustments);
+      if (Object.keys(payload.modifications).length === 0) {
+        setResult(null);
+        setLoading(false);
+        return;
+      }
       const response = await simulateMaterial(payload);
       setResult(response);
     } catch (error) {
-      if (error instanceof ApiError) {
-        setErrorMessage(error.message);
-      } else if (error instanceof Error) {
+      if (error instanceof ApiError || error instanceof Error) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage('Simulation failed. Please retry.');
+        setErrorMessage('Sensitivity exploration failed.');
       }
     } finally {
       setLoading(false);
     }
   };
 
-  const exportCSV = () => {
-    if (!result || !baseMaterial.trim()) {
+  useEffect(() => {
+    if (!baseMaterial.trim()) {
       return;
     }
 
-    const header = ['material', 'baseline', 'modified', 'delta', 'percent_change'];
-    const row = [
-      baseMaterial,
-      result.baseline.resistanceScore,
-      result.modified.resistanceScore,
-      result.change.delta,
-      result.change.percent_change ?? '',
-    ];
+    const hasAnyChange = Object.values(adjustments).some((value) => value !== 0);
+    if (!hasAnyChange) {
+      setResult(null);
+      setErrorMessage(null);
+      return;
+    }
 
-    const csvContent = [header, row]
-      .map((entry) => entry.join(','))
-      .join('\n');
+    const timeoutId = window.setTimeout(() => {
+      void runSimulation();
+    }, 350);
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-
-    link.href = url;
-    link.download = 'dravix_simulation.csv';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
-  const changeIndicator = result ? (
-    isImprovement ? (
-      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#DDEED8] text-[#1C5E20] text-sm">
-        <ArrowUpRight className="w-4 h-4" />
-        Improvement
-      </div>
-    ) : isDegradation ? (
-      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FDE7E7] text-[#7F1D1D] text-sm">
-        <ArrowDownRight className="w-4 h-4" />
-        Degradation
-      </div>
-    ) : (
-      <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#ECE4D8] text-[#232422] text-sm">
-        <Minus className="w-4 h-4" />
-        No change
-      </div>
-    )
-  ) : null;
+    return () => window.clearTimeout(timeoutId);
+  }, [adjustments, baseMaterial, useCase]);
 
   return (
-    <section className="mt-8">
-      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-[#24262E] rounded-xl flex items-center justify-center">
-              <FlaskConical className="w-5 h-5 text-[#FFDC6A]" />
-            </div>
-            <h2 className="text-3xl font-light text-[#232422]">Material Improvement Simulator</h2>
-          </div>
-          <p className="text-[#232422]/60 max-w-2xl">
-            Test how descriptor changes may improve or reduce predicted fire resistance.
+    <section className="space-y-6">
+      <div className="dravix-hero rounded-[2rem] border px-8 py-9 text-white" style={{ borderColor: designSystem.backgroundColors.border }}>
+        <div className="max-w-3xl">
+          <div className="text-xs uppercase tracking-[0.24em] text-white/60">Sensitivity Exploration</div>
+          <h2 className="mt-3 text-4xl font-light">Explore what-if changes before committing to physical testing.</h2>
+          <p className="mt-4 text-base leading-7 text-white/78">
+            This mode is for early-stage exploration only. Adjust supported descriptors, compare before vs after,
+            and identify the dominant driver of change.
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-6">
-        <div className="col-span-6 bg-[#FEFEFE] rounded-3xl p-6">
-          <h3 className="text-lg font-light text-[#232422] mb-4">Base Material</h3>
-          <select
-            value={baseMaterial}
-            onChange={(e) => setBaseMaterial(e.target.value)}
-            className="w-full px-4 py-3 bg-[#F5F1EC] rounded-2xl text-sm text-[#232422] focus:outline-none focus:ring-2 focus:ring-[#FFDC6A]"
-          >
-            <option value="">Select material</option>
-            {materials.map((material) => (
-              <option key={material} value={material}>
-                {material}
-              </option>
-            ))}
-          </select>
+      {errorMessage ? (
+        <div className="rounded-2xl border border-[#cc8b60]/30 bg-[#fff1e8] px-4 py-3 text-sm text-[#8b3f14]">
+          {errorMessage}
+        </div>
+      ) : null}
 
-          <div className="mt-6 space-y-4">
-            {ADJUSTMENT_FIELDS.map((field) => (
-              <div key={field.key}>
-                <label className="block text-sm text-[#232422]/80 mb-2">{field.label}</label>
-                <input
-                  type="text"
-                  value={adjustments[field.key]}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    setAdjustments((current) => ({ ...current, [field.key]: value }));
-                  }}
-                  placeholder={field.placeholder}
-                  className="w-full px-4 py-3 bg-[#F5F1EC] rounded-2xl text-sm text-[#232422] focus:outline-none focus:ring-2 focus:ring-[#FFDC6A]"
-                />
-              </div>
-            ))}
+      <div className="grid gap-6 xl:grid-cols-[1.05fr_1fr]">
+        <div className="dravix-card space-y-6 rounded-[2rem] p-7">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm text-[#5f5042]">Use case</label>
+              <select
+                value={useCase}
+                onChange={(event) => setUseCase(event.target.value)}
+                className="dravix-panel w-full rounded-2xl px-4 py-3 text-sm text-[#231a14] outline-none"
+              >
+                {USE_CASES.map((entry) => (
+                  <option key={entry} value={entry}>{entry}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-2 block text-sm text-[#5f5042]">Base material</label>
+              <select
+                value={baseMaterial}
+                onChange={(event) => setBaseMaterial(event.target.value)}
+                className="dravix-panel w-full rounded-2xl px-4 py-3 text-sm text-[#231a14] outline-none"
+              >
+                <option value="">Select material</option>
+                {materials.map((material) => (
+                  <option key={material} value={material}>{material}</option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          <div className="mt-6 flex flex-wrap gap-3">
+          <SensitivitySliders
+            values={adjustments}
+            disabled={!baseMaterial.trim()}
+            onChange={(key, value) => {
+              setAdjustments((current) => ({ ...current, [key]: value }));
+            }}
+          />
+
+          <div className="flex flex-wrap gap-3">
             <button
               type="button"
-              onClick={() => {
-                void runSimulation();
-              }}
-              disabled={loading}
-              className="px-6 py-3 bg-gradient-to-r from-[#FFDC6A] to-[#FF8D7C] text-[#232422] rounded-full font-medium hover:opacity-90 disabled:opacity-60 transition-opacity inline-flex items-center gap-2"
+              onClick={() => { void runSimulation(); }}
+              disabled={loading || !baseMaterial.trim()}
+              className="dravix-button-primary rounded-full px-6 py-3 text-sm font-medium transition hover:opacity-90 disabled:opacity-60"
             >
-              {loading ? <span className="w-4 h-4 border-2 border-[#232422] border-t-transparent rounded-full animate-spin" /> : null}
-              {loading ? 'Running...' : 'Run simulation'}
+              {loading ? 'Running scenario...' : 'Run sensitivity check'}
             </button>
             <button
               type="button"
               onClick={() => {
-                setAdjustments(INITIAL_ADJUSTMENTS);
+                setAdjustments(INITIAL_SLIDER_STATE);
                 setResult(null);
                 setErrorMessage(null);
               }}
-              className="px-5 py-3 bg-[#232422] text-[#FEFEFE] rounded-full font-medium hover:opacity-90 transition-opacity"
+              className="dravix-panel rounded-full px-5 py-3 text-sm text-[#231a14]"
             >
-              Reset
-            </button>
-            <button
-              type="button"
-              onClick={exportCSV}
-              disabled={!result}
-              className="px-5 py-3 bg-[#F5F1EC] text-[#232422] rounded-full font-medium hover:bg-[#E8E0D3] disabled:opacity-45 disabled:hover:bg-[#F5F1EC] transition-colors inline-flex items-center gap-2"
-            >
-              <Download className="w-4 h-4" />
-              Export CSV
+              Reset scenario
             </button>
           </div>
-
-          {errorMessage && (
-            <div className="mt-4 px-4 py-3 rounded-2xl bg-[#FDE7E7] text-[#7F1D1D] text-sm">
-              {errorMessage}
-            </div>
-          )}
         </div>
 
-        <div className="col-span-6 space-y-6">
-          <div className="bg-[#24262E] rounded-3xl p-6">
-            <div className="text-sm uppercase tracking-[0.18em] text-[#FEFEFE]/45 mb-3">Predicted Change</div>
+        <div className="space-y-6">
+          <div className="dravix-panel rounded-[2rem] p-7">
+            <div className="mb-4 flex items-center gap-3">
+              <ArrowLeftRight className="h-5 w-5" style={{ color: designSystem.backgroundColors.accentCoral }} />
+              <h3 className="text-xl font-light text-[#231a14]">Before vs After</h3>
+            </div>
             {result ? (
-              <div>
-                <div className="text-5xl font-light text-[#FFDC6A]">{changeDisplay}</div>
-                <div className="mt-4">{changeIndicator}</div>
-                <div className="mt-5 grid grid-cols-3 gap-3">
-                  <div className="rounded-2xl bg-[#FEFEFE]/10 px-4 py-4">
-                    <div className="text-xs uppercase tracking-[0.14em] text-[#FEFEFE]/45">Baseline</div>
-                    <div className="text-lg text-[#FEFEFE] mt-2">{result.baseline.resistanceScore.toFixed(3)}</div>
-                  </div>
-                  <div className="rounded-2xl bg-[#FEFEFE]/10 px-4 py-4">
-                    <div className="text-xs uppercase tracking-[0.14em] text-[#FEFEFE]/45">Modified</div>
-                    <div className="text-lg text-[#FEFEFE] mt-2">{result.modified.resistanceScore.toFixed(3)}</div>
-                  </div>
-                  <div className="rounded-2xl bg-[#FEFEFE]/10 px-4 py-4">
-                    <div className="text-xs uppercase tracking-[0.14em] text-[#FEFEFE]/45">Percent Change</div>
-                    <div className="text-lg text-[#FEFEFE] mt-2">{changeDisplay}</div>
-                  </div>
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="dravix-card rounded-[1.5rem] px-4 py-4">
+                  <div className="text-sm text-[#7c6857]">Baseline Score</div>
+                  <div className="mt-2 text-4xl font-light text-[#231a14]">{result.baseline.risk_score.toFixed(1)}</div>
+                  <div className="mt-2 text-sm text-[#5f5042]">Confidence {result.baseline.confidence}</div>
                 </div>
-                <div className="mt-4 text-sm text-[#FEFEFE]/70">
-                  Delta: {result.change.delta > 0 ? '+' : ''}{result.change.delta.toFixed(3)}
+                <div className="dravix-card rounded-[1.5rem] px-4 py-4">
+                  <div className="text-sm text-[#7c6857]">Modified Score</div>
+                  <div className="mt-2 text-4xl font-light text-[#231a14]">{result.modified.risk_score.toFixed(1)}</div>
+                  <div className="mt-2 text-sm text-[#5f5042]">Confidence {result.modified.confidence}</div>
+                </div>
+                <div className="dravix-card rounded-[1.5rem] px-4 py-4">
+                  <div className="text-sm text-[#7c6857]">Change (%)</div>
+                  <div className="mt-2 text-4xl font-light text-[#231a14]">
+                    {result.change.risk_percent_change == null
+                      ? 'N/A'
+                      : `${result.change.risk_percent_change > 0 ? '+' : ''}${result.change.risk_percent_change.toFixed(1)}%`}
+                  </div>
+                  <div className="mt-2 text-sm text-[#5f5042]">Driver {result.dominant_driver}</div>
                 </div>
               </div>
             ) : (
-              <div>
-                <div className="text-5xl font-light text-[#FFDC6A]">No simulation yet</div>
-                <p className="mt-4 text-[#FEFEFE]/60">
-                  Run a descriptor scenario to estimate whether the change is likely to improve or degrade predicted fire resistance.
-                </p>
+              <div className="dravix-card rounded-[1.5rem] px-4 py-8 text-sm text-[#6b5949]">
+                Run a scenario to compare original and modified screening outputs.
               </div>
             )}
           </div>
 
-          <div className="bg-[#FEFEFE] rounded-3xl p-6">
-            <h3 className="text-xl font-light text-[#232422] mb-4">Simulation Results</h3>
-
+          <div className="dravix-card rounded-[2rem] p-7">
+            <div className="mb-4 flex items-center gap-3">
+              <Sparkles className="h-5 w-5" style={{ color: designSystem.backgroundColors.accentCoral }} />
+              <h3 className="text-xl font-light text-[#231a14]">Scenario interpretation</h3>
+            </div>
             {result ? (
               <div className="space-y-4">
-                <div className="rounded-2xl bg-[#F5F1EC] px-4 py-4">
-                  <div className="text-sm text-[#232422]/60">Baseline Resistance</div>
-                  <div className="text-3xl font-light text-[#232422] mt-1">
-                    {result.baseline.resistanceScore.toFixed(3)}
-                  </div>
-                  <div className="text-sm text-[#232422]/55 mt-1">
-                    Confidence {result.baseline.confidence}
+                <SimulationDeltaIndicator percentChange={result.change.risk_percent_change} />
+                <div className="rounded-[1.5rem] px-4 py-4 text-[#232422]" style={{ background: designSystem.primaryGradient }}>
+                  <div className="text-sm text-[#232422]/70">Simulation Summary</div>
+                  <div className="mt-2 text-xl font-light text-[#232422]">{result.simulation_summary}</div>
+                </div>
+                <div className="dravix-panel rounded-[1.5rem] px-4 py-4 text-sm leading-6 text-[#4b3928]">
+                  {result.explanation}
+                </div>
+                <div className="dravix-panel rounded-[1.5rem] px-4 py-4">
+                  <div className="mb-3 text-sm text-[#7c6857]">Driver Analysis</div>
+                  <div className="space-y-3">
+                    {result.driver_analysis.map((entry) => (
+                      <div key={entry} className="dravix-card flex items-center gap-3 rounded-[1.25rem] px-4 py-3 text-sm text-[#4b3928]">
+                        <span className="inline-flex h-2.5 w-2.5 rounded-full" style={{ background: designSystem.primaryGradient }} />
+                        <span>{entry}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-
-                <div className="rounded-2xl bg-[#F5F1EC] px-4 py-4">
-                  <div className="text-sm text-[#232422]/60">Modified Resistance</div>
-                  <div className="text-3xl font-light text-[#232422] mt-1">
-                    {result.modified.resistanceScore.toFixed(3)}
-                  </div>
-                  <div className="text-sm text-[#232422]/55 mt-1">
-                    Confidence {result.modified.confidence}
-                  </div>
-                </div>
-
-                <div className="rounded-2xl bg-[#FFF7E2] px-4 py-4">
-                  <div className="text-sm text-[#6B4E00]/70">Change</div>
-                  <div className="text-3xl font-light text-[#6B4E00] mt-1">
-                    {changeDisplay}
-                  </div>
-                  <div className="text-sm text-[#6B4E00]/70 mt-2">
-                    Delta {result.change.delta > 0 ? '+' : ''}{result.change.delta.toFixed(3)}
-                  </div>
+                <div className="rounded-[1.5rem] border border-[#cc8b60]/20 bg-[#fff3e8] px-4 py-4 text-sm leading-6 text-[#8b3f14]">
+                  {result.limitations_notice}
                 </div>
               </div>
             ) : (
-              <div className="rounded-2xl bg-[#F5F1EC] px-4 py-10 text-center text-[#232422]/55">
-                Select a base material, enter one or more adjustments, and run a simulation.
+              <div className="dravix-panel rounded-[1.5rem] px-4 py-8 text-sm text-[#6b5949]">
+                Dominant driver and explanation appear after a live scenario run.
               </div>
             )}
           </div>

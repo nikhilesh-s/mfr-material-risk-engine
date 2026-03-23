@@ -1,0 +1,24 @@
+{
+  "use_case": "EV battery enclosure",
+  "baseline": {
+    "resistanceScore": 0.431372162346,
+    "confidence": "Medium",
+    "risk_score": 56.862783765378,
+    "resistance_index": 43.137216234622
+  },
+  "modified": {
+    "resistanceScore": 0.43129785116,
+    "confidence": "Medium",
+    "risk_score": 56.870214883974,
+    "resistance_index": 43.129785116026
+  },
+  "change": {
+    "delta": -7.4311186e-05,
+    "percent_change": -0.017226699461,
+    "risk_delta": 0.007431118596,
+    "risk_percent_change": 0.013068510023
+  },
+  "dominant_driver": "Limiting Oxygen Index (%)",
+  "explanation": "ABS increased the fire-risk proxy. The largest requested change was Limiting Oxygen Index (%). Workflow context: EV battery enclosure.",
+  "limitations_notice": "Dravix is an early-stage decision-support system. Results are deterministic screening signals and do not replace certification, standards testing, or engineering review."
+}

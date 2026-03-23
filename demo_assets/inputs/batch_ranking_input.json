@@ -1,0 +1,8 @@
+{
+  "use_case": "EV battery enclosure",
+  "materials": [
+    { "material_name": "PEEK" },
+    { "material_name": "Polycarbonate" },
+    { "material_name": "ABS" }
+  ]
+}

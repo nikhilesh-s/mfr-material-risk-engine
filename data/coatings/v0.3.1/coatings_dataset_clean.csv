@@ -1,0 +1,450 @@
+Coating,LOI Improvement,Thermal Barrier Effect,Combustion Delay,Surface Protection Factor,Additional Column 1,Additional Column 2,Additional Column 3
+Chromium Diboride (CrB2),5.2,2100.0,2200.0,20.0,0.3,Wear resistant tools,sciencedirect.com
+Tungsten Nitride (W2N),17.8,1500.0,2800.0,15.0,0.2,Diffusion barrier in VLSI,sciencedirect.com
+Vanadium Nitride (VN),6.1,1600.0,2050.0,12.0,0.3,"Supercapacitors, tools",sciencedirect.com
+Molybdenum Nitride (Mo2N),9.2,1400.0,2400.0,14.0,0.3,Catalytic coatings,sciencedirect.com
+Tantalum Oxynitride (TaON),9.1,800.0,2500.0,5.0,0.8,Photocatalytic water splitting,sciencedirect.com
+Titanium Aluminum Carbonitride (TiAlCN),5.1,3500.0,2800.0,10.0,0.3,Dry machining,mng-pvd.com
+Aluminum Chromium Nitride (AlCrN),4.9,3200.0,2800.0,11.0,0.3,High-speed milling,mng-pvd.com
+Silicon Oxycarbide (SiOC),2.2,800.0,1600.0,1.5,0.9,Environmental barrier,sciencedirect.com
+Boron Carbonitride (BCN),2.4,2500.0,2500.0,30.0,0.9,Low-k dielectric,sciencedirect.com
+Gallium Oxide (Ga2O3),5.9,1200.0,1900.0,20.0,0.8,Power electronics,sciencedirect.com
+nc-TiN/a-Si3N4,5.0,4500.0,2800.0,15.0,0.3,Superhard tools,sciencedirect.com
+nc-AlTiN/a-Si3N4,4.8,4200.0,2800.0,12.0,0.3,Aerospace machining,mng-pvd.com
+nc-CrN/a-Si3N4,5.5,3000.0,2000.0,10.0,0.3,Plastic injection molds,sciencedirect.com
+DLC-Ag (Silver doped DLC),2.2,2000.0,3000.0,10.0,0.8,Antibacterial coatings,sciencedirect.com
+DLC-Cu (Copper doped DLC),2.5,2500.0,3000.0,15.0,0.8,Low friction electronics,sciencedirect.com
+MoS2-Ti (Titanium doped MoS2),4.8,800.0,1185.0,10.0,0.7,Solid lubricant in space,sciencedirect.com
+WS2-Ti (Titanium doped WS2),7.5,900.0,1250.0,12.0,0.7,Vacuum lubricant,sciencedirect.com
+AlCoCrFeNi HEA Coating,7.2,600.0,1350.0,15.0,0.3,Corrosion/Wear resistance,sciencedirect.com
+AlCrFeNiTi HEA Coating,6.8,750.0,1400.0,12.0,0.3,High temp oxidation,sciencedirect.com
+CoCrFeNiMo HEA Coating,8.2,550.0,1380.0,10.0,0.3,Chemical resistance,sciencedirect.com
+Yttrium Silicate (Y2Si2O7),4.0,700.0,1775.0,2.5,0.9,Environmental barrier (EBC),sciencedirect.com
+Yttrium Monosilicate (Y2SiO5),4.4,750.0,1980.0,2.0,0.9,EBC for SiC/SiC composites,sciencedirect.com
+Ytterbium Silicate (Yb2Si2O7),6.2,800.0,1850.0,1.8,0.9,Advanced EBC,sciencedirect.com
+Lutetium Silicate (Lu2Si2O7),6.5,850.0,1900.0,1.6,0.9,Hypersonic EBC,sciencedirect.com
+Mullite-YSZ Composite,4.5,1100.0,1900.0,2.5,0.9,High-temp insulation,sciencedirect.com
+Alumina-Magnesia (Al2O3-MgO),3.6,1200.0,2135.0,15.0,0.8,Refractory coating,heegermaterials.com
+Calcium Titanate (CaTiO3),4.0,900.0,1975.0,4.0,0.8,Biomedical coatings,sciencedirect.com
+Parylene C,1.29,20.0,290.0,0.08,0.9,Conformal coating for electronics,sciencedirect.com
+Parylene N,1.11,15.0,410.0,0.12,0.9,High frequency insulation,sciencedirect.com
+Parylene D,1.42,25.0,380.0,0.1,0.9,Thermal stability coating,sciencedirect.com
+Sol-Gel Alumina,3.2,800.0,2072.0,5.0,0.9,Optical protection,sciencedirect.com
+Sol-Gel Silica,2.1,500.0,1713.0,1.2,0.9,Anti-reflective,sciencedirect.com
+Tefzel (ETFE) Coating,1.7,50.0,267.0,0.24,0.9,Chemical/UV resistance,heegermaterials.com
+Halar (ECTFE) Coating,1.68,60.0,240.0,0.15,0.9,Corrosion liners,heegermaterials.com
+Kynar (PVDF) Coating,1.78,80.0,175.0,0.19,0.9,Architectural coatings,heegermaterials.com
+Titanium Nitride (TiN),5.4,2300.0,2930.0,19.0,0.2,"Wear resistance, decorative",richterprecision.com
+Titanium Carbonitride (TiCN),5.1,3000.0,2810.0,15.0,0.2,"Cutting tools, high hardness",richterprecision.com
+Aluminum Titanium Nitride (AlTiN),5.0,3300.0,2800.0,10.0,0.3,High-temp cutting tools,richterprecision.com
+Chromium Nitride (CrN),5.9,1750.0,1770.0,12.0,0.2,"Corrosion resistance, molding",richterprecision.com
+Diamond-Like Carbon (DLC),2.0,5000.0,3500.0,5.0,0.8,"Low friction, medical",richterprecision.com
+Zirconium Nitride (ZrN),7.1,2100.0,2980.0,20.0,0.2,"Decorative, corrosion resistance",brycoat.com
+Titanium Aluminum Nitride (TiAlN),5.0,3000.0,2800.0,12.0,0.3,"Drilling, milling",brycoat.com
+Chromium Aluminum Nitride (AlCrN),4.9,3200.0,2800.0,11.0,0.3,High-speed machining,mng-pvd.com
+Tungsten Carbide/Carbon (WC/C),14.0,1000.0,2870.0,15.0,0.7,"Low friction, anti-seize",richterprecision.com
+Titanium Carbide (TiC),4.9,3000.0,3160.0,21.0,0.2,"Wear resistance, CVD",langhe-industry.com
+Chromium Carbide (Cr3C2),6.7,1800.0,1895.0,18.0,0.3,High-temp wear,langhe-industry.com
+Silicon Carbide (SiC),3.2,2500.0,2730.0,120.0,0.9,Chemical resistance,sciencedirect.com
+Silicon Nitride (Si3N4),3.4,1600.0,1900.0,30.0,0.8,Engine components,sciencedirect.com
+Alumina (Al2O3),3.9,2000.0,2072.0,30.0,0.8,"Electrical insulation, TBC",heegermaterials.com
+Zirconia (ZrO2),5.7,1200.0,2715.0,2.0,0.9,Thermal barrier,heegermaterials.com
+Yttria-Stabilized Zirconia (YSZ),6.0,1300.0,2700.0,2.0,0.9,Thermal barrier (TBC),heegermaterials.com
+Hafnia (HfO2),9.7,1100.0,2758.0,1.5,0.9,Optical coatings,sciencedirect.com
+Tantalum Nitride (TaN),14.3,1100.0,3090.0,10.0,0.3,Diffusion barrier,sciencedirect.com
+Vanadium Carbide (VC),5.7,2800.0,2810.0,12.0,0.3,Die and mold coating,richterprecision.com
+Boron Carbide (B4C),2.5,3000.0,2450.0,35.0,0.9,"Extreme hardness, armor",sciencedirect.com
+WC-12Co (Tungsten Carbide-Cobalt),14.2,1100.0,1495.0,15.0,0.6,"Wear resistance, HVOF",heegermaterials.com
+WC-17Co,13.8,1000.0,1495.0,18.0,0.6,Impact resistance,heegermaterials.com
+WC-10Co-4Cr,13.5,1200.0,1400.0,12.0,0.6,Corrosion-wear resistance,heegermaterials.com
+Cr3C2-25NiCr,6.8,900.0,1350.0,15.0,0.7,High-temp wear (870C),heegermaterials.com
+NiCrAlY (Bond Coat),7.8,400.0,1350.0,12.0,0.4,Bond coat for TBC,heegermaterials.com
+CoNiCrAlY,8.2,450.0,1380.0,13.0,0.4,Hot corrosion resistance,heegermaterials.com
+Al-Si (Aluminum-Silicon),2.6,100.0,580.0,160.0,0.1,Atmospheric corrosion,heegermaterials.com
+Zinc-Aluminum (85Zn-15Al),6.5,50.0,420.0,110.0,0.1,Bridge corrosion protection,heegermaterials.com
+Stellite 6 (Cobalt-based),8.4,450.0,1285.0,14.0,0.3,"Valve seats, erosion",heegermaterials.com
+Stellite 12,8.5,500.0,1250.0,13.0,0.3,"Saw teeth, wear",heegermaterials.com
+Hastelloy C-276,8.9,250.0,1370.0,10.0,0.2,Chemical corrosion,heegermaterials.com
+Inconel 625,8.4,280.0,1350.0,10.0,0.3,Marine corrosion,heegermaterials.com
+Inconel 718,8.2,400.0,1300.0,11.0,0.3,Aerospace components,heegermaterials.com
+Nickel-Aluminum (NiAl 95/5),7.8,250.0,1450.0,15.0,0.4,Self-bonding coat,heegermaterials.com
+Nickel-Chromium (NiCr 80/20),8.4,300.0,1400.0,15.0,0.4,High-temp oxidation,heegermaterials.com
+Copper-Nickel (CuNi 70/30),8.9,150.0,1200.0,30.0,0.1,Biofouling resistance,heegermaterials.com
+Monel 400,8.8,200.0,1350.0,21.0,0.1,Marine pumps,heegermaterials.com
+Tribaloy T-400,8.2,600.0,1280.0,12.0,0.3,Sliding wear,heegermaterials.com
+Tribaloy T-800,8.6,750.0,1280.0,11.0,0.3,High-temp sliding wear,heegermaterials.com
+Alumina-Titania (Al2O3-13TiO2),3.8,1000.0,1850.0,5.0,0.8,"Textile machinery, wear",heegermaterials.com
+Alumina-Titania (Al2O3-40TiO2),3.7,800.0,1800.0,4.0,0.8,"Shaft sleeves, wear",heegermaterials.com
+Chromia-Silica (Cr2O3-SiO2),5.1,1300.0,2200.0,3.0,0.8,Anilox rolls,heegermaterials.com
+Magnesium Aluminate (Spinel),3.6,1200.0,2135.0,12.0,0.8,Molten metal resistance,heegermaterials.com
+Calcium Zirconate (CaZrO3),4.5,900.0,2340.0,2.0,0.8,Thermal barrier,heegermaterials.com
+Lanthanum Zirconate (La2Zr2O7),6.0,800.0,2300.0,1.5,0.9,Advanced TBC,sciencedirect.com
+Gadolinium Zirconate (Gd2Zr2O7),7.0,800.0,2400.0,1.2,0.9,High-temp TBC,sciencedirect.com
+Molybdenum,10.2,400.0,2623.0,138.0,0.2,"Piston rings, wear",heegermaterials.com
+Tungsten,19.3,450.0,3422.0,173.0,0.1,Radiation shielding,heegermaterials.com
+Niobium,8.6,150.0,2477.0,54.0,0.1,Chemical processing,heegermaterials.com
+Tantalum,16.7,200.0,3017.0,57.0,0.1,Corrosion resistance,heegermaterials.com
+Hydroxyapatite (HA),3.1,500.0,1650.0,1.2,0.9,Medical implants,heegermaterials.com
+Titanium (CP-Ti),4.5,200.0,1668.0,22.0,0.2,Biocompatible coatings,heegermaterials.com
+Amorphous Steel (Fe-based),7.6,900.0,1200.0,10.0,0.3,Cavitation resistance,sciencedirect.com
+Colmonoy 6,7.8,650.0,1050.0,15.0,0.3,"Glass molds, wear",heegermaterials.com
+Colmonoy 88,8.1,750.0,1020.0,12.0,0.3,"Pump parts, erosion",heegermaterials.com
+Bronze (Cu-Sn),8.8,150.0,1000.0,60.0,0.1,Bearing surfaces,heegermaterials.com
+Aluminum Bronze,7.6,250.0,1050.0,40.0,0.1,Marine propellers,heegermaterials.com
+Manganese Bronze,8.3,200.0,900.0,30.0,0.1,Bushings,heegermaterials.com
+Silver,10.5,50.0,962.0,429.0,0.05,Electrical contacts,sciencedirect.com
+Gold,19.3,30.0,1064.0,318.0,0.05,"Decorative, contacts",sciencedirect.com
+Platinum,21.5,50.0,1768.0,72.0,0.1,Catalytic coatings,sciencedirect.com
+Palladium,12.0,60.0,1555.0,72.0,0.1,Hydrogen diffusion,sciencedirect.com
+Rhodium,12.4,100.0,1964.0,150.0,0.1,Mirror coatings,sciencedirect.com
+Iridium,22.6,200.0,2446.0,147.0,0.1,Crucible coatings,sciencedirect.com
+Ruthenium,12.4,250.0,2334.0,117.0,0.1,Electrodes,sciencedirect.com
+Osmium,22.6,400.0,3033.0,88.0,0.1,High-wear contacts,sciencedirect.com
+Rhenium,21.0,250.0,3186.0,48.0,0.1,High-temp electronics,sciencedirect.com
+Vanadium,6.1,150.0,1910.0,31.0,0.1,Nuclear applications,sciencedirect.com
+Niobium Carbide (NbC),7.6,2000.0,3500.0,14.0,0.3,Cutting tools,sciencedirect.com
+Tantalum Carbide (TaC),14.3,1800.0,3880.0,22.0,0.3,Rocket nozzles,sciencedirect.com
+Hafnium Carbide (HfC),12.2,2500.0,3900.0,20.0,0.3,Ultra-high temp,sciencedirect.com
+Zirconium Carbide (ZrC),6.7,2600.0,3540.0,20.0,0.3,Nuclear fuel coating,sciencedirect.com
+Titanium Diboride (TiB2),4.5,3000.0,3225.0,60.0,0.8,Aluminum electrolysis,sciencedirect.com
+Zirconium Diboride (ZrB2),6.1,2200.0,3245.0,60.0,0.8,Hypersonic vehicles,sciencedirect.com
+Hafnium Diboride (HfB2),10.5,2300.0,3380.0,50.0,0.8,Thermal protection,sciencedirect.com
+Boron Nitride (BN) - Hexagonal,2.1,50.0,2973.0,30.0,0.9,"Lubricant, release agent",sciencedirect.com
+Boron Nitride (BN) - Cubic,3.5,4500.0,2973.0,1300.0,0.9,Super-abrasive,sciencedirect.com
+Aluminum Nitride (AlN),3.3,1200.0,2200.0,180.0,0.8,Heat sinks,sciencedirect.com
+Titanium Silicide (TiSi2),4.1,900.0,1540.0,25.0,0.3,Microelectronics,sciencedirect.com
+Molybdenum Silicide (MoSi2),6.3,1000.0,2030.0,40.0,0.8,Heating elements,sciencedirect.com
+Tungsten Silicide (WSi2),9.3,1100.0,2160.0,35.0,0.3,Ohmic contacts,sciencedirect.com
+Chromium Silicide (CrSi2),4.4,1000.0,1490.0,15.0,0.3,Thermoelectrics,sciencedirect.com
+Tantalum Silicide (TaSi2),9.1,1200.0,2200.0,30.0,0.3,Gate electrodes,sciencedirect.com
+Cobalt Silicide (CoSi2),4.9,800.0,1326.0,20.0,0.3,Interconnects,sciencedirect.com
+Nickel Silicide (NiSi),5.2,700.0,990.0,15.0,0.3,CMOS devices,sciencedirect.com
+Iron Silicide (FeSi2),4.8,900.0,1220.0,10.0,0.3,Thermoelectrics,sciencedirect.com
+Bismuth Telluride (Bi2Te3),7.7,50.0,585.0,1.5,0.8,Peltier coolers,sciencedirect.com
+Lead Telluride (PbTe),8.2,50.0,924.0,2.0,0.8,Thermoelectric gen,sciencedirect.com
+Zinc Telluride (ZnTe),5.6,100.0,1295.0,10.0,0.8,Optoelectronics,sciencedirect.com
+Cadmium Telluride (CdTe),5.9,50.0,1041.0,6.0,0.8,Solar cells,sciencedirect.com
+Gallium Nitride (GaN),6.1,1200.0,2500.0,130.0,0.8,"LEDs, Power electronics",sciencedirect.com
+Aluminum Gallium Nitride (AlGaN),5.5,1300.0,2600.0,80.0,0.8,UV LEDs,sciencedirect.com
+Indium Gallium Nitride (InGaN),6.5,1000.0,2000.0,50.0,0.8,Blue LEDs,sciencedirect.com
+Zinc Oxide (ZnO),5.6,200.0,1975.0,25.0,0.8,Transparent conductors,sciencedirect.com
+Indium Tin Oxide (ITO),7.1,500.0,1900.0,10.0,0.1,Touch screens,sciencedirect.com
+Fluorine-doped Tin Oxide (FTO),7.0,500.0,1630.0,10.0,0.1,Solar cell windows,sciencedirect.com
+Aluminum-doped Zinc Oxide (AZO),5.5,400.0,1900.0,15.0,0.1,TCO coatings,sciencedirect.com
+Copper Oxide (CuO),6.3,100.0,1326.0,76.0,0.8,Solar absorbers,sciencedirect.com
+Iron Oxide (Fe3O4),5.2,600.0,1597.0,5.0,0.9,Magnetic coatings,sciencedirect.com
+Nickel Oxide (NiO),6.7,600.0,1955.0,10.0,0.9,Electrochromic windows,sciencedirect.com
+Cobalt Oxide (Co3O4),6.1,600.0,895.0,10.0,0.9,Gas sensors,sciencedirect.com
+Manganese Oxide (MnO2),5.0,500.0,535.0,5.0,0.9,Batteries,sciencedirect.com
+Titanium Dioxide (TiO2) - Anatase,3.9,800.0,1843.0,8.0,0.9,Photocatalysis,sciencedirect.com
+Titanium Dioxide (TiO2) - Rutile,4.2,900.0,1843.0,11.0,0.9,White pigment,sciencedirect.com
+Chromium Oxide (Cr2O3),5.2,1300.0,2435.0,33.0,0.8,Pump seals,heegermaterials.com
+Yttrium Oxide (Y2O3),5.0,800.0,2425.0,27.0,0.9,Plasma etching chamber,heegermaterials.com
+Lanthanum Oxide (La2O3),6.5,600.0,2315.0,15.0,0.9,Optical glass,heegermaterials.com
+Cerium Oxide (CeO2),7.1,600.0,2400.0,12.0,0.9,Glass polishing,heegermaterials.com
+Praseodymium Oxide (Pr6O11),6.5,600.0,2183.0,10.0,0.9,Ceramic colorant,heegermaterials.com
+Neodymium Oxide (Nd2O3),7.2,600.0,2233.0,10.0,0.9,Laser glass,heegermaterials.com
+Samarium Oxide (Sm2O3),8.4,600.0,2335.0,10.0,0.9,Neutron absorbers,heegermaterials.com
+Europium Oxide (Eu2O3),7.4,600.0,2350.0,10.0,0.9,Phosphors,heegermaterials.com
+Terbium Oxide (Tb4O7),7.3,600.0,2340.0,10.0,0.9,Magneto-optics,heegermaterials.com
+Dysprosium Oxide (Dy2O3),7.8,600.0,2408.0,10.0,0.9,Magnets,heegermaterials.com
+Holmium Oxide (Ho2O3),8.4,600.0,2415.0,10.0,0.9,Refractive index,heegermaterials.com
+Erbium Oxide (Er2O3),8.6,600.0,2355.0,10.0,0.9,Fiber optics,heegermaterials.com
+Thulium Oxide (Tm2O3),8.6,600.0,2341.0,10.0,0.9,X-ray phosphors,heegermaterials.com
+Ytterbium Oxide (Yb2O3),9.2,600.0,2355.0,10.0,0.9,Ceramic capacitors,heegermaterials.com
+Lutetium Oxide (Lu2O3),9.4,600.0,2427.0,10.0,0.9,Scintillators,heegermaterials.com
+Scandium Oxide (Sc2O3),3.9,800.0,2485.0,15.0,0.9,High-intensity lamps,heegermaterials.com
+Yttrium Aluminum Garnet (YAG),4.5,1300.0,1970.0,12.0,0.9,Laser host,sciencedirect.com
+Mullite (3Al2O3-2SiO2),3.1,1000.0,1840.0,4.0,0.9,Refractories,sciencedirect.com
+Cordierite (2MgO-2Al2O3-5SiO2),2.5,800.0,1470.0,3.0,0.9,Catalytic converters,sciencedirect.com
+Steatite (MgO-SiO2),2.7,800.0,1350.0,3.0,0.9,Insulators,sciencedirect.com
+Forsterite (2MgO-SiO2),3.2,900.0,1890.0,4.0,0.9,Microwave ceramics,sciencedirect.com
+Wollastonite (CaO-SiO2),2.9,700.0,1540.0,2.0,0.9,Friction materials,sciencedirect.com
+Enstatite (MgO-SiO2),3.2,900.0,1557.0,4.0,0.9,Ceramic insulation,sciencedirect.com
+Titanium Boride (TiB),4.5,2500.0,2220.0,30.0,0.8,Wear parts,sciencedirect.com
+Tungsten Boride (WB),15.3,2000.0,2860.0,25.0,0.3,Radiation shield,sciencedirect.com
+Molybdenum Boride (MoB),8.6,2200.0,2600.0,25.0,0.3,High-temp wear,sciencedirect.com
+Chromium Boride (CrB),6.2,2000.0,2100.0,20.0,0.3,Corrosion-wear,sciencedirect.com
+Nickel Boride (NiB),7.4,1100.0,1020.0,15.0,0.3,Electroless plating,sciencedirect.com
+Cobalt Boride (CoB),7.2,1100.0,1260.0,15.0,0.3,Magnetic films,sciencedirect.com
+Iron Boride (FeB),7.1,1500.0,1540.0,15.0,0.3,Boronizing,richterprecision.com
+Metco 54NS,2.7,100.0,660.0,200.0,0.1,"Clearance control, repair",oerlikon.com
+Amdry 355,2.6,120.0,580.0,160.0,0.1,Atmospheric corrosion,oerlikon.com
+Metco 52C-NS,2.65,110.0,570.0,150.0,0.1,Silicon-aluminum repair,oerlikon.com
+Amdry 920,7.8,450.0,1380.0,12.0,0.4,Hot corrosion (CoCrAlY),oerlikon.com
+Amdry 9951,7.9,480.0,1390.0,11.0,0.4,Gas turbine blades,oerlikon.com
+Diamalloy 4454,8.1,500.0,1350.0,13.0,0.4,High temp oxidation,oerlikon.com
+Metco 66F-NS,8.4,600.0,1285.0,14.0,0.3,Tribaloy T-400 equivalent,oerlikon.com
+Metco 68F-NS-1,8.6,750.0,1280.0,11.0,0.3,Tribaloy T-800 equivalent,oerlikon.com
+Amdry 958,7.5,300.0,1350.0,10.0,0.5,Abradable seal (CoNiCrAlY-hBN),oerlikon.com
+Metco 57NS,8.9,150.0,1200.0,30.0,0.1,Marine corrosion (CuNi),oerlikon.com
+Diamalloy 1003,8.0,250.0,1400.0,15.0,0.3,316 SS repair,oerlikon.com
+Amdry 9700,7.2,400.0,1500.0,16.0,0.4,FeCrAlY heating elements,oerlikon.com
+Metco 452,7.6,350.0,1400.0,20.0,0.3,Bond coat (FeNiAl),oerlikon.com
+Amdry 313X,10.2,400.0,2623.0,138.0,0.2,Automotive piston rings,oerlikon.com
+Amdry 1371,9.5,600.0,1100.0,40.0,0.3,Mo-based self-fluxing,oerlikon.com
+Metco 43C-NS,8.4,300.0,1400.0,15.0,0.4,NiCr oxidation protection,oerlikon.com
+Metco 442,8.2,350.0,1350.0,12.0,0.4,Self-bonding NiCrAl,oerlikon.com
+Amdry 510,8.3,400.0,1300.0,11.0,0.4,Hot corrosion (NiCrAlY),oerlikon.com
+Metcoloy 33,8.0,450.0,1400.0,15.0,0.3,Stainless steel equivalent,oerlikon.com
+Metco 16C-NS,7.8,650.0,1050.0,15.0,0.3,NiCrBSi hardfacing,oerlikon.com
+ExoGard 1004,14.2,1100.0,1450.0,18.0,0.6,Tungsten carbide HVOF,linde-amt.com
+ExoGard 2004,6.8,950.0,1350.0,15.0,0.7,Chromium carbide HVOF,linde-amt.com
+ExoGard 3004,8.2,500.0,1300.0,12.0,0.4,Nickel alloy HVOF,linde-amt.com
+CO-106,8.3,400.0,1380.0,12.0,0.4,CoCrAlY bond coat,linde-amt.com
+NI-211,8.4,350.0,1400.0,15.0,0.4,NiCrAlY bond coat,linde-amt.com
+NI-544-6,7.8,600.0,1050.0,15.0,0.3,Self-fluxing Ni alloy,innovator.com.tw
+LW-1N40,14.5,1050.0,1450.0,20.0,0.6,WC-Co (Detonation gun),linde-amt.com
+LW-5,13.8,1000.0,1450.0,22.0,0.6,WC-Co-Cr (D-Gun),linde-amt.com
+LC-1H,6.7,900.0,1350.0,18.0,0.7,Cr3C2-NiCr (D-Gun),linde-amt.com
+LA-2,3.9,1100.0,2050.0,30.0,0.8,Alumina (D-Gun),linde-amt.com
+Amperit 526.062,14.2,1150.0,1495.0,15.0,0.6,WC-Co 88/12,hoganas.com
+Amperit 554.062,13.5,1200.0,1400.0,12.0,0.6,WC-Co-Cr 86/10/4,hoganas.com
+Amperit 588.062,6.8,950.0,1350.0,15.0,0.7,Cr3C2-NiCr 75/25,hoganas.com
+Amperit 740.000,3.9,2000.0,2050.0,30.0,0.8,Alumina 99.5%,hoganas.com
+Amperit 827.000,6.0,1300.0,2700.0,2.0,0.9,YSZ (TBC),hoganas.com
+Amperit 250.000,8.9,250.0,1350.0,10.0,0.3,Hastelloy C equivalent,hoganas.com
+Amperit 415.000,8.2,350.0,1300.0,11.0,0.3,Inconel 718 equivalent,hoganas.com
+Titankote C,5.1,3000.0,2810.0,15.0,0.2,TiCN tool coating,richterprecision.com
+Titankote B,7.1,2100.0,2980.0,20.0,0.2,ZrN tool coating,richterprecision.com
+Titankote H,5.0,3300.0,2800.0,10.0,0.3,AlTiN high-temp tool,richterprecision.com
+Titankote N,5.9,1750.0,1770.0,12.0,0.2,CrN corrosion protection,richterprecision.com
+Medikote TiN,5.4,2300.0,2930.0,19.0,0.2,Medical grade TiN,richterprecision.com
+Richkote DLC,2.0,5000.0,3500.0,5.0,0.8,High-performance DLC,richterprecision.com
+Metco 101NS,3.8,1000.0,1850.0,5.0,0.8,Alumina-Titania 87/13,oerlikon.com
+Metco 105NS,3.9,1100.0,2050.0,30.0,0.8,Pure Alumina APS,oerlikon.com
+Metco 130,3.7,800.0,1800.0,4.0,0.8,Alumina-Titania 60/40,oerlikon.com
+Metco 136F,5.1,1300.0,2200.0,3.0,0.8,Chromia-Silica-Titania,oerlikon.com
+Metco 204NS,6.0,1300.0,2700.0,2.0,0.9,YSZ Plasma spray,oerlikon.com
+Metco 201NS,6.1,1200.0,2715.0,2.0,0.9,Magnesia-stabilized Zirconia,oerlikon.com
+Metco 210,4.5,900.0,2340.0,2.0,0.8,Calcium Zirconate,oerlikon.com
+Metco 307NS,8.2,350.0,1350.0,12.0,0.4,NiCrAlY bond coat,oerlikon.com
+Metco 308NS,8.1,300.0,1300.0,11.0,0.4,NiCrAl bond coat,oerlikon.com
+Metco 404NS,7.8,250.0,1450.0,15.0,0.4,Ni-Al 95/5,oerlikon.com
+Metco 443NS,8.4,300.0,1400.0,15.0,0.4,NiCr 80/20,oerlikon.com
+Metco 447NS,8.2,400.0,1300.0,11.0,0.4,NiCrAl-Moly blend,oerlikon.com
+Metco 450NS,8.1,350.0,1350.0,12.0,0.4,NiAl composite,oerlikon.com
+Metco 601NS,2.2,50.0,327.0,0.25,0.9,Al-Polyester abradable,oerlikon.com
+Metco 604NS,2.1,50.0,300.0,0.2,0.9,Ni-Graphite abradable,oerlikon.com
+Metco 610NS,2.5,50.0,1450.0,0.3,0.9,AlSi-Graphite abradable,oerlikon.com
+Metco 700,14.2,1100.0,1495.0,15.0,0.6,WC-Co (Fine),oerlikon.com
+Metco 73F-NS-1,14.5,1050.0,1455.0,18.0,0.6,WC-Ni 88/12,oerlikon.com
+Metco 81NS,6.7,900.0,1350.0,18.0,0.7,Cr3C2-NiCr 75/25,oerlikon.com
+Metco 82VF-NS,6.8,950.0,1350.0,15.0,0.7,Cr3C2-NiCr (Fine),oerlikon.com
+Woka 3101,14.2,1150.0,1495.0,15.0,0.6,WC-Co 88/12 HVOF,oerlikon.com
+Woka 3110,14.0,1100.0,1495.0,16.0,0.6,WC-Co 83/17 HVOF,oerlikon.com
+Woka 3201,14.5,1050.0,1455.0,18.0,0.6,WC-Ni 88/12 HVOF,oerlikon.com
+Woka 3301,13.5,1200.0,1400.0,12.0,0.6,WC-Co-Cr 86/10/4 HVOF,oerlikon.com
+Woka 3651,6.8,950.0,1350.0,15.0,0.7,Cr3C2-NiCr 75/25 HVOF,oerlikon.com
+Woka 3652-1,6.7,900.0,1350.0,18.0,0.7,Cr3C2-NiCr 80/20 HVOF,oerlikon.com
+Woka 3901,6.5,850.0,1300.0,12.0,0.7,Cr3C2-NiCr-Mo HVOF,oerlikon.com
+Woka 7101,8.4,300.0,1400.0,15.0,0.4,NiCr 80/20 HVOF,oerlikon.com
+Woka 7201,8.2,350.0,1350.0,12.0,0.4,NiCrAlY HVOF,oerlikon.com
+Woka 7301,8.1,400.0,1300.0,11.0,0.4,NiCoCrAlY HVOF,oerlikon.com
+Diamalloy 1005,8.0,200.0,1400.0,15.0,0.3,304 SS repair,oerlikon.com
+Diamalloy 2002,8.2,350.0,1300.0,11.0,0.3,Inconel 625 equivalent,oerlikon.com
+Diamalloy 3001-1,8.4,600.0,1285.0,14.0,0.3,Tribaloy T-400 HVOF,oerlikon.com
+Diamalloy 4006,7.8,650.0,1050.0,15.0,0.3,NiCrBSi HVOF,oerlikon.com
+Diamalloy 4060,8.0,700.0,1020.0,12.0,0.3,High-hardness Ni alloy,oerlikon.com
+Stellite 21 Powder,8.3,350.0,1300.0,14.0,0.3,Bio-compatible cobalt,oerlikon.com
+Tribaloy T-700,8.4,650.0,1285.0,13.0,0.3,High-temp sliding,oerlikon.com
+Tribaloy T-900,8.6,800.0,1280.0,10.0,0.3,Extreme wear cobalt,oerlikon.com
+Amdry 365-1,7.9,450.0,1380.0,12.0,0.4,Oxidation resistant powder,oerlikon.com
+Amdry 386,8.0,480.0,1390.0,11.0,0.4,Advanced MCrAlY,oerlikon.com
+Amdry 6415,8.1,500.0,1350.0,13.0,0.4,High-temp Ni-base,oerlikon.com
+Amdry 962,8.2,520.0,1380.0,12.0,0.4,NiCoCrAlYHfSi,oerlikon.com
+Metco 204B-NS,6.0,1300.0,2700.0,2.0,0.9,YSZ (Spherical),oerlikon.com
+Metco 204C-NS,6.0,1300.0,2700.0,2.0,0.9,YSZ (Agglomerated),oerlikon.com
+Metco 204F,6.0,1300.0,2700.0,2.0,0.9,YSZ (Fine),oerlikon.com
+Metco 202NS,6.1,1200.0,2715.0,2.0,0.9,Ceria-stabilized Zirconia,oerlikon.com
+Metco 2311,6.0,1300.0,2700.0,2.0,0.9,YSZ-Alumina composite,oerlikon.com
+Metco 2313,6.0,1300.0,2700.0,2.0,0.9,YSZ-Gadolinia composite,oerlikon.com
+Metco 605NS,2.2,50.0,327.0,0.25,0.9,AlSi-Polyester abradable,oerlikon.com
+Metco 606NS,2.3,50.0,320.0,0.2,0.9,Al-Graphite-Polyester,oerlikon.com
+Metco 607NS,2.4,50.0,310.0,0.2,0.9,NiCr-Polyester abradable,oerlikon.com
+Metco 608NS,2.5,50.0,300.0,0.2,0.9,Co-Polyester abradable,oerlikon.com
+Metco 609NS,2.6,50.0,290.0,0.2,0.9,Fe-Polyester abradable,oerlikon.com
+Metco 480-NS,7.7,300.0,1400.0,15.0,0.4,Ni-Graphite (95/5),oerlikon.com
+Metco 410-NS,8.0,250.0,1400.0,15.0,0.3,410 SS equivalent,oerlikon.com
+Metco 42C,8.0,200.0,1400.0,15.0,0.3,420 SS equivalent,oerlikon.com
+Metco 44,8.4,300.0,1400.0,15.0,0.4,NiCr (Fine),oerlikon.com
+Material_Base,,,,,Emissivity_Total,Primary_Use,Source_Domain
+Alumina-Titania,3.7,950.0,1840.0,1.5,0.9,High-wear dielectric applications,matweb.com
+Chromium-Oxide,5.2,1250.0,2435.0,2.1,0.85,Seal rings and chemical resistance,matweb.com
+Tungsten-Carbide-Cobalt,14.5,1150.0,2870.0,100.0,0.4,Abrasive and erosive wear,matweb.com
+Nickel-Chrome,8.1,350.0,1400.0,11.3,0.25,High-temp oxidation bond coat,matweb.com
+YSZ-Zirconia,5.9,800.0,2700.0,0.8,0.4,Thermal barrier coating (TBC),matweb.com
+Silicon-Carbide,3.21,2500.0,2730.0,120.0,0.92,Extreme hardness and stability,matweb.com
+Titanium-Nitride,5.22,2300.0,2930.0,19.0,0.15,Cutting tool wear resistance,matweb.com
+Cobalt-Chrome-Moly,8.3,600.0,1350.0,14.5,0.25,Biomedical implants,matweb.com
+Copper-Nickel,8.9,150.0,1170.0,29.0,0.05,Marine biofouling resistance,matweb.com
+Nickel-Aluminide,6.5,450.0,1638.0,75.0,0.3,Internal cooling oxidation,matweb.com
+Boron-Nitride,2.1,50.0,2973.0,30.0,0.8,High-temp release agent,matweb.com
+Hastelloy-C,8.9,250.0,1370.0,10.2,0.2,Pitting corrosion resistance,matweb.com
+Inconel-625,8.44,300.0,1290.0,9.8,0.25,General aerospace corrosion,matweb.com
+Stainless-Steel-316,8.0,220.0,1375.0,16.3,0.3,Food grade hygiene,matweb.com
+Molybdenum-Disulfide,4.8,30.0,1185.0,19.0,0.85,Solid vacuum lubricant,matweb.com
+Aluminum-Bronze,7.5,180.0,1040.0,45.0,0.15,Anti-galling surfaces,matweb.com
+Hafnium-Oxide,9.68,1000.0,2758.0,1.1,0.85,High-k gate dielectrics,matweb.com
+Titanium-Dibodide,4.52,2800.0,3225.0,65.0,0.6,Aluminum smelting erosion,matweb.com
+Silicon-Nitride,3.44,1800.0,1900.0,30.0,0.88,High-speed bearings,matweb.com
+Chrome-Carbide-NiCr,6.8,1000.0,1260.0,12.0,0.6,High-temp erosion,matweb.com
+Tin-Babbitt,7.3,30.0,240.0,25.0,0.1,Journal bearing liners,matweb.com
+Iron-Aluminide,6.0,350.0,1300.0,18.0,0.4,Sulfidation resistance,matweb.com
+Titanium-Aluminide,3.8,550.0,1460.0,22.0,0.35,Lightweight engine valves,matweb.com
+Hard-Chrome,7.1,1000.0,1907.0,93.9,0.1,Hydraulic cylinder rods,matweb.com
+Pure-Silver,10.5,100.0,961.0,429.0,0.02,Electrical busbars,matweb.com
+Magnetite-Black-Oxide,7.8,20.0,1590.0,,0.88,Optical tooling,matweb.com
+Boron-Carbide,2.52,3000.0,2763.0,35.0,0.88,Neutron shielding,matweb.com
+Titania-TiO2,4.23,850.0,1843.0,11.8,0.92,Photocatalytic surfaces,matweb.com
+Moly-Silicide,6.31,900.0,2030.0,50.0,0.7,High-temp heating,matweb.com
+Barium-Titanate,6.02,500.0,1625.0,6.0,0.9,Capacitor film,matweb.com
+Zinc-Oxide,5.61,200.0,1975.0,54.0,0.85,Varistor protection,matweb.com
+Tin-Oxide,6.95,700.0,1630.0,,0.8,Conductive glass,matweb.com
+Pure-Copper,8.96,100.0,1085.0,401.0,0.05,Heat management,matweb.com
+Pure-Aluminum,2.7,50.0,660.0,237.0,0.05,Atmospheric corrosion,matweb.com
+Pure-Nickel,8.9,200.0,1455.0,90.9,0.1,Dimensional restoration,matweb.com
+Electrolytic-Iron,7.87,150.0,1538.0,80.4,0.15,Cast iron repair,matweb.com
+Cobalt-Pure,8.9,300.0,1495.0,100.0,0.15,Magnetic storage,matweb.com
+Permalloy-NiFe,8.3,400.0,1450.0,20.0,0.15,Magnetic shielding,matweb.com
+Invar-36,8.05,150.0,1425.0,10.1,0.2,Precision dimension,matweb.com
+Kovar-FeNiCo,8.36,160.0,1450.0,17.3,0.2,Glass-to-metal seals,matweb.com
+Moly-TZM,10.22,250.0,2620.0,126.0,0.18,Aerospace high-temp,matweb.com
+Titanium-G2,4.51,200.0,1665.0,16.4,0.15,Chemical heat exchange,matweb.com
+Zirconium-702,6.51,150.0,1850.0,22.0,0.2,Corrosive acid towers,matweb.com
+NiCr-80/20,8.4,200.0,1400.0,13.4,0.3,Heating elements,matweb.com
+Brass-70/30,8.53,80.0,950.0,121.0,0.1,Hardware/Ammunition,matweb.com
+Bronze-Phosphor,8.85,110.0,1050.0,47.0,0.12,Bearing bushes,matweb.com
+Copper-Beryllium,8.25,350.0,980.0,105.0,0.15,Non-sparking tools,matweb.com
+Hard-Gold,17.5,150.0,1064.0,318.0,0.05,Electronic contacts,matweb.com
+Soft-Gold,19.32,30.0,1064.0,317.0,0.05,Semiconductor bonding,matweb.com
+Pure-Platinum,21.45,80.0,1768.0,71.0,0.05,Catalytic labware,matweb.com
+Stainless-Steel-310,7.89,180.0,1400.0,14.2,0.3,Furnace components,matweb.com
+Duplex-2205,7.82,290.0,1420.0,19.0,0.3,Marine processing,matweb.com
+Monel-400,8.8,180.0,1300.0,21.8,0.2,Hydrofluoric acid resist,matweb.com
+Al-Silicon-12,2.65,70.0,580.0,160.0,0.1,Piston coatings,matweb.com
+Nickel-Indium,8.0,200.0,,,0.2,Fretting contacts,matweb.com
+Zinc-Galvanize,7.14,50.0,419.0,116.0,0.2,Steel construction,matweb.com
+Manganese-Phosphate,3.1,80.0,,,0.95,Break-in gear lube,matweb.com
+Cordierite,2.6,700.0,1450.0,3.0,0.85,Kiln furniture,matweb.com
+Steatite,2.7,800.0,1350.0,2.5,0.85,Insulator spacers,matweb.com
+Vanadium-Carbide,5.77,2800.0,2810.0,,0.55,Press tool durability,matweb.com
+Tantalum-Carbide,14.3,1800.0,3880.0,22.0,0.5,Rocket nozzles,matweb.com
+Hafnium-Carbide,12.2,2600.0,3890.0,20.0,0.45,Ultra-high temp shield,matweb.com
+Yttrium-Oxide,5.01,500.0,2425.0,10.0,0.85,Etch resistance,matweb.com
+Silicon-Pure,2.33,800.0,1414.0,149.0,0.6,EBC bond coat,matweb.com
+Tantalum-Nitride,14.3,2200.0,3090.0,,0.25,Precision resistors,matweb.com
+Zircon-ZrSiO4,4.6,900.0,2550.0,5.0,0.8,Glass production,matweb.com
+Stellite-6-Alloy,8.4,480.0,1285.0,14.8,0.3,Valve hardfacing,matweb.com
+Haynes-188,8.95,300.0,1315.0,10.8,0.3,Combustor liners,matweb.com
+Waspaloy,8.19,400.0,1330.0,10.8,0.25,Turbine disks,matweb.com
+Inconel-718,8.19,380.0,1260.0,11.4,0.25,Cryogenic fasteners,matweb.com
+Hastelloy-X,8.22,250.0,1355.0,9.1,0.22,Burner cans,matweb.com
+Maraging-Steel,8.0,600.0,1413.0,20.0,0.4,Die casting tools,matweb.com
+Mullite,2.8,900.0,1840.0,3.3,0.9,Engine ceramics,matweb.com
+Magnesium-Zirconate,4.5,650.0,2120.0,1.2,0.88,Thermal shock barrier,matweb.com
+Zirconium-Diboride,6.08,2200.0,3245.0,60.0,0.7,Leading edge heat,matweb.com
+Nickel-Graphite,6.5,150.0,,15.0,0.8,Abradable seal,matweb.com
+Cadmium-Plate,8.64,40.0,321.0,92.0,0.1,Aircraft bolts,matweb.com
+Stainless-Steel-410,7.7,450.0,1480.0,24.9,0.3,Valve stems,matweb.com
+Titanium-G5,4.43,350.0,1600.0,6.7,0.3,Structural aerospace,matweb.com
+Zinc-Nickel,7.8,450.0,,,0.25,Brake line corrosion,matweb.com
+Lead-Free-Solder,7.4,15.0,217.0,55.0,0.1,PCBA joints,matweb.com
+Magnesium-AZ31,1.77,80.0,630.0,96.0,0.2,Lightweight auto,matweb.com
+Aluminum-Oxide,3.9,1100.0,2050.0,30.0,0.85,Wear insulation,matweb.com
+Chromium-Oxide-Pure,5.2,1250.0,2435.0,2.1,0.8,Acid pumps,matweb.com
+Molybdenum-Pure,10.2,400.0,2623.0,138.0,0.15,Hard-bearing coat,matweb.com
+Incoloy-800,7.94,150.0,1350.0,11.5,0.25,Heat treat equipment,matweb.com
+Nimonic-90,8.18,350.0,1350.0,11.5,0.25,Aero springs,matweb.com
+Rene-41,8.25,450.0,1300.0,10.0,0.3,Hot structure repair,matweb.com
+Haynes-25,9.13,280.0,1330.0,10.0,0.3,Static turbine parts,matweb.com
+Hastelloy-C276,8.89,210.0,1370.0,10.2,0.2,Chemical scrubbers,matweb.com
+Stainless-Steel-304,8.0,200.0,1400.0,16.2,0.3,Food containers,matweb.com
+Zinc-Phosphate,3.3,70.0,,,0.92,Paint base coat,matweb.com
+Indium-Tin-Oxide,7.14,600.0,1526.0,,0.8,Touchscreen layer,matweb.com
+Gallium-Nitride,6.15,1100.0,2500.0,130.0,0.8,Power semicon,matweb.com
+Silicon-Nitride-CVD,3.44,1800.0,1900.0,30.0,0.88,Ball bearings,matweb.com
+Quick-Dry-Primer,1.25,,,0.2,0.92,Steel structure base,mpi.net
+High-Gloss-Alkyd,1.15,20.0,,0.2,0.9,Machine shop finish,mpi.net
+Semi-Gloss-Enamel,1.1,15.0,,0.2,0.9,Commercial interior,mpi.net
+Flat-Acrylic-Latex,1.05,5.0,,0.1,0.94,Aesthetic wall coat,mpi.net
+Heat-Resistant-Alum,1.2,,427.0,,0.3,High-temp stack,mpi.net
+Zinc-Rich-Inorganic,3.4,80.0,,,0.92,Bridges/Marine steel,mpi.net
+Organic-Zinc-Primer,2.5,60.0,,,0.9,Shop coat primer,mpi.net
+Bituminous-Mastic,1.35,10.0,,0.7,0.96,Buried piping,mpi.net
+Chlorinated-Rubber,1.45,30.0,,0.2,0.95,Pool/Splash zones,mpi.net
+Coal-Tar-Epoxy,1.55,50.0,,0.2,0.96,Waste water lining,mpi.net
+Amine-Cure-Epoxy,1.4,110.0,,0.3,0.94,Chemical storage,mpi.net
+Novolac-Epoxy,1.45,95.0,,0.3,0.95,Acid containment,mpi.net
+Polyamide-Epoxy,1.3,85.0,,0.3,0.94,High-wear maintenance,mpi.net
+Moisture-Cure-Poly,1.1,70.0,,0.2,0.95,Low-temp application,mpi.net
+Aliphatic-Urethane,1.2,50.0,,0.2,0.92,UV stable topcoat,mpi.net
+Polysiloxane-Finish,1.5,100.0,,0.5,0.94,Hybrid marine coat,mpi.net
+Fire-Retard-Intum,1.4,20.0,,0.1,0.96,Passive fire protect,mpi.net
+Zinc-Silicate-LowVOC,3.5,85.0,,,0.92,Eco-coastal primer,mpi.net
+Acrylic-Urethane,1.15,45.0,,0.2,0.91,Fleet refinishing,mpi.net
+Epoxy-Phenolic,1.42,115.0,,0.3,0.94,Hot water immersion,mpi.net
+Polyaspartic,1.18,90.0,,0.2,0.94,Fast-cure flooring,mpi.net
+Elastomeric-Textured,1.25,5.0,,0.2,0.95,Crack-bridging wall,mpi.net
+Waterborne-Epoxy,1.12,65.0,,0.2,0.93,Food plant walls,mpi.net
+Silicone-Alum-600C,1.32,45.0,600.0,,0.35,Chimney/Boiler paint,mpi.net
+Wash-Primer-Vinyl,0.95,10.0,,,0.85,Aluminum pretreatment,mpi.net
+Self-Level-Epoxy,1.25,120.0,,0.3,0.94,Industrial flooring,mpi.net
+Glass-Flake-Epoxy,1.65,95.0,,0.8,0.94,Offshore platform splash,mpi.net
+Vinyl-Ester-Lining,1.2,85.0,,0.2,0.94,Process tank barrier,mpi.net
+Styrene-Acrylic,1.08,10.0,,0.1,0.93,Masonry sealer,mpi.net
+Polyurea-Spray,1.06,45.0,,0.2,0.95,Truck bed liners,mpi.net
+Zirconia-Mg-Stable,4.8,650.0,2120.0,1.2,0.85,Molten metal handling,matweb.com
+Chrome-Oxide-Silica,5.1,1350.0,,,0.9,Laser-engraved rolls,matweb.com
+Titania-Conductive,4.1,750.0,1843.0,8.0,0.9,Static dissipation,matweb.com
+Alumina-Dielectric,3.95,1200.0,2050.0,32.0,0.88,Pure electronic barrier,matweb.com
+Tungsten-Pure,19.3,450.0,3422.0,173.0,0.05,Fusion reactor wall,matweb.com
+Tantalum-CVD,16.65,220.0,3017.0,57.5,0.1,Semiconductor tubing,matweb.com
+Niobium-Pure,8.57,100.0,2477.0,53.7,0.15,SRF cavity coating,matweb.com
+Iridium-Coat,22.6,300.0,2446.0,147.0,0.1,High-temp spark tips,matweb.com
+Rhenium-Thruster,21.0,400.0,3186.0,48.0,0.15,Rocket nozzle coat,matweb.com
+Silver-Palladium,11.5,180.0,1200.0,,0.1,H2 purification film,matweb.com
+Platinum-Turbine,21.4,120.0,1768.0,71.0,0.05,Blade oxidation prot,matweb.com
+Gold-Flash,19.3,45.0,1064.0,310.0,0.05,Corrosion-free contacts,matweb.com
+Rhodium-Mirror,12.4,850.0,1964.0,150.0,0.1,Reflector coating,matweb.com
+Osmium-Contact,22.6,450.0,3033.0,88.0,0.1,Severe wear electrical,matweb.com
+Cu-Be-Conductive,8.3,400.0,980.0,105.0,0.15,Non-sparking spring,matweb.com
+Nickel-Phos-HighP,7.75,500.0,880.0,4.5,0.22,Memory disk surface,matweb.com
+Hard-Gold-Cobalt,17.6,200.0,1060.0,300.0,0.05,Sliding connector,matweb.com
+Brass-Cartridge,8.5,90.0,950.0,120.0,0.1,Ammunition case,matweb.com
+Bronze-Aluminum,7.6,200.0,1040.0,40.0,0.15,Valve seats,matweb.com
+Invar-LowExp,8.1,160.0,1430.0,10.1,0.2,Laser resonator frame,matweb.com
+Kovar-Sealing,8.35,170.0,1450.0,17.0,0.2,Electronic packaging,matweb.com
+Hastelloy-B,9.24,230.0,1350.0,11.0,0.2,Hydrochloric acid resist,matweb.com
+Stellite-21,8.33,450.0,1295.0,14.2,0.28,Medical prosthesis,matweb.com
+Tribaloy-800,8.6,750.0,1280.0,15.5,0.35,Corrosive sliding wear,matweb.com
+Colmonoy-6,7.8,750.0,1030.0,12.0,0.4,Hardfacing shaft,matweb.com
+Iron-Chrome-Boron,7.2,950.0,1200.0,,0.4,Chrome alternate spray,matweb.com
+WC-Ni-Resistant,14.1,1100.0,,70.0,0.4,Oil/Gas gate valve,matweb.com
+Chrome-Steel-Cast,7.75,550.0,1450.0,25.0,0.4,Slurry pump impeller,matweb.com
+Maraging-300,8.0,600.0,1413.0,20.0,0.4,High-stress tool repair,matweb.com
+Titanium-6-4,4.43,360.0,1600.0,6.7,0.3,Aero-engine components,matweb.com
+Zirconium-705,6.5,180.0,1845.0,20.0,0.2,Corrosion pressure vessel,matweb.com
+Stainless-310-Oxid,7.9,190.0,1400.0,14.0,0.3,Furnace baffle plate,matweb.com
+Duplex-Stainless,7.85,300.0,1420.0,19.0,0.3,Desalination plant,matweb.com
+Ni-Cr-Al-Y,7.8,400.0,1350.0,12.0,0.3,High-temp bond coat,matweb.com
+Co-Cr-Al-Y,7.5,450.0,1380.0,13.0,0.35,Turbine blade bond,matweb.com
+Fe-Cr-Al-Y,7.1,320.0,1500.0,15.0,0.4,Exhaust oxidation,matweb.com
+Barium-Titanate-Cer,6.0,550.0,1625.0,6.0,0.9,Dielectric capacitor,matweb.com
+Zinc-Oxide-Semic,5.6,250.0,1975.0,54.0,0.85,Transient surge protect,matweb.com
+Tin-Oxide-Trans,7.0,750.0,1630.0,,0.8,Heat-reflective glass,matweb.com
+ITO-Trans-Cond,7.15,650.0,1526.0,,0.8,Flat panel display,matweb.com
+Moly-Silicide-Heat,6.3,950.0,2030.0,52.0,0.7,Glass melting furnace,matweb.com
+Boron-Carbide-Armor,2.5,3100.0,2763.0,35.0,0.88,Lightweight armor,matweb.com
+Titania-Plasma,4.2,800.0,1843.0,11.0,0.92,Wear dielectric,matweb.com
+Yttria-Erosion,5.0,550.0,2425.0,10.0,0.85,Plasma chamber parts,matweb.com
+Silica-Pure-CVD,2.2,500.0,1710.0,1.4,0.93,Optical fiber cladding,matweb.com
+Silicon-Nitride-Bear,3.45,1850.0,1900.0,30.0,0.88,Ceramic engine ball,matweb.com
+Alumina-White-Die,3.9,1250.0,2050.0,30.0,0.9,High-voltage insulator,matweb.com
+Zirconium-Oxide-TBC,5.95,850.0,2700.0,0.9,0.4,Gas turbine vane,matweb.com
+Mullite-Refract,2.82,950.0,1840.0,3.5,0.9,Heat exchanger ceramic,matweb.com
+Cordierite-LowExp,2.65,750.0,1450.0,3.2,0.85,Auto catalyst support,matweb.com
+Steatite-Elec,2.75,850.0,1350.0,2.8,0.85,Heater support insulator,matweb.com
+Boron-Nitride-Lub,2.15,60.0,2973.0,30.0,0.8,High-temp solid lube,matweb.com
+Hafnium-Oxide-Die,9.7,1100.0,2758.0,1.2,0.85,IC gate insulator,matweb.com
+Vanadium-Carbide-Die,5.8,2900.0,2810.0,,0.55,Forming die protection,matweb.com

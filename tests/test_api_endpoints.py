@@ -131,6 +131,9 @@ def test_simulate_endpoint_returns_baseline_modified_and_change() -> None:
     _assert_has_path(response, "change", "risk_delta")
     _assert_has_path(response, "dominant_driver")
     _assert_has_path(response, "explanation")
+    _assert_has_path(response, "simulation_summary")
+    driver_analysis = _assert_has_path(response, "driver_analysis")
+    assert isinstance(driver_analysis, list)
 
 
 def test_model_metadata_endpoint_returns_feature_list() -> None:

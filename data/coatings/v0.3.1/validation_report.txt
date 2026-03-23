@@ -1,0 +1,17 @@
+Coatings Dataset Validation Report
+Source file: Final_Conrad_455_Coatings - Coatings.csv
+Working CSV: Final_Conrad_455_Coatings - Coatings.csv
+Original rows: 457
+Rows removed with missing identifier: 0
+Duplicate coatings removed: 8
+Cleaned rows: 449
+Columns: Coating, LOI Improvement, Thermal Barrier Effect, Combustion Delay, Surface Protection Factor, Additional Column 1, Additional Column 2, Additional Column 3
+Missing numeric values by column:
+- LOI Improvement: 1
+- Thermal Barrier Effect: 3
+- Combustion Delay: 36
+- Surface Protection Factor: 22
+Notes:
+- Detected CSV source: Final_Conrad_455_Coatings - Coatings.csv
+- XLSX source also present but CSV was preferred: Final_Conrad_455_Coatings.xlsx
+- Input schema was headerless; expected column names were assigned.

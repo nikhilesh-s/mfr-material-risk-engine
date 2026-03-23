@@ -1,0 +1,38 @@
+{
+  "service": "Dravix Phase 3 Resistance API",
+  "api_version": "0.3.0",
+  "model_type": "RandomForestRegressor pipeline",
+  "model_artifact": "model_v0.3-stable.pkl",
+  "model_version": "v0.3-stable",
+  "dataset_version": "v0.3-stable",
+  "dataset_build_date": "2026-02-27",
+  "deterministic": true,
+  "feature_names": [
+    "Density (g/cc)",
+    "Melting Point (\u00b0C)",
+    "Specific Heat (J/g-\u00b0C)",
+    "Thermal Cond. (W/m-K)",
+    "CTE (\u00b5m/m-\u00b0C)",
+    "Flash Point (\u00b0C)",
+    "Autoignition Temp (\u00b0C)",
+    "Limiting Oxygen Index (%)",
+    "Smoke Density (Ds)",
+    "Char Yield (%)",
+    "Decomp. Temp (\u00b0C)",
+    "Heat of Combustion (MJ/kg)",
+    "Flame Spread Index"
+  ],
+  "feature_count": 13,
+  "row_counts": {
+    "reference_dataset_rows": 1771,
+    "materials_lookup_rows": 1770,
+    "coatings_lookup_rows": 187
+  },
+  "active_paths": {
+    "reference_dataset": "/Users/niks/Documents/GitHub/mfr-material-risk-engine/data/materials/v0.3/materials_dataset.csv",
+    "materials_lookup": "/Users/niks/Documents/GitHub/mfr-material-risk-engine/data/materials/v0.3/materials_dataset.csv",
+    "coatings_lookup": "/Users/niks/Documents/GitHub/mfr-material-risk-engine/data/coatings/v0.3/coatings_dataset.csv",
+    "model_artifact": "/Users/niks/Documents/GitHub/mfr-material-risk-engine/models/model_v0.3-stable.pkl"
+  },
+  "timestamp_utc": "2026-03-22T19:47:26.985734+00:00"
+}

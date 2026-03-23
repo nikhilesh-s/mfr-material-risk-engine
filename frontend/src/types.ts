@@ -19,19 +19,27 @@ export interface ManualPredictionPayload {
 export interface LookupPredictionPayload {
   material_name: string;
   coating_code?: string;
+  use_case?: string;
 }
 
-export type PredictionRequest = ManualPredictionPayload | LookupPredictionPayload;
+export type PredictionRequest =
+  | (ManualPredictionPayload & { use_case?: string })
+  | LookupPredictionPayload;
 
 export interface RankRequest {
   materials: Array<LookupPredictionPayload | ManualPredictionPayload>;
+  use_case?: string;
 }
 
 export interface RankedMaterial {
   rank: number;
   material: string;
+  material_name: string;
   resistanceScore: number;
+  resistance_index: number;
+  risk_score: number;
   confidence: string;
+  notes: string;
 }
 
 export interface RankError {
@@ -40,12 +48,14 @@ export interface RankError {
 }
 
 export interface RankResponse {
+  use_case?: string | null;
   ranking: RankedMaterial[];
   errors: RankError[];
 }
 
 export type SimulationFieldKey =
   | 'Limiting_Oxygen_Index_pct'
+  | 'Thermal_Cond_W_mK'
   | 'Heat_of_Combustion_MJ_kg'
   | 'Char_Yield_pct'
   | 'Decomp_Temp_C';
@@ -53,22 +63,33 @@ export type SimulationFieldKey =
 export interface SimulationRequest {
   base_material: LookupPredictionPayload | ManualPredictionPayload;
   modifications: Partial<Record<SimulationFieldKey, number | string>>;
+  use_case?: string;
 }
 
 export interface SimulationPrediction {
   resistanceScore: number;
   confidence: string;
+  risk_score: number;
+  resistance_index: number;
 }
 
 export interface SimulationChange {
   delta: number;
   percent_change: number | null;
+  risk_delta: number;
+  risk_percent_change: number | null;
 }
 
 export interface SimulationResponse {
+  use_case?: string | null;
   baseline: SimulationPrediction;
   modified: SimulationPrediction;
   change: SimulationChange;
+  dominant_driver: string;
+  explanation: string;
+  simulation_summary: string;
+  driver_analysis: string[];
+  limitations_notice: string;
 }
 
 export interface Driver {
@@ -99,12 +120,53 @@ export interface Dataset {
 }
 
 export interface PredictionResponse {
+  material_name: string;
+  use_case?: string | null;
+  risk_score: number;
+  resistance_index: number;
+  top_drivers: Driver[];
+  explanation: string;
+  notes: string[];
+  limitations_notice: string;
   resistanceScore: number;
   effectiveResistance: number;
   coatingModifier: number | null;
   confidence: Confidence;
   interpretability: Interpretability;
   dataset: Dataset;
+}
+
+export interface ModelMetadata {
+  service: string;
+  api_version: string;
+  model_type: string;
+  model_artifact: string;
+  model_version: string;
+  dataset_version: string;
+  dataset_build_date?: string | null;
+  deterministic: boolean;
+  feature_names: string[];
+  feature_count: number;
+  row_counts: Record<string, number>;
+  active_paths: Record<string, string>;
+  timestamp_utc: string;
+}
+
+export interface FeatureSchemaInfo {
+  model_features: string[];
+  accepted_request_fields: string[];
+}
+
+export interface ExportRequest {
+  materials: Array<LookupPredictionPayload | ManualPredictionPayload>;
+  use_case?: string;
+  format: 'csv' | 'json';
+}
+
+export interface ExportResponse {
+  filename: string;
+  content_type: string;
+  content: string;
 }
 
 export interface VersionInfo {

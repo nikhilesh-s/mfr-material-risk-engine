@@ -11,7 +11,7 @@ import pandas as pd
 
 from .utils import repo_path
 
-INPUT_PATH = repo_path("data", "phase3_clean", "coatings_clean.csv")
+INPUT_PATH = repo_path("data", "coatings", "v0.3", "coatings_dataset.csv")
 
 COATING_DESCRIPTOR_COLUMNS = [
     "Melting_Point_C",

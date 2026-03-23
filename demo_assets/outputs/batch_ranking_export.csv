@@ -1,0 +1,4 @@
+rank,material_name,risk_score,resistance_index,confidence,notes
+1,"PEEK",55.7703031892,44.2296968108,Medium,"Medium confidence screening output."
+2,"Polycarbonate",56.5032895314,43.4967104686,Medium,"Medium confidence screening output."
+3,"ABS",56.8627837654,43.1372162346,Medium,"Medium confidence screening output."

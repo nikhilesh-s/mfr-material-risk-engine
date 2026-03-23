@@ -188,6 +188,8 @@ class SimulationResponse(BaseModel):
     change: SimulationChangeOutput
     dominant_driver: str
     explanation: str
+    simulation_summary: str
+    driver_analysis: list[str] = Field(default_factory=list)
     limitations_notice: str
 
 

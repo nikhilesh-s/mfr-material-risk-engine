@@ -10,12 +10,10 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from .model import DATASET_VERSION
-from .utils import repo_path
+from .model import DATASET_VERSION, MODEL_ARTIFACT_PATH, MODEL_VERSION, PHASE3_REFERENCE_PATH
 
-MODEL_PATH = repo_path("models", "model_v0.3-stable.pkl")
-BOUNDS_SOURCE_PATH = repo_path("data", "phase3_model", "materials_phase3_ready.csv")
-MODEL_VERSION = DATASET_VERSION
+MODEL_PATH = MODEL_ARTIFACT_PATH
+BOUNDS_SOURCE_PATH = PHASE3_REFERENCE_PATH
 
 COMBUSTION_COLUMNS = [
     "Melting Point (°C)",

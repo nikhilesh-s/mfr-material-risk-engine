@@ -1,0 +1,36 @@
+{
+  "use_case": "EV battery enclosure",
+  "ranking": [
+    {
+      "rank": 1,
+      "material": "PEEK",
+      "material_name": "PEEK",
+      "resistanceScore": 0.442296968108,
+      "resistance_index": 44.2296968108,
+      "risk_score": 55.7703031892,
+      "confidence": "Medium",
+      "notes": "Medium confidence screening output."
+    },
+    {
+      "rank": 2,
+      "material": "Polycarbonate",
+      "material_name": "Polycarbonate",
+      "resistanceScore": 0.434967104686,
+      "resistance_index": 43.4967104686,
+      "risk_score": 56.5032895314,
+      "confidence": "Medium",
+      "notes": "Medium confidence screening output."
+    },
+    {
+      "rank": 3,
+      "material": "ABS",
+      "material_name": "ABS",
+      "resistanceScore": 0.431372162346,
+      "resistance_index": 43.1372162346,
+      "risk_score": 56.8627837654,
+      "confidence": "Medium",
+      "notes": "Medium confidence screening output."
+    }
+  ],
+  "errors": []
+}

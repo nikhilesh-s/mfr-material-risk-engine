@@ -1,0 +1,27 @@
+Materials Dataset Validation Report
+Source file: Final_Conrad_3400_Matl - Sheet1.csv
+Working CSV: Final_Conrad_3400_Matl - Sheet1.csv
+Original rows: 3426
+Rows removed with missing identifier: 0
+Duplicate materials removed: 556
+Rows removed for >30% missing required data: 889
+Cleaned rows: 1981
+Columns: Material, Density (g/cc), Melting Point (°C), Specific Heat (J/g-°C), Thermal Cond. (W/m-K), CTE (µm/m-°C), Flash Point (°C), Autoignition Temp (°C), UL94 Flammability, Limiting Oxygen Index (%), Smoke Density (Ds), Char Yield (%), Decomp. Temp (°C), Heat of Combustion (MJ/kg), Flame Spread Index, Additional Column 1
+Missing numeric values by column:
+- Density (g/cc): 2
+- Melting Point (°C): 514
+- Specific Heat (J/g-°C): 0
+- Thermal Cond. (W/m-K): 20
+- CTE (µm/m-°C): 180
+- Flash Point (°C): 2462
+- Autoignition Temp (°C): 2125
+- Limiting Oxygen Index (%): 913
+- Smoke Density (Ds): 764
+- Char Yield (%): 833
+- Decomp. Temp (°C): 762
+- Heat of Combustion (MJ/kg): 876
+- Flame Spread Index: 932
+Notes:
+- Detected CSV source: Final_Conrad_3400_Matl - Sheet1.csv
+- XLSX source also present but CSV was preferred: Final_Conrad_3400_Matl.xlsx
+- Input schema was headerless; expected column names were assigned.

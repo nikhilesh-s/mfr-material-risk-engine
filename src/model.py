@@ -1,7 +1,9 @@
-"""Phase 3 model runtime helpers for v0.3-stable inference."""
+"""Phase 3 model runtime helpers for versioned inference artifacts."""
 
 from __future__ import annotations
 
+import json
+import os
 import pickle
 from pathlib import Path
 from typing import Any
@@ -12,32 +14,70 @@ from treeinterpreter import treeinterpreter as ti
 
 from .utils import repo_path
 
-PHASE3_REFERENCE_PATH = repo_path(
-    "data",
-    "phase3_model",
-    "materials_phase3_with_target_v2.csv",
-)
-MATERIALS_LOOKUP_PATH = repo_path(
-    "data",
-    "phase3_model",
-    "materials_phase3_ready.csv",
-)
-COATINGS_LOOKUP_PATH = repo_path(
-    "data",
-    "phase3_clean",
-    "coatings_clean.csv",
+DEFAULT_TARGET_COLUMN = "Base_Resistance_Target"
+DEFAULT_MODEL_VERSION = "v0.3-stable"
+
+MODEL_RUNTIME_CONFIGS: dict[str, dict[str, Any]] = {
+    "v0.3-stable": {
+        "model_version": "v0.3-stable",
+        "dataset_version": "v0.3-stable",
+        "dataset_build_date": "2026-02-27",
+        "reference_dataset": ("data", "materials", "v0.3", "materials_dataset.csv"),
+        "materials_lookup": ("data", "materials", "v0.3", "materials_dataset.csv"),
+        "coatings_lookup": ("data", "coatings", "v0.3", "coatings_dataset.csv"),
+        "model_artifact": ("models", "model_v0.3-stable.pkl"),
+        "metadata_artifact": None,
+    },
+    "v0.4": {
+        "model_version": "v0.4",
+        "dataset_version": "materials-v0.3.1",
+        "dataset_build_date": "2026-03-22T00:00:00Z",
+        "reference_dataset": ("data", "materials", "v0.3.1", "materials_dataset_clean.csv"),
+        "materials_lookup": ("data", "materials", "v0.3.1", "materials_dataset_clean.csv"),
+        # Keep the stable coating lookup until a v0.4-compatible coating modifier exists.
+        "coatings_lookup": ("data", "coatings", "v0.3", "coatings_dataset.csv"),
+        "model_artifact": ("models", "model_v0.4.pkl"),
+        "metadata_artifact": ("models", "model_v0.4_metadata.json"),
+    },
+}
+
+SUPPORTED_MODEL_VERSIONS = sorted(MODEL_RUNTIME_CONFIGS.keys())
+
+_requested_model_version = os.getenv("DRAVIX_MODEL_VERSION", DEFAULT_MODEL_VERSION).strip()
+if not _requested_model_version:
+    _requested_model_version = DEFAULT_MODEL_VERSION
+if _requested_model_version not in MODEL_RUNTIME_CONFIGS:
+    raise ValueError(
+        "Unsupported DRAVIX_MODEL_VERSION "
+        f"{_requested_model_version!r}. Supported versions: {', '.join(SUPPORTED_MODEL_VERSIONS)}"
+    )
+
+ACTIVE_MODEL_CONFIG = MODEL_RUNTIME_CONFIGS[_requested_model_version]
+PHASE3_REFERENCE_PATH = repo_path(*ACTIVE_MODEL_CONFIG["reference_dataset"])
+MATERIALS_LOOKUP_PATH = repo_path(*ACTIVE_MODEL_CONFIG["materials_lookup"])
+COATINGS_LOOKUP_PATH = repo_path(*ACTIVE_MODEL_CONFIG["coatings_lookup"])
+MODEL_ARTIFACT_PATH = repo_path(*ACTIVE_MODEL_CONFIG["model_artifact"])
+
+metadata_artifact = ACTIVE_MODEL_CONFIG.get("metadata_artifact")
+MODEL_METADATA_PATH = (
+    repo_path(*metadata_artifact) if metadata_artifact is not None else None
 )
 
-DATASET_VERSION = "v0.3-stable"
-MODEL_VERSION = DATASET_VERSION
-DATASET_BUILD_DATE = "2026-02-27"
-DEFAULT_TARGET_COLUMN = "Base_Resistance_Target"
+MODEL_VERSION = str(ACTIVE_MODEL_CONFIG["model_version"])
+DATASET_VERSION = str(ACTIVE_MODEL_CONFIG["dataset_version"])
+DATASET_BUILD_DATE = str(ACTIVE_MODEL_CONFIG["dataset_build_date"])
+if MODEL_METADATA_PATH is not None and MODEL_METADATA_PATH.exists():
+    try:
+        _artifact_metadata = json.loads(MODEL_METADATA_PATH.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        _artifact_metadata = {}
+    else:
+        if _artifact_metadata.get("training_timestamp"):
+            DATASET_BUILD_DATE = str(_artifact_metadata["training_timestamp"])
 
 SUPPORTED_DATASET_VERSIONS = [
-    "v0.3-stable",
+    str(config["dataset_version"]) for config in MODEL_RUNTIME_CONFIGS.values()
 ]
-
-MODEL_ARTIFACT_PATH = repo_path("models", "model_v0.3-stable.pkl")
 
 material_lookup: dict[str, dict[str, Any]] = {}
 material_display_names: dict[str, str] = {}
@@ -63,7 +103,19 @@ dataset_metadata: dict[str, Any] = {
 
 def get_model_artifact_path(version: str) -> str:
     """Return versioned model artifact path for explicit phase tags."""
+    if version in MODEL_RUNTIME_CONFIGS:
+        return str(repo_path(*MODEL_RUNTIME_CONFIGS[version]["model_artifact"]))
     return str(repo_path("models", f"model_{version}.pkl"))
+
+
+def get_model_metadata_path(version: str) -> str | None:
+    """Return metadata path for a versioned model artifact, if defined."""
+    if version not in MODEL_RUNTIME_CONFIGS:
+        return None
+    metadata_config = MODEL_RUNTIME_CONFIGS[version].get("metadata_artifact")
+    if metadata_config is None:
+        return None
+    return str(repo_path(*metadata_config))
 
 
 def load_phase3_model(model_path: Path | None = None) -> Any:
@@ -105,13 +157,19 @@ def load_material_lookup(path: Path | None = None) -> dict[str, dict[str, Any]]:
         raise FileNotFoundError(f"Missing materials lookup dataset: {csv_path}")
 
     df = pd.read_csv(csv_path, low_memory=False)
-    if "Material Name" not in df.columns:
-        raise ValueError("materials lookup dataset must contain 'Material Name' column.")
+    material_name_column = "Material Name"
+    if material_name_column not in df.columns:
+        if "Material" in df.columns:
+            material_name_column = "Material"
+        else:
+            raise ValueError(
+                "materials lookup dataset must contain 'Material Name' or 'Material' column."
+            )
 
     lookup: dict[str, dict[str, Any]] = {}
     display_names: dict[str, str] = {}
     for _, row in df.iterrows():
-        raw_name = row.get("Material Name")
+        raw_name = row.get(material_name_column)
         if pd.isna(raw_name):
             continue
 
@@ -185,6 +243,19 @@ def get_material_descriptors(
     """Return feature descriptor dict for a material name, if available."""
     normalized_name = normalize_material_name(material_name)
     row = material_lookup.get(normalized_name)
+    if row is None:
+        alias_matches: list[str] = []
+        for candidate_name in material_lookup.keys():
+            if (
+                candidate_name.startswith(f"{normalized_name} ")
+                or candidate_name.startswith(f"{normalized_name}(")
+                or f"({normalized_name})" in candidate_name
+                or normalized_name in candidate_name
+            ):
+                alias_matches.append(candidate_name)
+        if alias_matches:
+            alias_matches.sort()
+            row = material_lookup.get(alias_matches[0])
     if row is None:
         return None
 

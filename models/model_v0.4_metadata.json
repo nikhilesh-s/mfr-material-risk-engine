@@ -1,0 +1,38 @@
+{
+  "model_version": "v0.4",
+  "training_dataset": "materials v0.3.1",
+  "training_dataset_version": "v0.3.1",
+  "training_dataset_path": "data/materials/v0.3.1/materials_dataset_clean.csv",
+  "target_column": "Base_Resistance_Target",
+  "target_source": "legacy_join_from_materials_v0.3",
+  "target_source_path": "data/materials/v0.3/materials_dataset.csv",
+  "training_rows": 1647,
+  "training_columns": 13,
+  "feature_count": 13,
+  "feature_list": [
+    "Density (g/cc)",
+    "Melting Point (\u00b0C)",
+    "Specific Heat (J/g-\u00b0C)",
+    "Thermal Cond. (W/m-K)",
+    "CTE (\u00b5m/m-\u00b0C)",
+    "Flash Point (\u00b0C)",
+    "Autoignition Temp (\u00b0C)",
+    "Limiting Oxygen Index (%)",
+    "Smoke Density (Ds)",
+    "Char Yield (%)",
+    "Decomp. Temp (\u00b0C)",
+    "Heat of Combustion (MJ/kg)",
+    "Flame Spread Index"
+  ],
+  "training_timestamp": "2026-03-23T01:39:51.388442+00:00",
+  "random_state": 42,
+  "deterministic": true,
+  "lineage": {
+    "clean_rows_loaded": 1981,
+    "legacy_rows_loaded": 1771,
+    "target_rows_from_clean_dataset": 0,
+    "target_rows_from_legacy_join": 1647,
+    "rows_dropped_missing_target": 334
+  },
+  "artifact_path": "models/model_v0.4.pkl"
+}

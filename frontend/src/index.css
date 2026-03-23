@@ -1,3 +1,74 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --dravix-gradient-primary: linear-gradient(90deg, #FFDC6A 0%, #FF8D7C 100%);
+  --dravix-gradient-accent: linear-gradient(135deg, #232422 0%, #24262E 100%);
+  --dravix-bg-app: #F5F1EC;
+  --dravix-bg-surface: #FEFEFE;
+  --dravix-bg-panel: #F5F1EC;
+  --dravix-bg-surface-warm: #D0C7B5;
+  --dravix-text: #232422;
+  --dravix-text-muted: rgba(35, 36, 34, 0.6);
+  --dravix-border: rgba(35, 36, 34, 0.12);
+  --dravix-accent-yellow: #FFDC6A;
+  --dravix-accent-coral: #FF8D7C;
+  --dravix-dark: #232422;
+  --dravix-dark-secondary: #24262E;
+  --dravix-font-sans: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+  --dravix-font-mono: "SFMono-Regular", "SF Mono", "Menlo", "Consolas", monospace;
+  font-family: var(--dravix-font-sans);
+  background: var(--dravix-bg-app);
+  color: var(--dravix-text);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at top, rgba(255, 220, 106, 0.3), transparent 24%),
+    radial-gradient(circle at 85% 15%, rgba(255, 141, 124, 0.18), transparent 20%),
+    linear-gradient(180deg, #f5f1ec 0%, #ece5db 100%);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.dravix-shell {
+  background:
+    radial-gradient(circle at top right, rgba(255, 220, 106, 0.16), transparent 18%),
+    linear-gradient(180deg, rgba(254, 254, 254, 0.7) 0%, rgba(254, 254, 254, 0.48) 100%);
+}
+
+.dravix-hero {
+  background:
+    radial-gradient(circle at 0% 0%, rgba(255, 220, 106, 0.18), transparent 28%),
+    radial-gradient(circle at 100% 100%, rgba(255, 141, 124, 0.14), transparent 26%),
+    var(--dravix-gradient-accent);
+}
+
+.dravix-card {
+  background: var(--dravix-bg-surface);
+  border: 1px solid var(--dravix-border);
+}
+
+.dravix-panel {
+  background: var(--dravix-bg-panel);
+  border: 1px solid var(--dravix-border);
+}
+
+.dravix-button-primary {
+  background: var(--dravix-gradient-primary);
+  color: var(--dravix-text);
+}
+
+.dravix-mono {
+  font-family: var(--dravix-font-mono);
+}

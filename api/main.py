@@ -78,6 +78,23 @@ USE_CASE_CONTEXTS = [
 
 logger = logging.getLogger("uvicorn.error")
 
+SIMULATION_SOURCE_TO_FEATURE = {
+    "Density_g_cc": "Density (g/cc)",
+    "Melting_Point_C": "Melting Point (°C)",
+    "Specific_Heat_J_g_C": "Specific Heat (J/g-°C)",
+    "Thermal_Cond_W_mK": "Thermal Cond. (W/m-K)",
+    "CTE_um_m_C": "CTE (µm/m-°C)",
+    "Flash_Point_C": "Flash Point (°C)",
+    "Autoignition_Temp_C": "Autoignition Temp (°C)",
+    "UL94_Flammability": "UL94 Flammability",
+    "Limiting_Oxygen_Index_pct": "Limiting Oxygen Index (%)",
+    "Smoke_Density_Ds": "Smoke Density (Ds)",
+    "Char_Yield_pct": "Char Yield (%)",
+    "Decomp_Temp_C": "Decomp. Temp (°C)",
+    "Heat_of_Combustion_MJ_kg": "Heat of Combustion (MJ/kg)",
+    "Flame_Spread_Index": "Flame Spread Index",
+}
+
 
 app = FastAPI(
     title="Dravix Phase 3 Resistance API",
@@ -351,28 +368,11 @@ def _dominant_modified_feature(
     payload_data: dict[str, Any],
     modifications: dict[str, float | str],
 ) -> str:
-    source_to_feature = {
-        "Density_g_cc": "Density (g/cc)",
-        "Melting_Point_C": "Melting Point (°C)",
-        "Specific_Heat_J_g_C": "Specific Heat (J/g-°C)",
-        "Thermal_Cond_W_mK": "Thermal Cond. (W/m-K)",
-        "CTE_um_m_C": "CTE (µm/m-°C)",
-        "Flash_Point_C": "Flash Point (°C)",
-        "Autoignition_Temp_C": "Autoignition Temp (°C)",
-        "UL94_Flammability": "UL94 Flammability",
-        "Limiting_Oxygen_Index_pct": "Limiting Oxygen Index (%)",
-        "Smoke_Density_Ds": "Smoke Density (Ds)",
-        "Char_Yield_pct": "Char Yield (%)",
-        "Decomp_Temp_C": "Decomp. Temp (°C)",
-        "Heat_of_Combustion_MJ_kg": "Heat of Combustion (MJ/kg)",
-        "Flame_Spread_Index": "Flame Spread Index",
-    }
-
     best_feature = "descriptor update"
     best_magnitude = -1.0
 
     for source_field, raw_change in modifications.items():
-        feature_name = source_to_feature.get(source_field)
+        feature_name = SIMULATION_SOURCE_TO_FEATURE.get(source_field)
         if feature_name is None:
             continue
         baseline_value = payload_data.get(feature_name)
@@ -399,6 +399,70 @@ def _dominant_modified_feature(
             best_feature = feature_name
 
     return best_feature
+
+
+def _describe_simulation_change(
+    feature_name: str,
+    baseline_value: Any,
+    modified_value: Any,
+) -> str:
+    friendly_map = {
+        "Limiting Oxygen Index (%)": "LOI increase improves ignition resistance",
+        "Char Yield (%)": "Higher char yield improves thermal shielding",
+        "Thermal Cond. (W/m-K)": "Thermal conductivity shifts heat transfer behavior",
+        "Heat of Combustion (MJ/kg)": "Heat of combustion changes the available fuel energy",
+        "Decomp. Temp (°C)": "Decomposition temperature changes thermal stability",
+        "Melting Point (°C)": "Melting point changes high-temperature stability",
+        "Autoignition Temp (°C)": "Autoignition temperature changes ignition sensitivity",
+        "Flash Point (°C)": "Flash point changes ignition onset behavior",
+        "Smoke Density (Ds)": "Smoke density changes combustion byproduct severity",
+        "Flame Spread Index": "Flame spread index changes surface flame propagation behavior",
+    }
+    if feature_name in friendly_map:
+        return friendly_map[feature_name]
+
+    if baseline_value is None or pd.isna(baseline_value):
+        return f"{feature_name} was introduced for the simulation scenario"
+    if modified_value is None or pd.isna(modified_value):
+        return f"{feature_name} was cleared for the simulation scenario"
+
+    try:
+        baseline_float = float(baseline_value)
+        modified_float = float(modified_value)
+    except (TypeError, ValueError):
+        return f"{feature_name} changed from {baseline_value} to {modified_value}"
+
+    direction = "increased" if modified_float > baseline_float else "decreased"
+    return f"{feature_name} {direction} from {baseline_float:g} to {modified_float:g}"
+
+
+def _simulation_driver_analysis(
+    base_payload: dict[str, Any],
+    modified_payload: dict[str, Any],
+    modifications: dict[str, float | str],
+) -> list[str]:
+    analysis: list[str] = []
+    for source_field in modifications:
+        feature_name = SIMULATION_SOURCE_TO_FEATURE.get(source_field)
+        if feature_name is None:
+            continue
+        analysis.append(
+            _describe_simulation_change(
+                feature_name=feature_name,
+                baseline_value=base_payload.get(feature_name),
+                modified_value=modified_payload.get(feature_name),
+            )
+        )
+    return analysis
+
+
+def _simulation_changed_feature_names(modifications: dict[str, float | str]) -> list[str]:
+    feature_names: list[str] = []
+    for source_field in modifications:
+        feature_name = SIMULATION_SOURCE_TO_FEATURE.get(source_field)
+        if feature_name is not None:
+            feature_names.append(feature_name)
+    return feature_names
 
 
 def _predict_response_payload(input: Phase3Input, use_case: str | None = None) -> dict[str, Any]:
@@ -514,32 +578,15 @@ def _apply_simulation_modifications(
     payload_data: dict[str, Any],
     modifications: dict[str, float | str],
 ) -> dict[str, Any]:
-    source_to_feature = {
-        "Density_g_cc": "Density (g/cc)",
-        "Melting_Point_C": "Melting Point (°C)",
-        "Specific_Heat_J_g_C": "Specific Heat (J/g-°C)",
-        "Thermal_Cond_W_mK": "Thermal Cond. (W/m-K)",
-        "CTE_um_m_C": "CTE (µm/m-°C)",
-        "Flash_Point_C": "Flash Point (°C)",
-        "Autoignition_Temp_C": "Autoignition Temp (°C)",
-        "UL94_Flammability": "UL94 Flammability",
-        "Limiting_Oxygen_Index_pct": "Limiting Oxygen Index (%)",
-        "Smoke_Density_Ds": "Smoke Density (Ds)",
-        "Char_Yield_pct": "Char Yield (%)",
-        "Decomp_Temp_C": "Decomp. Temp (°C)",
-        "Heat_of_Combustion_MJ_kg": "Heat of Combustion (MJ/kg)",
-        "Flame_Spread_Index": "Flame Spread Index",
-    }
-
     modified_payload = dict(payload_data)
     for source_field, raw_change in modifications.items():
-        if source_field not in source_to_feature:
+        if source_field not in SIMULATION_SOURCE_TO_FEATURE:
             raise HTTPException(
                 status_code=400,
                 detail=f"Unsupported modification field: {source_field}",
             )
 
-        feature_name = source_to_feature[source_field]
+        feature_name = SIMULATION_SOURCE_TO_FEATURE[source_field]
         if isinstance(raw_change, str):
             change_str = raw_change.strip()
             if not change_str.endswith("%"):
@@ -601,24 +648,8 @@ def _simulation_payload_changed(
     modified_payload: dict[str, Any],
     modifications: dict[str, float | str],
 ) -> bool:
-    source_to_feature = {
-        "Density_g_cc": "Density (g/cc)",
-        "Melting_Point_C": "Melting Point (°C)",
-        "Specific_Heat_J_g_C": "Specific Heat (J/g-°C)",
-        "Thermal_Cond_W_mK": "Thermal Cond. (W/m-K)",
-        "CTE_um_m_C": "CTE (µm/m-°C)",
-        "Flash_Point_C": "Flash Point (°C)",
-        "Autoignition_Temp_C": "Autoignition Temp (°C)",
-        "UL94_Flammability": "UL94 Flammability",
-        "Limiting_Oxygen_Index_pct": "Limiting Oxygen Index (%)",
-        "Smoke_Density_Ds": "Smoke Density (Ds)",
-        "Char_Yield_pct": "Char Yield (%)",
-        "Decomp_Temp_C": "Decomp. Temp (°C)",
-        "Heat_of_Combustion_MJ_kg": "Heat of Combustion (MJ/kg)",
-        "Flame_Spread_Index": "Flame Spread Index",
-    }
     for source_field in modifications:
-        feature_name = source_to_feature.get(source_field)
+        feature_name = SIMULATION_SOURCE_TO_FEATURE.get(source_field)
         if feature_name is None:
             continue
         if _payload_value_changed(
@@ -959,6 +990,13 @@ def simulate(request: SimulationRequest) -> Dict[str, Any]:
         risk_percent_change = (risk_delta / baseline_risk_raw) * 100.0
 
     dominant_driver = _dominant_modified_feature(base_payload, request.modifications)
+    driver_analysis = _simulation_driver_analysis(
+        base_payload=base_payload,
+        modified_payload=modified_payload,
+        modifications=request.modifications,
+    )
+    changed_features = _simulation_changed_feature_names(request.modifications)
+    changed_feature_summary = ", ".join(changed_features[:2]) if changed_features else "the requested descriptors"
     effective_use_case = _effective_use_case(request.use_case, request.base_material.use_case)
     material_name = _material_name_for_response(request.base_material, base_payload)
     if np.isclose(risk_delta, 0.0):
@@ -966,10 +1004,23 @@ def simulate(request: SimulationRequest) -> Dict[str, Any]:
             "accepted the requested descriptor update, but the current model region "
             "did not materially change the fire-risk proxy"
         )
+        simulation_summary = (
+            "Material properties changed but the model prediction remained in the same decision region."
+        )
     elif risk_delta < 0:
         outcome_phrase = "reduced the fire-risk proxy"
+        simulation_summary = (
+            f"Changing {changed_feature_summary} reduced the predicted fire-risk proxy."
+            if changed_features
+            else "The simulation reduced the predicted fire-risk proxy."
+        )
     else:
         outcome_phrase = "increased the fire-risk proxy"
+        simulation_summary = (
+            f"Changing {changed_feature_summary} increased the predicted fire-risk proxy."
+            if changed_features
+            else "The simulation increased the predicted fire-risk proxy."
+        )
 
     return {
         "use_case": effective_use_case,
@@ -1011,6 +1062,8 @@ def simulate(request: SimulationRequest) -> Dict[str, Any]:
                 else ""
             )
         ),
+        "simulation_summary": simulation_summary,
+        "driver_analysis": driver_analysis,
         "limitations_notice": LIMITATIONS_NOTICE,
     }
 

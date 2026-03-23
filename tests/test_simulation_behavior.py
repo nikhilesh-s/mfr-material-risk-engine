@@ -55,3 +55,7 @@ def test_simulation_explains_when_model_output_does_not_change() -> None:
 
     assert response["dominant_driver"] == "Limiting Oxygen Index (%)"
     assert "accepted the requested descriptor update" in response["explanation"]
+    assert response["simulation_summary"] == (
+        "Material properties changed but the model prediction remained in the same decision region."
+    )
+    assert any("LOI" in entry or "Limiting Oxygen Index" in entry for entry in response["driver_analysis"])

@@ -1,0 +1,10 @@
+{
+  "use_case": "EV battery enclosure",
+  "base_material": {
+    "material_name": "ABS"
+  },
+  "modifications": {
+    "Limiting_Oxygen_Index_pct": 24,
+    "Thermal_Cond_W_mK": "+15%"
+  }
+}

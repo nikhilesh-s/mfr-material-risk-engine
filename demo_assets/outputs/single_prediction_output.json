@@ -1,0 +1,98 @@
+{
+  "material_name": "ABS",
+  "use_case": "EV battery enclosure",
+  "risk_score": 56.8627837654,
+  "resistance_index": 43.1372162346,
+  "top_drivers": [
+    {
+      "feature": "Melting Point (\u00b0C)",
+      "contribution": -0.091996237,
+      "direction": "decreases_resistance",
+      "abs_magnitude": 0.091996237
+    },
+    {
+      "feature": "CTE (\u00b5m/m-\u00b0C)",
+      "contribution": 0.047026251145,
+      "direction": "increases_resistance",
+      "abs_magnitude": 0.047026251145
+    },
+    {
+      "feature": "Decomp. Temp (\u00b0C)",
+      "contribution": -0.033481196211,
+      "direction": "decreases_resistance",
+      "abs_magnitude": 0.033481196211
+    }
+  ],
+  "explanation": "For the EV battery enclosure workflow, ABS produced a Dravix fire-risk proxy score of 56.9 with medium confidence. The strongest driver was Melting Point (\u00b0C), which pushed the risk score upward.",
+  "notes": [
+    "Medium confidence screening output.",
+    "Melting Point (\u00b0C) increases fire-risk pressure.",
+    "Use-case framing applied for EV battery enclosure.",
+    "Use Dravix to prioritize testing, not to certify materials."
+  ],
+  "limitations_notice": "Dravix is an early-stage decision-support system. Results are deterministic screening signals and do not replace certification, standards testing, or engineering review.",
+  "resistanceScore": 0.431372162346,
+  "effectiveResistance": 0.431372162346,
+  "coatingModifier": null,
+  "dataset": {
+    "version": "v0.3-stable"
+  },
+  "interpretability": {
+    "prediction": 0.431372162346,
+    "feature_contributions": {
+      "Density (g/cc)": 0.002339818212,
+      "Melting Point (\u00b0C)": -0.091996237,
+      "Specific Heat (J/g-\u00b0C)": 0.006817248345,
+      "Thermal Cond. (W/m-K)": 0.000874453795,
+      "CTE (\u00b5m/m-\u00b0C)": 0.047026251145,
+      "Flash Point (\u00b0C)": -0.030443362973,
+      "Autoignition Temp (\u00b0C)": -0.009242257635,
+      "Limiting Oxygen Index (%)": -0.010962055646,
+      "Smoke Density (Ds)": -0.000695451931,
+      "Char Yield (%)": -0.001450463342,
+      "Decomp. Temp (\u00b0C)": -0.033481196211,
+      "Heat of Combustion (MJ/kg)": -0.000152117206,
+      "Flame Spread Index": 0.002643120916
+    },
+    "top_3_drivers": [
+      {
+        "feature": "Melting Point (\u00b0C)",
+        "contribution": -0.091996237,
+        "direction": "decreases_resistance",
+        "abs_magnitude": 0.091996237
+      },
+      {
+        "feature": "CTE (\u00b5m/m-\u00b0C)",
+        "contribution": 0.047026251145,
+        "direction": "increases_resistance",
+        "abs_magnitude": 0.047026251145
+      },
+      {
+        "feature": "Decomp. Temp (\u00b0C)",
+        "contribution": -0.033481196211,
+        "direction": "decreases_resistance",
+        "abs_magnitude": 0.033481196211
+      }
+    ],
+    "display_names": {
+      "Density (g/cc)": "Density (g/cc)",
+      "Melting Point (\u00b0C)": "Melting Point (\u00b0C)",
+      "Specific Heat (J/g-\u00b0C)": "Specific Heat (J/g-\u00b0C)",
+      "Thermal Cond. (W/m-K)": "Thermal Cond. (W/m-K)",
+      "CTE (\u00b5m/m-\u00b0C)": "CTE (\u00b5m/m-\u00b0C)",
+      "Flash Point (\u00b0C)": "Flash Point (\u00b0C)",
+      "Autoignition Temp (\u00b0C)": "Autoignition Temp (\u00b0C)",
+      "Limiting Oxygen Index (%)": "Limiting Oxygen Index (%)",
+      "Smoke Density (Ds)": "Smoke Density (Ds)",
+      "Char Yield (%)": "Char Yield (%)",
+      "Decomp. Temp (\u00b0C)": "Decomp. Temp (\u00b0C)",
+      "Heat of Combustion (MJ/kg)": "Heat of Combustion (MJ/kg)",
+      "Flame Spread Index": "Flame Spread Index"
+    },
+    "error": null
+  },
+  "confidence": {
+    "score": 0.593514955054,
+    "label": "Medium"
+  }
+}

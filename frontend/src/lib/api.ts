@@ -1,7 +1,11 @@
 import type {
   CoatingsInfo,
+  ExportRequest,
+  ExportResponse,
+  FeatureSchemaInfo,
   HealthInfo,
   MaterialsInfo,
+  ModelMetadata,
   RankRequest,
   RankResponse,
   SimulationRequest,
@@ -19,6 +23,10 @@ const API_BASE_URL = RAW_BASE.endsWith('/')
   : RAW_BASE;
 
 const DEFAULT_TIMEOUT_MS = 10000;
+const PREDICT_TIMEOUT_MS = 15000;
+const SIMULATE_TIMEOUT_MS = 15000;
+const RANK_TIMEOUT_MS = 45000;
+const EXPORT_TIMEOUT_MS = 45000;
 
 export interface NonJsonSuccessPayload {
   ok: false;
@@ -66,6 +74,7 @@ async function requestJson<T>(
   path: string,
   init?: RequestInit,
   timeoutMs: number = DEFAULT_TIMEOUT_MS,
+  timeoutMessage: string = 'Backend timeout — retry',
 ): Promise<T> {
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), timeoutMs);
@@ -82,7 +91,7 @@ async function requestJson<T>(
     });
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') {
-      throw new ApiError('Backend timeout — retry', 408, null, 'TIMEOUT');
+      throw new ApiError(timeoutMessage, 408, null, 'TIMEOUT');
     }
     throw error;
   } finally {
@@ -121,6 +130,14 @@ export function getVersion(): Promise<VersionInfo> {
   return requestJson<VersionInfo>('/version');
 }
 
+export function getSchema(): Promise<FeatureSchemaInfo> {
+  return requestJson<FeatureSchemaInfo>('/schema');
+}
+
+export function getModelMetadata(): Promise<ModelMetadata> {
+  return requestJson<ModelMetadata>('/model-metadata');
+}
+
 export function getMaterials(): Promise<MaterialsInfo> {
   return requestJson<MaterialsInfo>('/materials');
 }
@@ -133,19 +150,26 @@ export function predict(payload: PredictionRequest): Promise<PredictionResponse>
   return requestJson<PredictionResponse>('/predict', {
     method: 'POST',
     body: JSON.stringify(payload),
-  }, DEFAULT_TIMEOUT_MS);
+  }, PREDICT_TIMEOUT_MS);
 }
 
 export function rankMaterials(payload: RankRequest): Promise<RankResponse> {
   return requestJson<RankResponse>('/rank', {
     method: 'POST',
     body: JSON.stringify(payload),
-  }, DEFAULT_TIMEOUT_MS);
+  }, RANK_TIMEOUT_MS, 'Ranking is taking longer than expected. The backend may be cold-starting or processing a larger batch. Please retry shortly.');
 }
 
 export function simulateMaterial(payload: SimulationRequest): Promise<SimulationResponse> {
   return requestJson<SimulationResponse>('/simulate', {
     method: 'POST',
     body: JSON.stringify(payload),
-  }, DEFAULT_TIMEOUT_MS);
+  }, SIMULATE_TIMEOUT_MS);
+}
+
+export function exportRanking(payload: ExportRequest): Promise<ExportResponse> {
+  return requestJson<ExportResponse>('/export/ranking', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  }, EXPORT_TIMEOUT_MS, 'Export is taking longer than expected. The backend may be generating the shortlist file. Please retry shortly.');
 }
