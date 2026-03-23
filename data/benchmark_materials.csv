@@ -1,0 +1,7 @@
+material_name,density,melting_point,thermal_conductivity,specific_heat,decomposition_temp,glass_transition_temp,target_dfrs
+Kevlar 49,1.44,,0.04,1.42,500.0,,0.6092742450063383
+Polytetrafluoroethylene (PTFE),2.16,327.0,0.25,1.0,510.0,,0.6619185123762036
+Polycarbonate (PC),1.2,265.0,0.21,1.25,430.0,,0.5771379941735195
+Epoxy Resin,1.18,150.0,0.22,1.15,355.0,,0.5310796358852445
+Carbon Fiber Composite,1.6,,5.0,1.1,500.0,,0.6100752371031893
+Alumina (99.5%),3.895,2050.0,30.0,0.84,2050.0,,0.615573401185017

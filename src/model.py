@@ -39,41 +39,112 @@ MODEL_RUNTIME_CONFIGS: dict[str, dict[str, Any]] = {
         "model_artifact": ("models", "model_v0.4.pkl"),
         "metadata_artifact": ("models", "model_v0.4_metadata.json"),
     },
+    "v0.3.2": {
+        "model_version": "v0.3.2",
+        "dataset_version": "materials-v0.3.1",
+        "dataset_build_date": "2026-03-23T00:00:00Z",
+        "reference_dataset": ("data", "materials", "v0.3.1", "materials_dataset_clean.csv"),
+        "materials_lookup": ("data", "materials", "v0.3.1", "materials_dataset_clean.csv"),
+        "coatings_lookup": ("data", "coatings", "v0.3", "coatings_dataset.csv"),
+        "model_artifact": ("models", "dravix_model_v0.3.2.pkl"),
+        "metadata_artifact": ("models", "dravix_model_v0.3.2.json"),
+    },
 }
 
 SUPPORTED_MODEL_VERSIONS = sorted(MODEL_RUNTIME_CONFIGS.keys())
 
-_requested_model_version = os.getenv("DRAVIX_MODEL_VERSION", DEFAULT_MODEL_VERSION).strip()
-if not _requested_model_version:
-    _requested_model_version = DEFAULT_MODEL_VERSION
-if _requested_model_version not in MODEL_RUNTIME_CONFIGS:
-    raise ValueError(
-        "Unsupported DRAVIX_MODEL_VERSION "
-        f"{_requested_model_version!r}. Supported versions: {', '.join(SUPPORTED_MODEL_VERSIONS)}"
-    )
+def _resolve_explicit_model_version() -> str | None:
+    raw_value = os.getenv("DRAVIX_MODEL_VERSION", "").strip()
+    return raw_value or None
 
-ACTIVE_MODEL_CONFIG = MODEL_RUNTIME_CONFIGS[_requested_model_version]
-PHASE3_REFERENCE_PATH = repo_path(*ACTIVE_MODEL_CONFIG["reference_dataset"])
-MATERIALS_LOOKUP_PATH = repo_path(*ACTIVE_MODEL_CONFIG["materials_lookup"])
-COATINGS_LOOKUP_PATH = repo_path(*ACTIVE_MODEL_CONFIG["coatings_lookup"])
-MODEL_ARTIFACT_PATH = repo_path(*ACTIVE_MODEL_CONFIG["model_artifact"])
 
-metadata_artifact = ACTIVE_MODEL_CONFIG.get("metadata_artifact")
-MODEL_METADATA_PATH = (
-    repo_path(*metadata_artifact) if metadata_artifact is not None else None
-)
+def _load_json_if_exists(path: Path | None) -> dict[str, Any]:
+    if path is None or not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {}
+
+
+def _resolve_registry_runtime_config() -> dict[str, Any] | None:
+    try:
+        from app.training.model_registry import get_latest_registered_model
+    except Exception:
+        return None
+
+    registry_record = get_latest_registered_model()
+    if not registry_record:
+        return None
+
+    raw_model_path = registry_record.get("model_path")
+    if not raw_model_path:
+        return None
+
+    model_path = Path(str(raw_model_path))
+    if not model_path.is_absolute():
+        model_path = repo_path(*model_path.parts)
+    metadata_path = model_path.with_suffix(".json")
+    metadata = _load_json_if_exists(metadata_path)
+
+    return {
+        "model_version": str(registry_record.get("model_version") or DEFAULT_MODEL_VERSION),
+        "dataset_version": str(
+            metadata.get("training_dataset")
+            or registry_record.get("training_dataset")
+            or "materials-v0.3.1"
+        ),
+        "dataset_build_date": str(
+            metadata.get("training_timestamp")
+            or registry_record.get("created_at")
+            or "unknown"
+        ),
+        "reference_dataset": ("data", "materials", "v0.3.1", "materials_dataset_clean.csv"),
+        "materials_lookup": ("data", "materials", "v0.3.1", "materials_dataset_clean.csv"),
+        "coatings_lookup": ("data", "coatings", "v0.3", "coatings_dataset.csv"),
+        "model_artifact": tuple(model_path.parts),
+        "metadata_artifact": tuple(metadata_path.parts) if metadata_path.exists() else None,
+    }
+
+
+def _resolve_active_model_config() -> dict[str, Any]:
+    requested_model_version = _resolve_explicit_model_version()
+    if requested_model_version is not None:
+        if requested_model_version not in MODEL_RUNTIME_CONFIGS:
+            raise ValueError(
+                "Unsupported DRAVIX_MODEL_VERSION "
+                f"{requested_model_version!r}. Supported versions: {', '.join(SUPPORTED_MODEL_VERSIONS)}"
+            )
+        return MODEL_RUNTIME_CONFIGS[requested_model_version]
+
+    registry_config = _resolve_registry_runtime_config()
+    if registry_config is not None:
+        return registry_config
+    return MODEL_RUNTIME_CONFIGS[DEFAULT_MODEL_VERSION]
+
+
+def _resolve_path(path_config: tuple[str, ...] | None) -> Path | None:
+    if path_config is None:
+        return None
+    path = Path(*path_config)
+    if path.is_absolute():
+        return path
+    return repo_path(*path.parts)
+
+
+ACTIVE_MODEL_CONFIG = _resolve_active_model_config()
+PHASE3_REFERENCE_PATH = _resolve_path(tuple(ACTIVE_MODEL_CONFIG["reference_dataset"]))
+MATERIALS_LOOKUP_PATH = _resolve_path(tuple(ACTIVE_MODEL_CONFIG["materials_lookup"]))
+COATINGS_LOOKUP_PATH = _resolve_path(tuple(ACTIVE_MODEL_CONFIG["coatings_lookup"]))
+MODEL_ARTIFACT_PATH = _resolve_path(tuple(ACTIVE_MODEL_CONFIG["model_artifact"]))
+MODEL_METADATA_PATH = _resolve_path(ACTIVE_MODEL_CONFIG.get("metadata_artifact"))
 
 MODEL_VERSION = str(ACTIVE_MODEL_CONFIG["model_version"])
 DATASET_VERSION = str(ACTIVE_MODEL_CONFIG["dataset_version"])
 DATASET_BUILD_DATE = str(ACTIVE_MODEL_CONFIG["dataset_build_date"])
-if MODEL_METADATA_PATH is not None and MODEL_METADATA_PATH.exists():
-    try:
-        _artifact_metadata = json.loads(MODEL_METADATA_PATH.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        _artifact_metadata = {}
-    else:
-        if _artifact_metadata.get("training_timestamp"):
-            DATASET_BUILD_DATE = str(_artifact_metadata["training_timestamp"])
+_artifact_metadata = _load_json_if_exists(MODEL_METADATA_PATH)
+if _artifact_metadata.get("training_timestamp"):
+    DATASET_BUILD_DATE = str(_artifact_metadata["training_timestamp"])
 
 SUPPORTED_DATASET_VERSIONS = [
     str(config["dataset_version"]) for config in MODEL_RUNTIME_CONFIGS.values()
@@ -105,13 +176,17 @@ def get_model_artifact_path(version: str) -> str:
     """Return versioned model artifact path for explicit phase tags."""
     if version in MODEL_RUNTIME_CONFIGS:
         return str(repo_path(*MODEL_RUNTIME_CONFIGS[version]["model_artifact"]))
+    dravix_path = repo_path("models", f"dravix_model_{version}.pkl")
+    if dravix_path.exists():
+        return str(dravix_path)
     return str(repo_path("models", f"model_{version}.pkl"))
 
 
 def get_model_metadata_path(version: str) -> str | None:
     """Return metadata path for a versioned model artifact, if defined."""
     if version not in MODEL_RUNTIME_CONFIGS:
-        return None
+        candidate = repo_path("models", f"dravix_model_{version}.json")
+        return str(candidate) if candidate.exists() else None
     metadata_config = MODEL_RUNTIME_CONFIGS[version].get("metadata_artifact")
     if metadata_config is None:
         return None
@@ -338,12 +413,8 @@ def initialize_dataset_metadata(
 
 def _extract_estimator(model: Any) -> Any:
     if hasattr(model, "named_steps") and "model" in model.named_steps:
-        estimator = model.named_steps["model"]
-    else:
-        estimator = model
-    if not hasattr(estimator, "estimators_"):
-        raise ValueError("Random-forest estimator with estimators_ is required.")
-    return estimator
+        return model.named_steps["model"]
+    return model
 
 
 def _transform_features(model: Any, feature_frame: pd.DataFrame) -> np.ndarray:
@@ -362,6 +433,8 @@ def _transform_features(model: Any, feature_frame: pd.DataFrame) -> np.ndarray:
 def compute_tree_variance(model: Any, feature_frame: pd.DataFrame) -> float:
     """Compute per-sample tree prediction variance for a single-row feature frame."""
     estimator = _extract_estimator(model)
+    if not hasattr(estimator, "estimators_"):
+        return 0.0
     transformed = _transform_features(model, feature_frame)
     if transformed.shape[0] != 1:
         raise ValueError("compute_tree_variance expects a single-row feature frame.")
@@ -375,6 +448,14 @@ def compute_tree_variance(model: Any, feature_frame: pd.DataFrame) -> float:
 def compute_training_variance_stats(model: Any, feature_frame: pd.DataFrame) -> dict[str, float]:
     """Compute deterministic training variance distribution summary for calibration."""
     estimator = _extract_estimator(model)
+    if not hasattr(estimator, "estimators_"):
+        return {
+            "training_variance_mean": 0.0,
+            "training_variance_std": 0.0,
+            "training_variance_p25": 0.0,
+            "training_variance_p50": 0.0,
+            "training_variance_p75": 0.0,
+        }
     transformed = _transform_features(model, feature_frame)
 
     tree_matrix = np.vstack([tree.predict(transformed) for tree in estimator.estimators_])
@@ -451,14 +532,23 @@ def compute_feature_interpretability(
     if transformed.shape[0] != 1:
         raise ValueError("compute_feature_interpretability expects a single-row feature frame.")
 
-    prediction, bias, contributions = ti.predict(estimator, transformed)
     feature_names = list(model.feature_names_in_)
-    sample_contributions = np.asarray(contributions[0], dtype=float)
-
-    if sample_contributions.shape[0] != len(feature_names):
-        raise ValueError(
-            "Contribution vector length does not match model.feature_names_in_."
-        )
+    if hasattr(estimator, "estimators_"):
+        prediction, bias, contributions = ti.predict(estimator, transformed)
+        sample_contributions = np.asarray(contributions[0], dtype=float)
+        prediction_value = float(prediction[0])
+        bias_value = float(bias[0])
+    else:
+        prediction_value = float(model.predict(feature_frame.reindex(columns=feature_names))[0])
+        bias_value = 0.0
+        if hasattr(estimator, "feature_importances_"):
+            importances = np.asarray(estimator.feature_importances_, dtype=float)
+        else:
+            importances = np.zeros(len(feature_names), dtype=float)
+        if importances.shape[0] != len(feature_names):
+            importances = np.resize(importances, len(feature_names))
+        row_values = np.nan_to_num(np.asarray(transformed[0], dtype=float), nan=0.0)
+        sample_contributions = row_values * importances
 
     feature_contributions = {
         feature_name: float(sample_contributions[index])
@@ -495,8 +585,8 @@ def compute_feature_interpretability(
         )
 
     return {
-        "prediction": float(prediction[0]),
-        "bias": float(bias[0]),
+        "prediction": prediction_value,
+        "bias": bias_value,
         "feature_contributions": feature_contributions,
         "top_3_drivers": top_3_drivers,
         "display_names": {feature_name: feature_name for feature_name in feature_names},

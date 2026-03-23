@@ -109,6 +109,11 @@ class ConfidenceOutput(BaseModel):
     label: str
 
 
+class FeatureImportanceOutput(BaseModel):
+    feature: str
+    importance: float
+
+
 class MaterialsOutput(BaseModel):
     materials: list[str]
 
@@ -119,10 +124,23 @@ class CoatingsOutput(BaseModel):
 
 class Phase3PredictResponse(BaseModel):
     material_name: str
+    analysis_id: Optional[str] = None
     use_case: Optional[str] = None
+    DFRS: Optional[float] = None
+    ignition_resistance: Optional[float] = None
+    thermal_persistence: Optional[float] = None
+    decomposition_margin: Optional[float] = None
+    heat_propagation_risk: Optional[float] = None
     risk_score: float
     resistance_index: float
     top_drivers: list[TopDriverOutput]
+    feature_importances: list[FeatureImportanceOutput] = Field(default_factory=list)
+    model_version: Optional[str] = None
+    subscores: Dict[str, float] = Field(default_factory=dict)
+    sensitivity_map: Dict[str, float] = Field(default_factory=dict)
+    sensitivity_summary: list[Dict[str, Any]] = Field(default_factory=list)
+    recommended_tests: list[str] = Field(default_factory=list)
+    counterfactual_suggestions: list[str] = Field(default_factory=list)
     explanation: str
     notes: list[str] = Field(default_factory=list)
     limitations_notice: str
@@ -211,26 +229,32 @@ class FeatureSchemaResponse(BaseModel):
 
 
 class ModelMetadataResponse(BaseModel):
-    service: str
-    api_version: str
     model_type: str
-    model_artifact: str
-    model_version: str
-    dataset_version: str
-    dataset_build_date: Optional[str] = None
-    deterministic: bool
-    feature_names: list[str]
     feature_count: int
+    feature_names: list[str]
+    training_dataset: str
+    model_version: str
+    dataset_version: Optional[str] = None
+    dataset_build_date: Optional[str] = None
+    deterministic: bool = True
     row_counts: Dict[str, int]
     active_paths: Dict[str, str]
     timestamp_utc: str
+    service: Optional[str] = None
+    api_version: Optional[str] = None
+    model_artifact: Optional[str] = None
 
 
 class RuntimeStatusResponse(BaseModel):
-    model_version: str
-    dataset_version: str
-    dataset_rows: int
     model_loaded: bool
+    dataset_loaded: bool
+    supabase_connected: bool
+    features: int
+    materials_count: int
+    build_time: str
+    model_version: Optional[str] = None
+    dataset_version: Optional[str] = None
+    dataset_rows: Optional[int] = None
     lookup_loaded: bool
 
 

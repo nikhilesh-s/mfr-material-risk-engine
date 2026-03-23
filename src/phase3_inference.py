@@ -10,6 +10,11 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from app.training.feature_engineering import (
+    DERIVED_FEATURE_COLUMNS,
+    STANDARD_FEATURE_COLUMNS,
+    build_feature_frame as build_training_feature_frame,
+)
 from .model import DATASET_VERSION, MODEL_ARTIFACT_PATH, MODEL_VERSION, PHASE3_REFERENCE_PATH
 
 MODEL_PATH = MODEL_ARTIFACT_PATH
@@ -43,6 +48,14 @@ RESISTANCE_NEGATIVE_COLUMNS = {
 }
 
 _CACHE: dict[str, Any] = {}
+DISPLAY_TO_STANDARD_FEATURE = {
+    "Density (g/cc)": "density",
+    "Melting Point (°C)": "melting_point",
+    "Thermal Cond. (W/m-K)": "thermal_conductivity",
+    "Specific Heat (J/g-°C)": "specific_heat",
+    "Decomp. Temp (°C)": "decomposition_temp",
+    "Glass Transition Temp (°C)": "glass_transition_temp",
+}
 
 
 def _as_float(value: Any) -> float:
@@ -137,9 +150,19 @@ def build_feature_vector(input_dict: dict[str, Any]) -> pd.DataFrame:
     state = _get_runtime_state()
     feature_names = state["feature_names"]
     bounds = state["bounds"]
+    standardized_input = {
+        standard_name: input_dict.get(standard_name, input_dict.get(display_name))
+        for display_name, standard_name in DISPLAY_TO_STANDARD_FEATURE.items()
+    }
+    training_feature_frame = build_training_feature_frame(pd.DataFrame([standardized_input]))
+    training_feature_values = training_feature_frame.iloc[0].to_dict()
 
     row: dict[str, float] = {}
     for feature in feature_names:
+        if feature in STANDARD_FEATURE_COLUMNS or feature in DERIVED_FEATURE_COLUMNS:
+            row[feature] = _as_float(training_feature_values.get(feature))
+            continue
+
         raw_value = _as_float(input_dict.get(feature))
 
         if feature in COMBUSTION_COLUMNS:
