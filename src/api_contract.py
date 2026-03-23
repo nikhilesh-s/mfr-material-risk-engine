@@ -248,14 +248,15 @@ class ModelMetadataResponse(BaseModel):
 class RuntimeStatusResponse(BaseModel):
     model_loaded: bool
     dataset_loaded: bool
-    supabase_connected: bool
-    features: int
     materials_count: int
-    build_time: str
+    coatings_count: int
+    feature_count: int
+    supabase_connected: bool
     model_version: Optional[str] = None
     dataset_version: Optional[str] = None
     dataset_rows: Optional[int] = None
-    lookup_loaded: bool
+    build_time: Optional[str] = None
+    lookup_loaded: Optional[bool] = None
 
 
 class LoginInput(BaseModel):

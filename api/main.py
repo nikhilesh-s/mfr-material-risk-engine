@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import logging
-import os
 from uuid import uuid4
 from datetime import datetime, timezone
 from typing import Any, Dict, Optional
@@ -15,6 +14,13 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from backend.core.dataset_loader import (
+    COATINGS_DATASET_PATH,
+    MATERIALS_DATASET_PATH,
+    load_datasets,
+)
+from backend.core.model_loader import MODEL_PATH, load_model
+from backend.core.version import API_VERSION, DATASET_VERSION, MODEL_ARTIFACT, get_version_info
 from backend.routes.system import router as system_router
 from backend.services.prediction_logger import log_prediction
 from backend.services.supabase_client import get_supabase_client, is_supabase_enabled
@@ -36,13 +42,8 @@ from app.training.feature_engineering import (
     build_feature_frame as build_training_feature_frame,
 )
 from app.ml.model_loader import (
-    DATASET_VERSION,
     DATASET_BUILD_DATE,
-    MODEL_ARTIFACT_PATH,
-    MODEL_VERSION,
     PHASE3_REFERENCE_PATH,
-    COATINGS_LOOKUP_PATH,
-    MATERIALS_LOOKUP_PATH,
     compute_confidence,
     compute_feature_interpretability,
     compute_training_variance_stats,
@@ -59,7 +60,6 @@ from app.ml.predictor import (
     RESISTANCE_NEGATIVE_COLUMNS,
     build_feature_vector,
     get_runtime_state,
-    predict_material_resistance,
 )
 from src.api_contract import (
     CoatingsOutput,
@@ -83,8 +83,6 @@ from src.phase3_coating_modifier import get_coating_modifier
 ADMIN_EMAIL = "admin@dravix.ai"
 ADMIN_PASSWORD = "Q9v$2mL!7xK@4pR#8tN^6dH"
 MOCK_SESSION_TOKEN = "mock-session-token"
-API_VERSION = "0.3.0"
-BUILD_HASH = os.getenv("RENDER_GIT_COMMIT") or os.getenv("GIT_COMMIT") or "unknown"
 LIMITATIONS_NOTICE = (
     "Dravix is an early-stage decision-support system. Results are deterministic screening "
     "signals and do not replace certification, standards testing, or engineering review."
@@ -350,8 +348,8 @@ def _generate_analysis_id(now: datetime | None = None) -> str:
 
 
 def _predict_model_score(payload_data: dict[str, Any]) -> float:
-    prediction = predict_material_resistance(payload_data)
-    return float(prediction["resistance_score"])
+    feature_vector = build_feature_vector(payload_data)
+    return float(app.state.model.predict(feature_vector)[0])
 
 
 def _predict_composite_dfrs(payload_data: dict[str, Any]) -> float:
@@ -389,8 +387,7 @@ def _build_enriched_analysis(
     include_sensitivity: bool = True,
     analysis_id: str | None = None,
 ) -> dict[str, Any]:
-    base_result = predict_material_resistance(payload_data)
-    base_resistance = float(base_result["resistance_score"])
+    base_resistance = _predict_model_score(payload_data)
     feature_vector = build_feature_vector(payload_data)
 
     try:
@@ -498,7 +495,7 @@ def _build_enriched_analysis(
         "resistance_index": resistance_index,
         "top_drivers": top_drivers,
         "feature_importances": list(getattr(app.state, "top_feature_importances", [])),
-        "model_version": MODEL_VERSION,
+        "model_version": str(getattr(app.state, "model_version", API_VERSION)),
         "subscores": {
             "ignition_resistance": _stable_float(subscores["ignition_resistance"]),
             "thermal_persistence": _stable_float(subscores["thermal_persistence"]),
@@ -525,7 +522,7 @@ def _build_enriched_analysis(
         "resistanceScore": stable_base,
         "effectiveResistance": stable_effective,
         "coatingModifier": stable_modifier,
-        "dataset": {"version": DATASET_VERSION},
+        "dataset": {"version": str(getattr(app.state, "dataset_version", DATASET_VERSION))},
         "interpretability": interpretability,
         "confidence": {
             "score": _stable_float(float(confidence["score"])),
@@ -535,8 +532,7 @@ def _build_enriched_analysis(
 
 
 def _predict_resistance_and_confidence(payload_data: dict[str, Any]) -> tuple[float, str]:
-    prediction = predict_material_resistance(payload_data)
-    resistance_score = float(prediction["resistance_score"])
+    resistance_score = _predict_model_score(payload_data)
     feature_vector = build_feature_vector(payload_data)
     confidence = compute_confidence(
         model=app.state.model,
@@ -850,9 +846,10 @@ def _build_oriented_feature_frame(
 @app.on_event("startup")
 def load_phase3_runtime() -> None:
     runtime = get_runtime_state()
-    model = runtime["model"]
-    feature_names = runtime["feature_names"]
+    model = load_model()
+    feature_names = list(model.feature_names_in_)
     bounds = runtime["bounds"]
+    material_dataset, coating_dataset = load_datasets()
 
     if not PHASE3_REFERENCE_PATH.exists():
         raise FileNotFoundError(
@@ -885,31 +882,34 @@ def load_phase3_runtime() -> None:
     app.state.training_variance_p50 = variance_stats["training_variance_p50"]
     app.state.training_variance_p75 = variance_stats["training_variance_p75"]
     app.state.dataset_metadata = metadata
-    app.state.model_version = MODEL_VERSION
+    app.state.training_dataset = MATERIALS_DATASET_PATH.name
+    app.state.model_version = "phase3"
     app.state.dataset_version = DATASET_VERSION
-    app.state.model_artifact_name = MODEL_ARTIFACT_PATH.name
+    app.state.model_artifact_name = MODEL_ARTIFACT
     app.state.model_loaded = True
+    app.state.dataset_loaded = True
     app.state.lookup_loaded = len(get_material_names()) > 0
     app.state.started_at_utc = datetime.now(timezone.utc).isoformat()
-    app.state.reference_row_count = int(len(raw_reference))
+    app.state.reference_row_count = int(len(material_dataset))
+    app.state.materials_count = int(len(material_dataset))
+    app.state.coatings_count = int(len(coating_dataset))
+    app.state.feature_count = int(len(feature_names))
     app.state.material_lookup_row_count = int(len(get_material_names()))
     app.state.coating_lookup_row_count = int(len(get_coating_names()))
     app.state.active_paths = {
-        "reference_dataset": str(PHASE3_REFERENCE_PATH),
-        "materials_lookup": str(MATERIALS_LOOKUP_PATH),
-        "coatings_lookup": str(COATINGS_LOOKUP_PATH),
-        "model_artifact": str(MODEL_ARTIFACT_PATH),
+        "reference_dataset": str(MATERIALS_DATASET_PATH),
+        "coatings_dataset": str(COATINGS_DATASET_PATH),
+        "model_artifact": str(MODEL_PATH),
     }
     supabase_connected = bool(is_supabase_enabled() and get_supabase_client() is not None)
-    logger.info("Dravix Phase 3 Engine Starting")
-    logger.info("Model loaded")
-    logger.info("Dataset loaded")
+    logger.info("--------------------------------")
+    logger.info("Dravix Phase 3 Engine Boot")
+    logger.info("Model loaded: true")
+    logger.info("Dataset loaded: true")
+    logger.info("Material count: %d", app.state.materials_count)
+    logger.info("Feature count: %d", app.state.feature_count)
     logger.info("Supabase connected: %s", str(supabase_connected).lower())
-    logger.info("Model artifact: %s", MODEL_ARTIFACT_PATH)
-    logger.info("Reference dataset: %s", PHASE3_REFERENCE_PATH)
-    logger.info("Model version: %s", MODEL_VERSION)
-    logger.info("Dataset version: %s", DATASET_VERSION)
-    logger.info("Feature count: %d", len(feature_names))
+    logger.info("--------------------------------")
 
 
 @app.get("/schema", response_model=FeatureSchemaResponse)
