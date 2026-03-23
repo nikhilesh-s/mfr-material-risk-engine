@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 from datetime import datetime, timezone
 from typing import Any, Dict, Optional
@@ -15,13 +16,18 @@ from fastapi.responses import JSONResponse
 
 from src.api_contract import (
     CoatingsOutput,
+    ExportRequest,
+    ExportResponse,
+    FeatureSchemaResponse,
     LoginInput,
     LoginResponse,
     MaterialsOutput,
+    ModelMetadataResponse,
     Phase3Input,
     Phase3PredictResponse,
     RankRequest,
     RankResponse,
+    RuntimeStatusResponse,
     SimulationRequest,
     SimulationResponse,
 )
@@ -36,8 +42,12 @@ from src.phase3_inference import (
 )
 from src.model import (
     DATASET_VERSION,
+    DATASET_BUILD_DATE,
     MODEL_ARTIFACT_PATH,
+    MODEL_VERSION,
     PHASE3_REFERENCE_PATH,
+    COATINGS_LOOKUP_PATH,
+    MATERIALS_LOOKUP_PATH,
     compute_confidence,
     compute_feature_interpretability,
     compute_training_variance_stats,
@@ -55,6 +65,18 @@ ADMIN_PASSWORD = "Q9v$2mL!7xK@4pR#8tN^6dH"
 MOCK_SESSION_TOKEN = "mock-session-token"
 API_VERSION = "0.3.0"
 BUILD_HASH = os.getenv("RENDER_GIT_COMMIT") or os.getenv("GIT_COMMIT") or "unknown"
+LIMITATIONS_NOTICE = (
+    "Dravix is an early-stage decision-support system. Results are deterministic screening "
+    "signals and do not replace certification, standards testing, or engineering review."
+)
+USE_CASE_CONTEXTS = [
+    "EV battery enclosure",
+    "Fire-resistant building polymers",
+    "Aerospace interior materials",
+    "Industrial manufacturing materials",
+]
+
+logger = logging.getLogger("uvicorn.error")
 
 
 app = FastAPI(
@@ -79,6 +101,79 @@ app.add_middleware(
 
 def _stable_float(value: float, digits: int = 12) -> float:
     return float(round(float(value), digits))
+
+
+def _to_resistance_index(value: float) -> float:
+    return _stable_float(np.clip(float(value), 0.0, 1.0) * 100.0)
+
+
+def _to_risk_score(value: float) -> float:
+    return _stable_float((1.0 - np.clip(float(value), 0.0, 1.0)) * 100.0)
+
+
+def _feature_display_name(feature_name: str, interpretability: dict[str, Any] | None = None) -> str:
+    if interpretability is not None:
+        display_names = interpretability.get("display_names") or {}
+        if feature_name in display_names:
+            return str(display_names[feature_name])
+    return str(feature_name)
+
+
+def _driver_note(driver: dict[str, Any], interpretability: dict[str, Any] | None = None) -> str:
+    feature_name = _feature_display_name(str(driver["feature"]), interpretability)
+    if str(driver["direction"]) == "increases_resistance":
+        return f"{feature_name} supports lower fire-risk proxy."
+    return f"{feature_name} increases fire-risk pressure."
+
+
+def _build_prediction_notes(
+    confidence_label: str,
+    top_drivers: list[dict[str, Any]],
+    interpretability: dict[str, Any] | None,
+    coating_code: str | None,
+    use_case: str | None,
+) -> list[str]:
+    notes = [f"{confidence_label} confidence screening output."]
+    if top_drivers:
+        notes.append(_driver_note(top_drivers[0], interpretability))
+    if coating_code:
+        notes.append(f"Coating adjustment applied using {coating_code}.")
+    if use_case:
+        notes.append(f"Use-case framing applied for {use_case}.")
+    notes.append("Use Dravix to prioritize testing, not to certify materials.")
+    return notes
+
+
+def _build_prediction_explanation(
+    material_name: str,
+    risk_score: float,
+    confidence_label: str,
+    top_drivers: list[dict[str, Any]],
+    interpretability: dict[str, Any] | None,
+    use_case: str | None,
+) -> str:
+    context_prefix = (
+        f"For the {use_case} workflow, "
+        if use_case
+        else ""
+    )
+    if not top_drivers:
+        return (
+            f"{context_prefix}{material_name} produced a Dravix fire-risk proxy score of "
+            f"{risk_score:.1f} with {confidence_label.lower()} confidence."
+        )
+
+    top_driver = top_drivers[0]
+    driver_name = _feature_display_name(str(top_driver["feature"]), interpretability)
+    if str(top_driver["direction"]) == "increases_resistance":
+        driver_effect = "supported lower risk"
+    else:
+        driver_effect = "pushed the risk score upward"
+    return (
+        f"{context_prefix}{material_name} produced a Dravix fire-risk proxy score of "
+        f"{risk_score:.1f} with {confidence_label.lower()} confidence. "
+        f"The strongest driver was {driver_name}, which {driver_effect}."
+    )
 
 
 def _fallback_interpretability(
@@ -174,6 +269,14 @@ def _extract_rank_error_message(response: JSONResponse) -> str:
     return "prediction failed"
 
 
+def _effective_use_case(request_use_case: str | None, payload_use_case: str | None) -> str | None:
+    candidate = request_use_case or payload_use_case
+    if candidate is None:
+        return None
+    cleaned = candidate.strip()
+    return cleaned or None
+
+
 def _resolve_phase3_payload(payload: Phase3Input) -> dict[str, Any]:
     if not hasattr(app.state, "model"):
         raise HTTPException(status_code=500, detail="Model runtime is not initialized.")
@@ -203,6 +306,208 @@ def _predict_resistance_and_confidence(payload_data: dict[str, Any]) -> tuple[fl
         training_variance_p75=float(app.state.training_variance_p75),
     )
     return resistance_score, str(confidence["label"])
+
+
+def _predict_batch_resistance_and_confidence(
+    payloads_data: list[dict[str, Any]],
+) -> tuple[list[float], list[str]]:
+    if not payloads_data:
+        return [], []
+
+    feature_frames = [build_feature_vector(payload_data) for payload_data in payloads_data]
+    batch_feature_frame = pd.concat(feature_frames, ignore_index=True)
+    model = app.state.model
+    predictions = [float(value) for value in model.predict(batch_feature_frame)]
+
+    confidence_labels: list[str] = []
+    for row_index in range(len(payloads_data)):
+        row_feature_frame = batch_feature_frame.iloc[[row_index]]
+        confidence = compute_confidence(
+            model=model,
+            feature_frame=row_feature_frame,
+            training_variance_mean=float(app.state.training_variance_mean),
+            training_variance_std=float(app.state.training_variance_std),
+            training_variance_p25=float(app.state.training_variance_p25),
+            training_variance_p75=float(app.state.training_variance_p75),
+        )
+        confidence_labels.append(str(confidence["label"]))
+
+    return predictions, confidence_labels
+
+
+def _material_name_for_response(payload: Phase3Input, payload_data: dict[str, Any]) -> str:
+    if payload.material_name is not None and payload.material_name.strip():
+        return payload.material_name.strip()
+    inferred = payload_data.get("Material Name")
+    if isinstance(inferred, str) and inferred.strip():
+        return inferred.strip()
+    inferred = payload_data.get("Material")
+    if isinstance(inferred, str) and inferred.strip():
+        return inferred.strip()
+    return "Manual input"
+
+
+def _dominant_modified_feature(
+    payload_data: dict[str, Any],
+    modifications: dict[str, float | str],
+) -> str:
+    source_to_feature = {
+        "Density_g_cc": "Density (g/cc)",
+        "Melting_Point_C": "Melting Point (°C)",
+        "Specific_Heat_J_g_C": "Specific Heat (J/g-°C)",
+        "Thermal_Cond_W_mK": "Thermal Cond. (W/m-K)",
+        "CTE_um_m_C": "CTE (µm/m-°C)",
+        "Flash_Point_C": "Flash Point (°C)",
+        "Autoignition_Temp_C": "Autoignition Temp (°C)",
+        "UL94_Flammability": "UL94 Flammability",
+        "Limiting_Oxygen_Index_pct": "Limiting Oxygen Index (%)",
+        "Smoke_Density_Ds": "Smoke Density (Ds)",
+        "Char_Yield_pct": "Char Yield (%)",
+        "Decomp_Temp_C": "Decomp. Temp (°C)",
+        "Heat_of_Combustion_MJ_kg": "Heat of Combustion (MJ/kg)",
+        "Flame_Spread_Index": "Flame Spread Index",
+    }
+
+    best_feature = "descriptor update"
+    best_magnitude = -1.0
+
+    for source_field, raw_change in modifications.items():
+        feature_name = source_to_feature.get(source_field)
+        if feature_name is None:
+            continue
+        baseline_value = payload_data.get(feature_name)
+        if isinstance(raw_change, str) and raw_change.strip().endswith("%"):
+            try:
+                magnitude = abs(float(raw_change.strip()[:-1]))
+            except ValueError:
+                magnitude = 0.0
+        else:
+            try:
+                changed_value = float(raw_change)
+            except (TypeError, ValueError):
+                magnitude = 0.0
+            else:
+                if baseline_value is None or pd.isna(baseline_value):
+                    magnitude = abs(changed_value)
+                elif np.isclose(float(baseline_value), 0.0):
+                    magnitude = abs(changed_value - float(baseline_value))
+                else:
+                    magnitude = abs((changed_value - float(baseline_value)) / float(baseline_value)) * 100.0
+
+        if magnitude > best_magnitude:
+            best_magnitude = magnitude
+            best_feature = feature_name
+
+    return best_feature
+
+
+def _predict_response_payload(input: Phase3Input, use_case: str | None = None) -> dict[str, Any]:
+    if not hasattr(app.state, "model"):
+        raise HTTPException(status_code=500, detail="Model runtime is not initialized.")
+
+    coating_code = input.coating_code.strip() if input.coating_code else None
+    payload_data = _resolve_phase3_payload(input)
+    material_name = _material_name_for_response(input, payload_data)
+
+    base_result = predict_material_resistance(payload_data)
+    base_resistance = float(base_result["resistance_score"])
+
+    feature_vector = build_feature_vector(payload_data)
+    try:
+        interpretability_data = compute_feature_interpretability(
+            model=app.state.model,
+            feature_frame=feature_vector,
+        )
+        feature_contributions = {
+            feature_name: _stable_float(contribution)
+            for feature_name, contribution in interpretability_data["feature_contributions"].items()
+        }
+        display_names = {
+            str(feature_name): str(display_name)
+            for feature_name, display_name in interpretability_data.get("display_names", {}).items()
+        }
+        top_3_drivers = [
+            {
+                "feature": str(driver["feature"]),
+                "contribution": _stable_float(driver["contribution"]),
+                "direction": str(driver["direction"]),
+                "abs_magnitude": _stable_float(driver["abs_magnitude"]),
+            }
+            for driver in interpretability_data["top_3_drivers"]
+        ]
+        interpretability = {
+            "prediction": _stable_float(base_resistance),
+            "feature_contributions": feature_contributions,
+            "top_3_drivers": top_3_drivers,
+            "display_names": display_names,
+        }
+    except Exception as exc:
+        interpretability = _fallback_interpretability(
+            prediction=base_resistance,
+            feature_names=list(app.state.feature_names),
+            error_message=str(exc),
+        )
+
+    confidence = compute_confidence(
+        model=app.state.model,
+        feature_frame=feature_vector,
+        training_variance_mean=float(app.state.training_variance_mean),
+        training_variance_std=float(app.state.training_variance_std),
+        training_variance_p25=float(app.state.training_variance_p25),
+        training_variance_p75=float(app.state.training_variance_p75),
+    )
+
+    coating_modifier: float | None = None
+    effective_resistance = base_resistance
+    if coating_code is not None:
+        try:
+            coating_data = get_coating_modifier(str(coating_code))
+        except KeyError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        coating_modifier = float(coating_data["coating_modifier"])
+        effective_resistance = float(np.clip(base_resistance * (1.0 + coating_modifier), 0.0, 1.0))
+
+    stable_base = _stable_float(base_resistance)
+    stable_effective = _stable_float(effective_resistance)
+    stable_modifier = None if coating_modifier is None else _stable_float(coating_modifier)
+    risk_score = _to_risk_score(stable_effective)
+    resistance_index = _to_resistance_index(stable_effective)
+    top_drivers = list(interpretability["top_3_drivers"])
+    effective_use_case = _effective_use_case(use_case, input.use_case)
+    notes = _build_prediction_notes(
+        confidence_label=str(confidence["label"]),
+        top_drivers=top_drivers,
+        interpretability=interpretability,
+        coating_code=coating_code,
+        use_case=effective_use_case,
+    )
+
+    return {
+        "material_name": material_name,
+        "use_case": effective_use_case,
+        "risk_score": risk_score,
+        "resistance_index": resistance_index,
+        "top_drivers": top_drivers,
+        "explanation": _build_prediction_explanation(
+            material_name=material_name,
+            risk_score=risk_score,
+            confidence_label=str(confidence["label"]),
+            top_drivers=top_drivers,
+            interpretability=interpretability,
+            use_case=effective_use_case,
+        ),
+        "notes": notes,
+        "limitations_notice": LIMITATIONS_NOTICE,
+        "resistanceScore": stable_base,
+        "effectiveResistance": stable_effective,
+        "coatingModifier": stable_modifier,
+        "dataset": {"version": DATASET_VERSION},
+        "interpretability": interpretability,
+        "confidence": {
+            "score": _stable_float(float(confidence["score"])),
+            "label": str(confidence["label"]),
+        },
+    }
 
 
 def _apply_simulation_modifications(
@@ -271,6 +576,68 @@ def _apply_simulation_modifications(
                 ) from exc
 
     return modified_payload
+
+
+def _payload_value_changed(
+    baseline_value: Any,
+    modified_value: Any,
+) -> bool:
+    if baseline_value is None and modified_value is None:
+        return False
+    if baseline_value is None or modified_value is None:
+        return True
+    if pd.isna(baseline_value) and pd.isna(modified_value):
+        return False
+    if pd.isna(baseline_value) or pd.isna(modified_value):
+        return True
+    try:
+        return not np.isclose(float(baseline_value), float(modified_value))
+    except (TypeError, ValueError):
+        return baseline_value != modified_value
+
+
+def _simulation_payload_changed(
+    base_payload: dict[str, Any],
+    modified_payload: dict[str, Any],
+    modifications: dict[str, float | str],
+) -> bool:
+    source_to_feature = {
+        "Density_g_cc": "Density (g/cc)",
+        "Melting_Point_C": "Melting Point (°C)",
+        "Specific_Heat_J_g_C": "Specific Heat (J/g-°C)",
+        "Thermal_Cond_W_mK": "Thermal Cond. (W/m-K)",
+        "CTE_um_m_C": "CTE (µm/m-°C)",
+        "Flash_Point_C": "Flash Point (°C)",
+        "Autoignition_Temp_C": "Autoignition Temp (°C)",
+        "UL94_Flammability": "UL94 Flammability",
+        "Limiting_Oxygen_Index_pct": "Limiting Oxygen Index (%)",
+        "Smoke_Density_Ds": "Smoke Density (Ds)",
+        "Char_Yield_pct": "Char Yield (%)",
+        "Decomp_Temp_C": "Decomp. Temp (°C)",
+        "Heat_of_Combustion_MJ_kg": "Heat of Combustion (MJ/kg)",
+        "Flame_Spread_Index": "Flame Spread Index",
+    }
+    for source_field in modifications:
+        feature_name = source_to_feature.get(source_field)
+        if feature_name is None:
+            continue
+        if _payload_value_changed(
+            base_payload.get(feature_name),
+            modified_payload.get(feature_name),
+        ):
+            return True
+    return False
+
+
+def _feature_vector_changed(
+    base_payload: dict[str, Any],
+    modified_payload: dict[str, Any],
+) -> bool:
+    base_vector = build_feature_vector(base_payload)
+    modified_vector = build_feature_vector(modified_payload)
+    base_row = base_vector.iloc[0].to_numpy(dtype=float, na_value=np.nan)
+    modified_row = modified_vector.iloc[0].to_numpy(dtype=float, na_value=np.nan)
+    return not np.allclose(base_row, modified_row, equal_nan=True)
 
 
 def _build_oriented_feature_frame(
@@ -345,6 +712,21 @@ def load_phase3_runtime() -> None:
     app.state.model_loaded = True
     app.state.lookup_loaded = len(get_material_names()) > 0
     app.state.started_at_utc = datetime.now(timezone.utc).isoformat()
+    app.state.reference_row_count = int(len(raw_reference))
+    app.state.material_lookup_row_count = int(len(get_material_names()))
+    app.state.coating_lookup_row_count = int(len(get_coating_names()))
+    app.state.active_paths = {
+        "reference_dataset": str(PHASE3_REFERENCE_PATH),
+        "materials_lookup": str(MATERIALS_LOOKUP_PATH),
+        "coatings_lookup": str(COATINGS_LOOKUP_PATH),
+        "model_artifact": str(MODEL_ARTIFACT_PATH),
+    }
+    logger.info("Dravix runtime starting")
+    logger.info("Model artifact: %s", MODEL_ARTIFACT_PATH)
+    logger.info("Reference dataset: %s", PHASE3_REFERENCE_PATH)
+    logger.info("Model version: %s", MODEL_VERSION)
+    logger.info("Dataset version: %s", DATASET_VERSION)
+    logger.info("Feature count: %d", len(feature_names))
 
 
 @app.get("/health")
@@ -352,6 +734,17 @@ def health() -> Dict[str, Any]:
     return {
         "status": "ok",
         "dataset_version": DATASET_VERSION,
+        "model_loaded": bool(getattr(app.state, "model_loaded", False)),
+        "lookup_loaded": bool(getattr(app.state, "lookup_loaded", False)),
+    }
+
+
+@app.get("/runtime-status", response_model=RuntimeStatusResponse)
+def runtime_status() -> Dict[str, Any]:
+    return {
+        "model_version": MODEL_VERSION,
+        "dataset_version": DATASET_VERSION,
+        "dataset_rows": int(getattr(app.state, "reference_row_count", 0)),
         "model_loaded": bool(getattr(app.state, "model_loaded", False)),
         "lookup_loaded": bool(getattr(app.state, "lookup_loaded", False)),
     }
@@ -366,6 +759,55 @@ def version() -> Dict[str, str]:
         "dataset_version": DATASET_VERSION,
         "model_artifact": MODEL_ARTIFACT_PATH.name,
         "build_hash": BUILD_HASH,
+        "timestamp_utc": str(getattr(app.state, "started_at_utc", "unknown")),
+    }
+
+
+@app.get("/schema", response_model=FeatureSchemaResponse)
+def schema() -> Dict[str, list[str]]:
+    return {
+        "model_features": list(getattr(app.state, "feature_names", [])),
+        "accepted_request_fields": [
+            "material_name",
+            "coating_code",
+            "use_case",
+            "Density_g_cc",
+            "Melting_Point_C",
+            "Specific_Heat_J_g_C",
+            "Thermal_Cond_W_mK",
+            "CTE_um_m_C",
+            "Flash_Point_C",
+            "Autoignition_Temp_C",
+            "UL94_Flammability",
+            "Limiting_Oxygen_Index_pct",
+            "Smoke_Density_Ds",
+            "Char_Yield_pct",
+            "Decomp_Temp_C",
+            "Heat_of_Combustion_MJ_kg",
+            "Flame_Spread_Index",
+        ],
+    }
+
+
+@app.get("/model-metadata", response_model=ModelMetadataResponse)
+def model_metadata() -> Dict[str, Any]:
+    return {
+        "service": "Dravix Phase 3 Resistance API",
+        "api_version": API_VERSION,
+        "model_type": "RandomForestRegressor pipeline",
+        "model_artifact": MODEL_ARTIFACT_PATH.name,
+        "model_version": MODEL_VERSION,
+        "dataset_version": DATASET_VERSION,
+        "dataset_build_date": DATASET_BUILD_DATE,
+        "deterministic": True,
+        "feature_names": list(getattr(app.state, "feature_names", [])),
+        "feature_count": int(len(getattr(app.state, "feature_names", []))),
+        "row_counts": {
+            "reference_dataset_rows": int(getattr(app.state, "reference_row_count", 0)),
+            "materials_lookup_rows": int(getattr(app.state, "material_lookup_row_count", 0)),
+            "coatings_lookup_rows": int(getattr(app.state, "coating_lookup_row_count", 0)),
+        },
+        "active_paths": dict(getattr(app.state, "active_paths", {})),
         "timestamp_utc": str(getattr(app.state, "started_at_utc", "unknown")),
     }
 
@@ -389,113 +831,21 @@ def login(credentials: LoginInput) -> Dict[str, str]:
 
 @app.post("/predict", response_model=Phase3PredictResponse)
 def predict(input: Phase3Input) -> Dict[str, Any]:
-    if not hasattr(app.state, "model"):
-        raise HTTPException(status_code=500, detail="Model runtime is not initialized.")
-
-    coating_code = input.coating_code
-    if input.material_name is not None and input.material_name.strip():
-        payload_data = get_material_descriptors(
-            input.material_name,
-            feature_names=list(app.state.feature_names),
-        )
-        if payload_data is None:
-            return JSONResponse(
-                status_code=404,
-                content={"error": "Material not found in database"},
-            )
-    else:
-        payload_data = _manual_payload_dict(input)
-
-    base_result = predict_material_resistance(payload_data)
-    base_resistance = float(base_result["resistance_score"])
-
-    feature_vector = build_feature_vector(payload_data)
-    try:
-        interpretability_data = compute_feature_interpretability(
-            model=app.state.model,
-            feature_frame=feature_vector,
-        )
-        feature_contributions = {
-            feature_name: _stable_float(contribution)
-            for feature_name, contribution in interpretability_data["feature_contributions"].items()
-        }
-        display_names = {
-            str(feature_name): str(display_name)
-            for feature_name, display_name in interpretability_data.get(
-                "display_names",
-                {},
-            ).items()
-        }
-        top_3_drivers = [
-            {
-                "feature": str(driver["feature"]),
-                "contribution": _stable_float(driver["contribution"]),
-                "direction": str(driver["direction"]),
-                "abs_magnitude": _stable_float(driver["abs_magnitude"]),
-            }
-            for driver in interpretability_data["top_3_drivers"]
-        ]
-        interpretability = {
-            "prediction": _stable_float(base_resistance),
-            "feature_contributions": feature_contributions,
-            "top_3_drivers": top_3_drivers,
-            "display_names": display_names,
-        }
-    except Exception as exc:
-        interpretability = _fallback_interpretability(
-            prediction=base_resistance,
-            feature_names=list(app.state.feature_names),
-            error_message=str(exc),
-        )
-
-    confidence = compute_confidence(
-        model=app.state.model,
-        feature_frame=feature_vector,
-        training_variance_mean=float(app.state.training_variance_mean),
-        training_variance_std=float(app.state.training_variance_std),
-        training_variance_p25=float(app.state.training_variance_p25),
-        training_variance_p75=float(app.state.training_variance_p75),
-    )
-
-    coating_modifier: float | None = None
-    effective_resistance = base_resistance
-    if coating_code is not None:
-        try:
-            coating_data = get_coating_modifier(str(coating_code))
-        except KeyError as exc:
-            raise HTTPException(status_code=400, detail=str(exc)) from exc
-        coating_modifier = float(coating_data["coating_modifier"])
-        effective_resistance = float(
-            np.clip(base_resistance * (1.0 + coating_modifier), 0.0, 1.0)
-        )
-
-    stable_base = _stable_float(base_resistance)
-    stable_effective = _stable_float(effective_resistance)
-    stable_modifier = None if coating_modifier is None else _stable_float(coating_modifier)
-
-    return {
-        "resistanceScore": stable_base,
-        "effectiveResistance": stable_effective,
-        "coatingModifier": stable_modifier,
-        "dataset": {"version": DATASET_VERSION},
-        "interpretability": interpretability,
-        "confidence": {
-            "score": _stable_float(float(confidence["score"])),
-            "label": str(confidence["label"]),
-        },
-    }
+    return _predict_response_payload(input)
 
 
 @app.post("/rank", response_model=RankResponse)
 def rank(request: RankRequest) -> Dict[str, Any]:
     ranking_rows: list[dict[str, Any]] = []
     errors: list[dict[str, str]] = []
+    effective_use_case = _effective_use_case(request.use_case, None)
+    resolved_batch: list[tuple[str, Phase3Input, dict[str, Any]]] = []
 
     for index, material_input in enumerate(request.materials, start=1):
         material_label = _rank_material_label(material_input, index)
 
         try:
-            prediction_result = predict(material_input)
+            payload_data = _resolve_phase3_payload(material_input)
         except HTTPException as exc:
             detail = exc.detail
             if isinstance(detail, str) and detail.strip():
@@ -508,32 +858,52 @@ def rank(request: RankRequest) -> Dict[str, Any]:
             errors.append({"material": material_label, "error": "prediction failed"})
             continue
 
-        if isinstance(prediction_result, JSONResponse):
-            errors.append(
-                {
-                    "material": material_label,
-                    "error": _extract_rank_error_message(prediction_result),
-                }
-            )
-            continue
+        resolved_batch.append((material_label, material_input, payload_data))
 
-        ranking_rows.append(
-            {
-                "material": material_label,
-                "resistanceScore": _stable_float(
-                    float(prediction_result["resistanceScore"])
-                ),
-                "confidence": str(prediction_result["confidence"]["label"]),
-            }
+    if resolved_batch:
+        batch_payloads = [payload_data for _, _, payload_data in resolved_batch]
+        batch_predictions, batch_confidences = _predict_batch_resistance_and_confidence(
+            batch_payloads
         )
 
-    ranking_rows.sort(key=lambda item: item["resistanceScore"])
+        for row_index, (material_label, material_input, payload_data) in enumerate(resolved_batch):
+            base_resistance = float(batch_predictions[row_index])
+            confidence_label = str(batch_confidences[row_index])
+            coating_code = material_input.coating_code.strip() if material_input.coating_code else None
+            effective_resistance = base_resistance
+
+            if coating_code is not None:
+                try:
+                    coating_data = get_coating_modifier(str(coating_code))
+                except KeyError as exc:
+                    errors.append({"material": material_label, "error": str(exc)})
+                    continue
+                coating_modifier = float(coating_data["coating_modifier"])
+                effective_resistance = float(
+                    np.clip(base_resistance * (1.0 + coating_modifier), 0.0, 1.0)
+                )
+
+            stable_effective = _stable_float(effective_resistance)
+            ranking_rows.append(
+                {
+                    "material": material_label,
+                    "material_name": _material_name_for_response(material_input, payload_data),
+                    "resistanceScore": stable_effective,
+                    "resistance_index": _to_resistance_index(stable_effective),
+                    "risk_score": _to_risk_score(stable_effective),
+                    "confidence": confidence_label,
+                    "notes": f"{confidence_label} confidence screening output.",
+                }
+            )
+
+    ranking_rows.sort(key=lambda item: (item["risk_score"], item["material_name"]))
     ranking = [
         {"rank": rank_index, **row}
         for rank_index, row in enumerate(ranking_rows, start=1)
     ]
 
     return {
+        "use_case": effective_use_case,
         "ranking": ranking,
         "errors": errors,
     }
@@ -546,6 +916,26 @@ def simulate(request: SimulationRequest) -> Dict[str, Any]:
         payload_data=base_payload,
         modifications=request.modifications,
     )
+    payload_changed = _simulation_payload_changed(
+        base_payload=base_payload,
+        modified_payload=modified_payload,
+        modifications=request.modifications,
+    )
+    if not payload_changed:
+        raise HTTPException(
+            status_code=400,
+            detail="Simulation modifications did not change the base material values.",
+        )
+
+    feature_vector_changed = _feature_vector_changed(
+        base_payload=base_payload,
+        modified_payload=modified_payload,
+    )
+    if not feature_vector_changed:
+        raise HTTPException(
+            status_code=400,
+            detail="Simulation modifications did not produce a new model feature vector.",
+        )
 
     baseline_score, baseline_confidence = _predict_resistance_and_confidence(base_payload)
     modified_score, modified_confidence = _predict_resistance_and_confidence(
@@ -558,14 +948,42 @@ def simulate(request: SimulationRequest) -> Dict[str, Any]:
     else:
         percent_change = (delta / baseline_score) * 100.0
 
+    baseline_risk_raw = (1.0 - np.clip(float(baseline_score), 0.0, 1.0)) * 100.0
+    modified_risk_raw = (1.0 - np.clip(float(modified_score), 0.0, 1.0)) * 100.0
+    baseline_risk = _stable_float(baseline_risk_raw)
+    modified_risk = _stable_float(modified_risk_raw)
+    risk_delta = modified_risk_raw - baseline_risk_raw
+    if np.isclose(baseline_risk_raw, 0.0):
+        risk_percent_change: float | None = None
+    else:
+        risk_percent_change = (risk_delta / baseline_risk_raw) * 100.0
+
+    dominant_driver = _dominant_modified_feature(base_payload, request.modifications)
+    effective_use_case = _effective_use_case(request.use_case, request.base_material.use_case)
+    material_name = _material_name_for_response(request.base_material, base_payload)
+    if np.isclose(risk_delta, 0.0):
+        outcome_phrase = (
+            "accepted the requested descriptor update, but the current model region "
+            "did not materially change the fire-risk proxy"
+        )
+    elif risk_delta < 0:
+        outcome_phrase = "reduced the fire-risk proxy"
+    else:
+        outcome_phrase = "increased the fire-risk proxy"
+
     return {
+        "use_case": effective_use_case,
         "baseline": {
             "resistanceScore": _stable_float(baseline_score),
             "confidence": baseline_confidence,
+            "risk_score": baseline_risk,
+            "resistance_index": _to_resistance_index(baseline_score),
         },
         "modified": {
             "resistanceScore": _stable_float(modified_score),
             "confidence": modified_confidence,
+            "risk_score": modified_risk,
+            "resistance_index": _to_resistance_index(modified_score),
         },
         "change": {
             "delta": _stable_float(delta),
@@ -574,5 +992,59 @@ def simulate(request: SimulationRequest) -> Dict[str, Any]:
                 if percent_change is None
                 else _stable_float(percent_change)
             ),
+            "risk_delta": _stable_float(risk_delta),
+            "risk_percent_change": (
+                None
+                if risk_percent_change is None
+                else _stable_float(risk_percent_change)
+            ),
         },
+        "dominant_driver": dominant_driver,
+        "explanation": (
+            f"{material_name} {outcome_phrase}. The largest requested change was {dominant_driver}."
+            f" Baseline score: {_stable_float(baseline_score)}."
+            f" Modified score: {_stable_float(modified_score)}."
+            f" Delta: {_stable_float(delta)}."
+            + (
+                f" Workflow context: {effective_use_case}."
+                if effective_use_case
+                else ""
+            )
+        ),
+        "limitations_notice": LIMITATIONS_NOTICE,
+    }
+
+
+@app.post("/export/ranking", response_model=ExportResponse)
+def export_ranking(request: ExportRequest) -> Dict[str, str]:
+    ranking_payload = rank(RankRequest(materials=request.materials, use_case=request.use_case))
+    filename_base = "dravix_recommended_test_candidates"
+    if request.format == "json":
+        return {
+            "filename": f"{filename_base}.json",
+            "content_type": "application/json",
+            "content": json.dumps(ranking_payload, indent=2),
+        }
+
+    header = ["rank", "material_name", "risk_score", "resistance_index", "confidence", "notes"]
+    rows = [",".join(header)]
+    for row in ranking_payload["ranking"]:
+        material_name = str(row["material_name"]).replace('"', '""')
+        notes = str(row["notes"]).replace('"', '""')
+        rows.append(
+            ",".join(
+                [
+                    str(row["rank"]),
+                    f"\"{material_name}\"",
+                    str(row["risk_score"]),
+                    str(row["resistance_index"]),
+                    str(row["confidence"]),
+                    f"\"{notes}\"",
+                ]
+            )
+        )
+    return {
+        "filename": f"{filename_base}.csv",
+        "content_type": "text/csv",
+        "content": "\n".join(rows),
     }

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -54,6 +54,7 @@ class Phase3Input(BaseModel):
     Flame_Spread_Index: Optional[float] = Field(default=None)
     material_name: Optional[str] = Field(default=None)
     coating_code: Optional[str] = Field(default=None)
+    use_case: Optional[str] = Field(default=None)
 
     @model_validator(mode="after")
     def validate_input_mode(self) -> "Phase3Input":
@@ -117,6 +118,14 @@ class CoatingsOutput(BaseModel):
 
 
 class Phase3PredictResponse(BaseModel):
+    material_name: str
+    use_case: Optional[str] = None
+    risk_score: float
+    resistance_index: float
+    top_drivers: list[TopDriverOutput]
+    explanation: str
+    notes: list[str] = Field(default_factory=list)
+    limitations_notice: str
     resistanceScore: float
     effectiveResistance: float
     coatingModifier: Optional[float]
@@ -127,13 +136,18 @@ class Phase3PredictResponse(BaseModel):
 
 class RankRequest(BaseModel):
     materials: list[Phase3Input]
+    use_case: Optional[str] = None
 
 
 class RankedMaterial(BaseModel):
     rank: int
     material: str
+    material_name: str
     resistanceScore: float
+    resistance_index: float
+    risk_score: float
     confidence: str
+    notes: str
 
 
 class RankError(BaseModel):
@@ -142,6 +156,7 @@ class RankError(BaseModel):
 
 
 class RankResponse(BaseModel):
+    use_case: Optional[str] = None
     ranking: list[RankedMaterial]
     errors: list[RankError] = Field(default_factory=list)
 
@@ -149,22 +164,72 @@ class RankResponse(BaseModel):
 class SimulationRequest(BaseModel):
     base_material: Phase3Input
     modifications: Dict[str, float | str]
+    use_case: Optional[str] = None
 
 
 class SimulationPredictionOutput(BaseModel):
     resistanceScore: float
     confidence: str
+    risk_score: float
+    resistance_index: float
 
 
 class SimulationChangeOutput(BaseModel):
     delta: float
     percent_change: Optional[float]
+    risk_delta: float
+    risk_percent_change: Optional[float]
 
 
 class SimulationResponse(BaseModel):
+    use_case: Optional[str] = None
     baseline: SimulationPredictionOutput
     modified: SimulationPredictionOutput
     change: SimulationChangeOutput
+    dominant_driver: str
+    explanation: str
+    limitations_notice: str
+
+
+class ExportRequest(BaseModel):
+    materials: list[Phase3Input]
+    use_case: Optional[str] = None
+    format: Literal["csv", "json"] = "csv"
+
+
+class ExportResponse(BaseModel):
+    filename: str
+    content_type: str
+    content: str
+
+
+class FeatureSchemaResponse(BaseModel):
+    model_features: list[str]
+    accepted_request_fields: list[str]
+
+
+class ModelMetadataResponse(BaseModel):
+    service: str
+    api_version: str
+    model_type: str
+    model_artifact: str
+    model_version: str
+    dataset_version: str
+    dataset_build_date: Optional[str] = None
+    deterministic: bool
+    feature_names: list[str]
+    feature_count: int
+    row_counts: Dict[str, int]
+    active_paths: Dict[str, str]
+    timestamp_utc: str
+
+
+class RuntimeStatusResponse(BaseModel):
+    model_version: str
+    dataset_version: str
+    dataset_rows: int
+    model_loaded: bool
+    lookup_loaded: bool
 
 
 class LoginInput(BaseModel):
