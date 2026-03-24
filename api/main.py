@@ -859,11 +859,14 @@ def load_phase3_runtime() -> None:
         logger.info("[DRAVIX] Supabase detected")
     logger.info("[DRAVIX] Checking schema")
     try:
-        initialize_database_service()
+        database_service = initialize_database_service()
     except Exception:
         logger.exception("[DRAVIX] Schema verification failed")
         raise
-    logger.info("[DRAVIX] Schema verification successful")
+    if getattr(database_service, "schema_verified", False):
+        logger.info("[DRAVIX] Schema verification successful")
+    else:
+        logger.warning("[DRAVIX] Schema verification incomplete; continuing with limited database features")
     runtime = get_runtime_state()
     model = load_model()
     feature_names = list(model.feature_names_in_)

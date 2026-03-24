@@ -76,20 +76,32 @@ class DatabaseService:
     client: Any
     supabase_url: str
     supabase_key: str
+    schema_verified: bool = False
+
+    @staticmethod
+    def _is_missing_table_error(exc: Exception) -> bool:
+        error_text = str(exc)
+        return (
+            "PGRST205" in error_text
+            or "schema cache" in error_text.lower()
+            or "could not find the table" in error_text.lower()
+        )
 
     def get_schema_status(self) -> dict[str, list[str]]:
-        schema_client = self.client.schema("information_schema")
-        rows = (
-            schema_client.table("tables")
-            .select("table_name")
-            .eq("table_schema", "public")
-            .execute()
-        ).data or []
-        tables_found = sorted({str(row["table_name"]) for row in rows if row.get("table_name")})
-        tables_missing = sorted(set(REQUIRED_TABLES) - set(tables_found))
+        tables_found: list[str] = []
+        tables_missing: list[str] = []
+        for table_name in REQUIRED_TABLES:
+            try:
+                self.client.table(table_name).select("*").limit(1).execute()
+                tables_found.append(table_name)
+            except Exception as exc:
+                if self._is_missing_table_error(exc):
+                    tables_missing.append(table_name)
+                    continue
+                raise
         return {
-            "tables_found": tables_found,
-            "tables_missing": tables_missing,
+            "tables_found": sorted(tables_found),
+            "tables_missing": sorted(tables_missing),
         }
 
     def _run_schema_sql(self) -> str:
@@ -105,25 +117,31 @@ class DatabaseService:
             + " | ".join(errors_seen)
         )
 
-    def verify_required_tables(self) -> None:
+    def verify_required_tables(self) -> bool:
         status = self.get_schema_status()
         if not status["tables_missing"]:
-            return
+            return True
 
         logger.warning(
             "[DRAVIX] Missing tables detected -> initializing schema (%s)",
             ", ".join(status["tables_missing"]),
         )
-        init_detail = self._run_schema_sql()
-        logger.info("[DRAVIX] Schema initialized")
-        logger.info("[DRAVIX] Schema initialization detail: %s", init_detail)
+        try:
+            init_detail = self._run_schema_sql()
+            logger.info("[DRAVIX] Schema initialized")
+            logger.info("[DRAVIX] Schema initialization detail: %s", init_detail)
+        except Exception as exc:
+            logger.warning("[DRAVIX] Automatic schema initialization unavailable: %s", exc)
+            return False
 
         rechecked = self.get_schema_status()
         if rechecked["tables_missing"]:
-            raise RuntimeError(
-                "Schema initialization completed but required tables are still missing: "
-                + ", ".join(rechecked["tables_missing"])
+            logger.warning(
+                "[DRAVIX] Required tables still missing after initialization attempt: %s",
+                ", ".join(rechecked["tables_missing"]),
             )
+            return False
+        return True
 
     def save_material(self, payload: dict[str, Any]) -> dict[str, Any]:
         response = self.client.table("custom_materials").insert(payload).execute()
@@ -269,12 +287,13 @@ def get_database_service() -> DatabaseService:
 
 def initialize_database_service() -> DatabaseService:
     service = get_database_service()
-    service.verify_required_tables()
+    service.schema_verified = service.verify_required_tables()
     return service
 
 
 def verify_schema() -> None:
-    get_database_service().verify_required_tables()
+    if not get_database_service().verify_required_tables():
+        raise RuntimeError("Supabase schema verification failed.")
 
 
 def get_schema_status() -> dict[str, list[str]]:
