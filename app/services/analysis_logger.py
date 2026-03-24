@@ -107,9 +107,19 @@ def log_analysis_run(material_input: Any, prediction_output: dict[str, Any]) -> 
         }
         custom_material_payload = None
         if bool(prediction_output.get("custom_material")):
+            confidence_payload = prediction_output.get("confidence") or {}
+            confidence_score = None
+            if isinstance(confidence_payload, dict) and confidence_payload.get("score") is not None:
+                try:
+                    confidence_score = float(confidence_payload["score"])
+                except (TypeError, ValueError):
+                    confidence_score = None
             custom_material_payload = {
                 "analysis_id": analysis_record.analysis_id,
                 "material_name": material_record.material_name,
+                "properties": material_record.additional_properties,
+                "resistance_score": analysis_record.DFRS,
+                "confidence": confidence_score,
                 "density": material_record.density,
                 "melting_point": material_record.melting_point,
                 "thermal_conductivity": material_record.thermal_conductivity,

@@ -63,7 +63,7 @@ def prepare_training_ready_dataset(
 
     custom_rows: list[dict[str, Any]] = []
     for row in custom_materials:
-        descriptor_payload = dict(row.get("descriptor_payload") or {})
+        descriptor_payload = dict(row.get("descriptor_payload") or row.get("properties") or {})
         custom_rows.append(
             {
                 "analysis_id": row.get("analysis_id"),

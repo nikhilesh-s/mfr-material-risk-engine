@@ -44,6 +44,8 @@ def register_model(
     payload = {
         "model_name": model_name,
         "model_version": model_version,
+        "dataset_version": training_dataset,
+        "notes": f"rmse={rmse:.6f}; r2={r2:.6f}",
         "training_dataset": training_dataset,
         "rmse": rmse,
         "r2": r2,

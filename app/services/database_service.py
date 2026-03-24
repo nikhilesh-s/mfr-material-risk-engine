@@ -318,8 +318,21 @@ def build_simulation_log_payload(
     modifications: dict[str, Any],
     simulation_output: dict[str, Any],
 ) -> dict[str, Any]:
+    baseline_score = None
+    modified_score = None
+    delta_payload: dict[str, Any] = {}
+    if isinstance(simulation_output, dict):
+        baseline = simulation_output.get("baseline") or {}
+        modified = simulation_output.get("modified") or {}
+        change = simulation_output.get("change") or {}
+        baseline_score = baseline.get("resistanceScore")
+        modified_score = modified.get("resistanceScore")
+        delta_payload = dict(change) if isinstance(change, dict) else {}
     return {
         "analysis_id": analysis_id,
+        "baseline_score": baseline_score,
+        "modified_score": modified_score,
+        "delta": delta_payload,
         "material_name": material_name,
         "base_material": base_material,
         "modifications": modifications,

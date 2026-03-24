@@ -6,9 +6,11 @@ import json
 from typing import Any
 
 from app.core.config import OPENAI_API_KEY
+from app.core.logging import get_logger
 from app.services.database_service import get_database_service
 
 ADVISOR_MODEL = "gpt-4.1-mini"
+logger = get_logger("uvicorn.error")
 
 
 def _fallback_advisor_response(prediction: dict[str, Any], reason: str) -> dict[str, Any]:
@@ -45,11 +47,13 @@ def build_advisor_response(analysis_id: str) -> dict[str, Any]:
 
     prediction = (stored.get("result") or {}).get("prediction_json") or {}
     if not OPENAI_API_KEY:
+        logger.info("[DRAVIX] Advisor fallback mode")
         return _fallback_advisor_response(prediction, "OPENAI_API_KEY is not configured")
 
     try:
         from openai import OpenAI
     except ImportError:
+        logger.info("[DRAVIX] Advisor fallback mode")
         return _fallback_advisor_response(prediction, "the openai package is not installed")
 
     prompt_payload = {
@@ -76,6 +80,7 @@ def build_advisor_response(analysis_id: str) -> dict[str, Any]:
     )
 
     try:
+        logger.info("[DRAVIX] Advisor using OpenAI")
         client = OpenAI(api_key=OPENAI_API_KEY)
         response = client.chat.completions.create(
             model=ADVISOR_MODEL,
@@ -89,6 +94,7 @@ def build_advisor_response(analysis_id: str) -> dict[str, Any]:
         content = response.choices[0].message.content or "{}"
         parsed = json.loads(content)
     except Exception as exc:
+        logger.info("[DRAVIX] Advisor fallback mode")
         return _fallback_advisor_response(prediction, str(exc))
 
     return {

@@ -41,7 +41,7 @@ def _normalize_dataset_materials(rows: list[dict[str, Any]]) -> list[dict[str, A
 def _normalize_custom_materials(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     normalized: list[dict[str, Any]] = []
     for row in rows:
-        payload = dict(row.get("descriptor_payload") or {})
+        payload = dict(row.get("descriptor_payload") or row.get("properties") or {})
         normalized.append(
             {
                 "material_name": row.get("material_name"),

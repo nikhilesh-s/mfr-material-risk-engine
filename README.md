@@ -136,6 +136,20 @@ uvicorn api.main:app --reload
 
 The local API will then be available at `http://127.0.0.1:8000`, with interactive docs at `http://127.0.0.1:8000/docs`.
 
+## Backend Validation
+
+Run the platform endpoint harness against the deployed service:
+
+```bash
+python scripts/test_platform_endpoints.py
+```
+
+Override the target base URL if needed:
+
+```bash
+DRAVIX_BASE_URL=http://127.0.0.1:8000 python scripts/test_platform_endpoints.py
+```
+
 ## Roadmap
 
 - Phase 2 - Engineering Prototype (current release baseline)
