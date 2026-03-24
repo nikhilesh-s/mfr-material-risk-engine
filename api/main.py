@@ -33,6 +33,7 @@ from app.api.comparison import router as comparison_router
 from app.api.datasets import router as datasets_router
 from app.api.ranking import router as ranking_router
 from app.api.reports import router as reports_router
+from app.core.config import SUPABASE_URL
 from app.services.coating_analysis_service import analyze_coating_effect
 from app.services.counterfactual_engine import suggest_counterfactuals
 from app.services.database_service import initialize_database_service
@@ -854,7 +855,15 @@ def _build_oriented_feature_frame(
 
 @app.on_event("startup")
 def load_phase3_runtime() -> None:
-    initialize_database_service()
+    if SUPABASE_URL:
+        logger.info("Supabase URL detected")
+    logger.info("Connecting to Supabase")
+    try:
+        initialize_database_service()
+    except Exception:
+        logger.exception("Schema verification failed")
+        raise
+    logger.info("Schema verification passed")
     runtime = get_runtime_state()
     model = load_model()
     feature_names = list(model.feature_names_in_)

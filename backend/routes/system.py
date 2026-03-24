@@ -6,6 +6,7 @@ from typing import Any
 
 from fastapi import APIRouter, Request
 
+from app.services.database_service import get_schema_status
 from backend.core.version import API_VERSION, SERVICE_NAME, get_version_info
 from backend.services.supabase_client import get_supabase_status
 
@@ -71,3 +72,8 @@ def model_metadata(request: Request) -> dict[str, Any]:
         "api_version": API_VERSION,
         "model_artifact": str(getattr(state, "model_artifact_name", "model_v0.3-stable.pkl")),
     }
+
+
+@router.get("/db/schema-status")
+def db_schema_status() -> dict[str, list[str]]:
+    return get_schema_status()
