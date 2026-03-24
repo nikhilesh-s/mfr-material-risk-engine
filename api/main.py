@@ -856,14 +856,14 @@ def _build_oriented_feature_frame(
 @app.on_event("startup")
 def load_phase3_runtime() -> None:
     if SUPABASE_URL:
-        logger.info("Supabase URL detected")
-    logger.info("Connecting to Supabase")
+        logger.info("[DRAVIX] Supabase detected")
+    logger.info("[DRAVIX] Checking schema")
     try:
         initialize_database_service()
     except Exception:
-        logger.exception("Schema verification failed")
+        logger.exception("[DRAVIX] Schema verification failed")
         raise
-    logger.info("Schema verification passed")
+    logger.info("[DRAVIX] Schema verification successful")
     runtime = get_runtime_state()
     model = load_model()
     feature_names = list(model.feature_names_in_)
