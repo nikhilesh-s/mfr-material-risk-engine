@@ -6,8 +6,8 @@ from typing import Any
 
 from fastapi import APIRouter, Request
 
-from backend.core.version import get_version_info
-from backend.services.supabase_client import get_supabase_client, is_supabase_enabled
+from backend.core.version import API_VERSION, SERVICE_NAME, get_version_info
+from backend.services.supabase_client import get_supabase_status
 
 router = APIRouter(tags=["system"])
 
@@ -28,9 +28,7 @@ def version() -> dict[str, str]:
 @router.get("/runtime-status")
 def runtime_status(request: Request) -> dict[str, Any]:
     state = request.app.state
-    supabase_connected = False
-    if is_supabase_enabled():
-        supabase_connected = get_supabase_client() is not None
+    supabase_status = get_supabase_status()
 
     return {
         "model_loaded": bool(getattr(state, "model_loaded", False)),
@@ -38,7 +36,7 @@ def runtime_status(request: Request) -> dict[str, Any]:
         "materials_count": int(getattr(state, "materials_count", 0)),
         "coatings_count": int(getattr(state, "coatings_count", 0)),
         "feature_count": int(getattr(state, "feature_count", 0)),
-        "supabase_connected": supabase_connected,
+        "supabase_connected": bool(supabase_status["connected"]),
     }
 
 
@@ -69,7 +67,7 @@ def model_metadata(request: Request) -> dict[str, Any]:
         },
         "active_paths": dict(getattr(state, "active_paths", {})),
         "timestamp_utc": str(getattr(state, "started_at_utc", "unknown")),
-        "service": "Dravix Phase 3 Resistance API",
-        "api_version": "0.3.2",
+        "service": SERVICE_NAME,
+        "api_version": API_VERSION,
         "model_artifact": str(getattr(state, "model_artifact_name", "model_v0.3-stable.pkl")),
     }

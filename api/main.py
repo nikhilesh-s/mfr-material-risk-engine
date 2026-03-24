@@ -19,11 +19,14 @@ from backend.core.dataset_loader import (
     MATERIALS_DATASET_PATH,
     load_datasets,
 )
+from backend.core.material_input import has_custom_descriptors, normalize_material_payload
 from backend.core.model_loader import MODEL_PATH, load_model
-from backend.core.version import API_VERSION, DATASET_VERSION, MODEL_ARTIFACT, get_version_info
+from backend.core.version import API_VERSION, DATASET_VERSION, MODEL_ARTIFACT
 from backend.routes.system import router as system_router
 from backend.services.prediction_logger import log_prediction
-from backend.services.supabase_client import get_supabase_client, is_supabase_enabled
+from backend.services.supabase_client import (
+    get_supabase_status,
+)
 from app.api.advisor import router as advisor_router
 from app.api.analysis import router as analysis_router
 from app.api.analysis import schedule_analysis_logging
@@ -32,6 +35,7 @@ from app.api.comparison import router as comparison_router
 from app.api.datasets import router as datasets_router
 from app.api.ranking import router as ranking_router
 from app.api.reports import router as reports_router
+from app.services.coating_analysis_service import analyze_coating_effect
 from app.services.counterfactual_engine import suggest_counterfactuals
 from app.services.experiment_recommender import recommend_experiments
 from app.services.scoring_engine import compute_subscores
@@ -78,7 +82,6 @@ from src.api_contract import (
     SimulationRequest,
     SimulationResponse,
 )
-from src.phase3_coating_modifier import get_coating_modifier
 
 ADMIN_EMAIL = "admin@dravix.ai"
 ADMIN_PASSWORD = "Q9v$2mL!7xK@4pR#8tN^6dH"
@@ -271,31 +274,7 @@ def _fallback_interpretability(
 
 
 def _manual_payload_dict(payload: Phase3Input) -> dict[str, Any]:
-    if hasattr(payload, "model_dump"):
-        raw = payload.model_dump(exclude_none=True)
-    else:
-        raw = payload.dict(exclude_none=True)
-    source_to_feature = {
-        "Density_g_cc": "Density (g/cc)",
-        "Melting_Point_C": "Melting Point (°C)",
-        "Specific_Heat_J_g_C": "Specific Heat (J/g-°C)",
-        "Thermal_Cond_W_mK": "Thermal Cond. (W/m-K)",
-        "CTE_um_m_C": "CTE (µm/m-°C)",
-        "Flash_Point_C": "Flash Point (°C)",
-        "Autoignition_Temp_C": "Autoignition Temp (°C)",
-        "UL94_Flammability": "UL94 Flammability",
-        "Limiting_Oxygen_Index_pct": "Limiting Oxygen Index (%)",
-        "Smoke_Density_Ds": "Smoke Density (Ds)",
-        "Char_Yield_pct": "Char Yield (%)",
-        "Decomp_Temp_C": "Decomp. Temp (°C)",
-        "Heat_of_Combustion_MJ_kg": "Heat of Combustion (MJ/kg)",
-        "Flame_Spread_Index": "Flame Spread Index",
-    }
-    return {
-        feature_name: raw[source_name]
-        for source_name, feature_name in source_to_feature.items()
-        if source_name in raw
-    }
+    return normalize_material_payload(payload)
 
 
 def _rank_material_label(payload: Phase3Input, index: int) -> str:
@@ -328,17 +307,30 @@ def _effective_use_case(request_use_case: str | None, payload_use_case: str | No
     return cleaned or None
 
 
-def _resolve_phase3_payload(payload: Phase3Input) -> dict[str, Any]:
+def _resolve_phase3_payload(
+    payload: Phase3Input,
+    *,
+    analysis_id: str | None = None,
+) -> dict[str, Any]:
     if not hasattr(app.state, "model"):
         raise HTTPException(status_code=500, detail="Model runtime is not initialized.")
 
     if payload.material_name is not None and payload.material_name.strip():
+        if has_custom_descriptors(payload):
+            return normalize_material_payload(payload, fallback_material_name=payload.material_name)
         payload_data = get_material_descriptors(payload.material_name)
         if payload_data is None:
+            if has_custom_descriptors(payload):
+                return normalize_material_payload(payload, fallback_material_name=payload.material_name)
             raise HTTPException(status_code=404, detail="Material not found in database")
         return payload_data
 
-    return _manual_payload_dict(payload)
+    fallback_material_name = (
+        None
+        if analysis_id is None
+        else f"Custom Material {analysis_id}"
+    )
+    return normalize_material_payload(payload, fallback_material_name=fallback_material_name)
 
 
 def _generate_analysis_id(now: datetime | None = None) -> str:
@@ -384,6 +376,7 @@ def _build_enriched_analysis(
     coating_code: str | None,
     use_case: str | None,
     material_name: str,
+    is_custom_material: bool = False,
     include_sensitivity: bool = True,
     analysis_id: str | None = None,
 ) -> dict[str, Any]:
@@ -436,14 +429,16 @@ def _build_enriched_analysis(
 
     subscores = compute_subscores(payload_data, base_resistance)
     effective_dfrs = float(subscores["DFRS"])
-    coating_modifier: float | None = None
-    if coating_code is not None:
-        try:
-            coating_data = get_coating_modifier(str(coating_code))
-        except KeyError as exc:
-            raise HTTPException(status_code=400, detail=str(exc)) from exc
-        coating_modifier = float(coating_data["coating_modifier"])
-        effective_dfrs = float(np.clip(effective_dfrs * (1.0 + coating_modifier), 0.0, 1.0))
+    try:
+        coating_analysis = analyze_coating_effect(
+            base_score=effective_dfrs,
+            coating_code=coating_code,
+        )
+    except KeyError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    coating_modifier = coating_analysis["coating_modifier"]
+    effective_dfrs = float(coating_analysis["effective_score"])
 
     stable_base = _stable_float(base_resistance)
     stable_effective = _stable_float(effective_dfrs)
@@ -485,6 +480,7 @@ def _build_enriched_analysis(
     return {
         "analysis_id": analysis_id or _generate_analysis_id(),
         "material_name": material_name,
+        "custom_material": is_custom_material,
         "use_case": use_case,
         "DFRS": stable_effective,
         "ignition_resistance": _stable_float(subscores["ignition_resistance"]),
@@ -522,6 +518,7 @@ def _build_enriched_analysis(
         "resistanceScore": stable_base,
         "effectiveResistance": stable_effective,
         "coatingModifier": stable_modifier,
+        "coating_analysis": coating_analysis,
         "dataset": {"version": str(getattr(app.state, "dataset_version", DATASET_VERSION))},
         "interpretability": interpretability,
         "confidence": {
@@ -689,9 +686,11 @@ def _predict_response_payload(input: Phase3Input, use_case: str | None = None) -
     if not hasattr(app.state, "model"):
         raise HTTPException(status_code=500, detail="Model runtime is not initialized.")
 
+    analysis_id = _generate_analysis_id()
     coating_code = input.coating_code.strip() if input.coating_code else None
-    payload_data = _resolve_phase3_payload(input)
+    payload_data = _resolve_phase3_payload(input, analysis_id=analysis_id)
     material_name = _material_name_for_response(input, payload_data)
+    is_custom_material = bool(has_custom_descriptors(input) or material_name.startswith("Custom Material "))
 
     effective_use_case = _effective_use_case(use_case, input.use_case)
     return _build_enriched_analysis(
@@ -699,6 +698,8 @@ def _predict_response_payload(input: Phase3Input, use_case: str | None = None) -
         coating_code=coating_code,
         use_case=effective_use_case,
         material_name=material_name,
+        is_custom_material=is_custom_material,
+        analysis_id=analysis_id,
     )
 
 
@@ -901,7 +902,8 @@ def load_phase3_runtime() -> None:
         "coatings_dataset": str(COATINGS_DATASET_PATH),
         "model_artifact": str(MODEL_PATH),
     }
-    supabase_connected = bool(is_supabase_enabled() and get_supabase_client() is not None)
+    supabase_status = get_supabase_status()
+    supabase_connected = bool(supabase_status["connected"])
     logger.info("--------------------------------")
     logger.info("Dravix Phase 3 Engine Boot")
     logger.info("Model loaded: true")
@@ -909,6 +911,8 @@ def load_phase3_runtime() -> None:
     logger.info("Material count: %d", app.state.materials_count)
     logger.info("Feature count: %d", app.state.feature_count)
     logger.info("Supabase connected: %s", str(supabase_connected).lower())
+    if not supabase_connected:
+        logger.info("Supabase disabled reason: %s", str(supabase_status["reason"]))
     logger.info("--------------------------------")
 
 
@@ -1006,14 +1010,14 @@ def rank(request: RankRequest) -> Dict[str, Any]:
 
             if coating_code is not None:
                 try:
-                    coating_data = get_coating_modifier(str(coating_code))
+                    coating_data = analyze_coating_effect(
+                        base_score=effective_resistance,
+                        coating_code=str(coating_code),
+                    )
                 except KeyError as exc:
                     errors.append({"material": material_label, "error": str(exc)})
                     continue
-                coating_modifier = float(coating_data["coating_modifier"])
-                effective_resistance = float(
-                    np.clip(base_resistance * (1.0 + coating_modifier), 0.0, 1.0)
-                )
+                effective_resistance = float(coating_data["effective_score"])
 
             stable_effective = _stable_float(effective_resistance)
             ranking_rows.append(
@@ -1076,6 +1080,7 @@ def simulate(request: SimulationRequest) -> Dict[str, Any]:
         coating_code=request.base_material.coating_code.strip() if request.base_material.coating_code else None,
         use_case=effective_use_case,
         material_name=material_name,
+        is_custom_material=bool(has_custom_descriptors(request.base_material) or material_name.startswith("Custom Material ")),
         include_sensitivity=False,
     )
     modified_analysis = _build_enriched_analysis(
@@ -1083,6 +1088,7 @@ def simulate(request: SimulationRequest) -> Dict[str, Any]:
         coating_code=request.base_material.coating_code.strip() if request.base_material.coating_code else None,
         use_case=effective_use_case,
         material_name=material_name,
+        is_custom_material=bool(has_custom_descriptors(request.base_material) or material_name.startswith("Custom Material ")),
         include_sensitivity=False,
     )
     baseline_score = float(baseline_analysis["DFRS"])

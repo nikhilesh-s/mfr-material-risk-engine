@@ -8,9 +8,9 @@ from typing import Any
 from pydantic import ValidationError
 
 from app.core.logging import get_logger
-from app.db.supabase_client import get_supabase
 from app.schemas.analysis_schema import AnalysisResult
 from app.schemas.material_schema import MaterialInput
+from backend.services.supabase_client import get_supabase_client
 
 logger = get_logger("uvicorn.error")
 
@@ -86,7 +86,9 @@ def log_analysis_run(material_input: Any, prediction_output: dict[str, Any]) -> 
     try:
         material_record = _build_material_schema(material_input, prediction_output)
         analysis_record = _build_analysis_schema(prediction_output)
-        supabase = get_supabase()
+        supabase = get_supabase_client()
+        if supabase is None:
+            return
 
         analysis_runs_payload = {
             "analysis_id": analysis_record.analysis_id,
@@ -98,6 +100,17 @@ def log_analysis_run(material_input: Any, prediction_output: dict[str, Any]) -> 
             "additional_properties": material_record.additional_properties,
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
+        if bool(prediction_output.get("custom_material")):
+            custom_material_payload = {
+                "analysis_id": analysis_record.analysis_id,
+                "material_name": material_record.material_name,
+                "density": material_record.density,
+                "melting_point": material_record.melting_point,
+                "thermal_conductivity": material_record.thermal_conductivity,
+                "descriptor_payload": material_record.additional_properties,
+                "created_at": datetime.now(timezone.utc).isoformat(),
+            }
+            supabase.table("custom_materials").insert(custom_material_payload).execute()
         analysis_run_response = supabase.table("analysis_runs").insert(
             analysis_runs_payload
         ).execute()
@@ -120,3 +133,56 @@ def log_analysis_run(material_input: Any, prediction_output: dict[str, Any]) -> 
         logger.warning("Skipping analysis logging due to invalid payload: %s", exc)
     except Exception as exc:
         logger.warning("Supabase logging skipped because persistence failed: %s", exc)
+
+
+def get_analysis_by_id(analysis_id: str) -> dict[str, Any] | None:
+    supabase = get_supabase_client()
+    if supabase is None:
+        return None
+
+    try:
+        analysis_runs = (
+            supabase.table("analysis_runs")
+            .select("*")
+            .eq("analysis_id", analysis_id)
+            .limit(1)
+            .execute()
+        )
+        run_rows = analysis_runs.data or []
+        if not run_rows:
+            return None
+        run_row = dict(run_rows[0])
+        result_rows = (
+            supabase.table("analysis_results")
+            .select("*")
+            .eq("analysis_run_id", run_row["id"])
+            .order("created_at", desc=True)
+            .limit(1)
+            .execute()
+        ).data or []
+        return {
+            "analysis": run_row,
+            "result": dict(result_rows[0]) if result_rows else None,
+        }
+    except Exception as exc:
+        logger.warning("Analysis lookup failed: %s", exc)
+        return None
+
+
+def list_recent_analyses(limit: int = 10) -> list[dict[str, Any]]:
+    supabase = get_supabase_client()
+    if supabase is None:
+        return []
+
+    try:
+        rows = (
+            supabase.table("analysis_runs")
+            .select("analysis_id, material_name, created_at")
+            .order("created_at", desc=True)
+            .limit(limit)
+            .execute()
+        ).data or []
+        return [dict(row) for row in rows]
+    except Exception as exc:
+        logger.warning("Recent analyses lookup failed: %s", exc)
+        return []

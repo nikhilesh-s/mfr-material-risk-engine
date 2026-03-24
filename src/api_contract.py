@@ -4,13 +4,14 @@ from __future__ import annotations
 
 from typing import Any, Dict, Literal, Optional
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, model_validator
 
 
 class Phase3Input(BaseModel):
     """Descriptor input schema for Phase 3 resistance prediction."""
 
     model_config = ConfigDict(
+        populate_by_name=True,
         json_schema_extra={
             "examples": [
                 {
@@ -38,20 +39,62 @@ class Phase3Input(BaseModel):
         }
     )
 
-    Density_g_cc: Optional[float] = Field(default=None)
-    Melting_Point_C: Optional[float] = Field(default=None)
-    Specific_Heat_J_g_C: Optional[float] = Field(default=None)
-    Thermal_Cond_W_mK: Optional[float] = Field(default=None)
-    CTE_um_m_C: Optional[float] = Field(default=None)
-    Flash_Point_C: Optional[float] = Field(default=None)
-    Autoignition_Temp_C: Optional[float] = Field(default=None)
-    UL94_Flammability: Optional[float] = Field(default=None)
-    Limiting_Oxygen_Index_pct: Optional[float] = Field(default=None)
-    Smoke_Density_Ds: Optional[float] = Field(default=None)
-    Char_Yield_pct: Optional[float] = Field(default=None)
-    Decomp_Temp_C: Optional[float] = Field(default=None)
-    Heat_of_Combustion_MJ_kg: Optional[float] = Field(default=None)
-    Flame_Spread_Index: Optional[float] = Field(default=None)
+    Density_g_cc: Optional[float] = Field(
+        default=None,
+        validation_alias=AliasChoices("Density_g_cc", "density"),
+    )
+    Melting_Point_C: Optional[float] = Field(
+        default=None,
+        validation_alias=AliasChoices("Melting_Point_C", "melting_point"),
+    )
+    Specific_Heat_J_g_C: Optional[float] = Field(
+        default=None,
+        validation_alias=AliasChoices("Specific_Heat_J_g_C", "specific_heat"),
+    )
+    Thermal_Cond_W_mK: Optional[float] = Field(
+        default=None,
+        validation_alias=AliasChoices("Thermal_Cond_W_mK", "thermal_conductivity"),
+    )
+    CTE_um_m_C: Optional[float] = Field(
+        default=None,
+        validation_alias=AliasChoices("CTE_um_m_C", "cte"),
+    )
+    Flash_Point_C: Optional[float] = Field(
+        default=None,
+        validation_alias=AliasChoices("Flash_Point_C", "flash_point"),
+    )
+    Autoignition_Temp_C: Optional[float] = Field(
+        default=None,
+        validation_alias=AliasChoices("Autoignition_Temp_C", "autoignition_temp"),
+    )
+    UL94_Flammability: Optional[float] = Field(
+        default=None,
+        validation_alias=AliasChoices("UL94_Flammability", "ul94_flammability"),
+    )
+    Limiting_Oxygen_Index_pct: Optional[float] = Field(
+        default=None,
+        validation_alias=AliasChoices("Limiting_Oxygen_Index_pct", "limiting_oxygen_index"),
+    )
+    Smoke_Density_Ds: Optional[float] = Field(
+        default=None,
+        validation_alias=AliasChoices("Smoke_Density_Ds", "smoke_density"),
+    )
+    Char_Yield_pct: Optional[float] = Field(
+        default=None,
+        validation_alias=AliasChoices("Char_Yield_pct", "char_yield"),
+    )
+    Decomp_Temp_C: Optional[float] = Field(
+        default=None,
+        validation_alias=AliasChoices("Decomp_Temp_C", "decomposition_temp"),
+    )
+    Heat_of_Combustion_MJ_kg: Optional[float] = Field(
+        default=None,
+        validation_alias=AliasChoices("Heat_of_Combustion_MJ_kg", "heat_of_combustion"),
+    )
+    Flame_Spread_Index: Optional[float] = Field(
+        default=None,
+        validation_alias=AliasChoices("Flame_Spread_Index", "flame_spread_index"),
+    )
     material_name: Optional[str] = Field(default=None)
     coating_code: Optional[str] = Field(default=None)
     use_case: Optional[str] = Field(default=None)
@@ -125,6 +168,7 @@ class CoatingsOutput(BaseModel):
 class Phase3PredictResponse(BaseModel):
     material_name: str
     analysis_id: Optional[str] = None
+    custom_material: bool = False
     use_case: Optional[str] = None
     DFRS: Optional[float] = None
     ignition_resistance: Optional[float] = None
@@ -147,6 +191,7 @@ class Phase3PredictResponse(BaseModel):
     resistanceScore: float
     effectiveResistance: float
     coatingModifier: Optional[float]
+    coating_analysis: Optional[Dict[str, Any]] = None
     dataset: DatasetOutput
     interpretability: InterpretabilityOutput
     confidence: ConfidenceOutput
