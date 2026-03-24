@@ -24,9 +24,7 @@ from backend.core.model_loader import MODEL_PATH, load_model
 from backend.core.version import API_VERSION, DATASET_VERSION, MODEL_ARTIFACT
 from backend.routes.system import router as system_router
 from backend.services.prediction_logger import log_prediction
-from backend.services.supabase_client import (
-    get_supabase_status,
-)
+from backend.services.supabase_client import get_supabase_status
 from app.api.advisor import router as advisor_router
 from app.api.analysis import router as analysis_router
 from app.api.analysis import schedule_analysis_logging
@@ -37,6 +35,8 @@ from app.api.ranking import router as ranking_router
 from app.api.reports import router as reports_router
 from app.services.coating_analysis_service import analyze_coating_effect
 from app.services.counterfactual_engine import suggest_counterfactuals
+from app.services.database_service import initialize_database_service
+from app.services.dataset_learning_service import log_simulation_modification
 from app.services.experiment_recommender import recommend_experiments
 from app.services.scoring_engine import compute_subscores
 from app.services.sensitivity_engine import compute_sensitivity_map, summarize_sensitivity
@@ -468,7 +468,14 @@ def _build_enriched_analysis(
         dfrs=stable_effective,
         out_of_distribution=out_of_distribution,
         sensitivity_summary=sensitivity_summary,
-    )["recommended_tests"]
+        subscores={
+            "ignition_resistance": float(subscores["ignition_resistance"]),
+            "thermal_persistence": float(subscores["thermal_persistence"]),
+            "decomposition_margin": float(subscores["decomposition_margin"]),
+            "heat_propagation_risk": float(subscores["heat_propagation_risk"]),
+        },
+        top_drivers=top_drivers,
+    )
     notes = _build_prediction_notes(
         confidence_label=str(confidence["label"]),
         top_drivers=top_drivers,
@@ -503,7 +510,8 @@ def _build_enriched_analysis(
             for property_name, impact in sensitivity_map.items()
         },
         "sensitivity_summary": sensitivity_summary,
-        "recommended_tests": recommended_tests,
+        "recommended_tests": recommended_tests["recommended_tests"],
+        "recommended_test_details": recommended_tests["recommended_test_details"],
         "counterfactual_suggestions": counterfactual_suggestions,
         "explanation": _build_prediction_explanation(
             material_name=material_name,
@@ -846,6 +854,7 @@ def _build_oriented_feature_frame(
 
 @app.on_event("startup")
 def load_phase3_runtime() -> None:
+    initialize_database_service()
     runtime = get_runtime_state()
     model = load_model()
     feature_names = list(model.feature_names_in_)
@@ -911,8 +920,6 @@ def load_phase3_runtime() -> None:
     logger.info("Material count: %d", app.state.materials_count)
     logger.info("Feature count: %d", app.state.feature_count)
     logger.info("Supabase connected: %s", str(supabase_connected).lower())
-    if not supabase_connected:
-        logger.info("Supabase disabled reason: %s", str(supabase_status["reason"]))
     logger.info("--------------------------------")
 
 
@@ -1143,7 +1150,7 @@ def simulate(request: SimulationRequest) -> Dict[str, Any]:
             else "The simulation increased the predicted fire-risk proxy."
         )
 
-    return {
+    response_payload = {
         "use_case": effective_use_case,
         "baseline": {
             "resistanceScore": _stable_float(baseline_score),
@@ -1187,6 +1194,17 @@ def simulate(request: SimulationRequest) -> Dict[str, Any]:
         "driver_analysis": driver_analysis,
         "limitations_notice": LIMITATIONS_NOTICE,
     }
+    try:
+        log_simulation_modification(
+            analysis_id=baseline_analysis.get("analysis_id"),
+            material_name=material_name,
+            base_material=base_payload,
+            modifications=request.modifications,
+            simulation_output=response_payload,
+        )
+    except Exception:
+        logger.exception("Simulation logging failed.")
+    return response_payload
 
 
 @app.post("/export/ranking", response_model=ExportResponse)

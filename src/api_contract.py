@@ -184,6 +184,7 @@ class Phase3PredictResponse(BaseModel):
     sensitivity_map: Dict[str, float] = Field(default_factory=dict)
     sensitivity_summary: list[Dict[str, Any]] = Field(default_factory=list)
     recommended_tests: list[str] = Field(default_factory=list)
+    recommended_test_details: list[Dict[str, Any]] = Field(default_factory=list)
     counterfactual_suggestions: list[str] = Field(default_factory=list)
     explanation: str
     notes: list[str] = Field(default_factory=list)

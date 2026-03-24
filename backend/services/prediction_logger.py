@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
 
-from backend.services.supabase_client import get_supabase_client
+from app.services.database_service import get_database_service
 
 
 def _to_payload(value: Any) -> dict[str, Any]:
@@ -19,10 +19,6 @@ def _to_payload(value: Any) -> dict[str, Any]:
 
 
 def log_prediction(input_features: Any, prediction_output: dict[str, Any]) -> None:
-    client = get_supabase_client()
-    if client is None:
-        return
-
     payload = _to_payload(input_features)
     log_row = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -33,6 +29,6 @@ def log_prediction(input_features: Any, prediction_output: dict[str, Any]) -> No
         "model_version": prediction_output.get("model_version"),
     }
     try:
-        client.table("prediction_logs").insert(log_row).execute()
+        get_database_service().save_prediction_log(log_row)
     except Exception:
         return

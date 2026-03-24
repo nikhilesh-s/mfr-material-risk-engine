@@ -10,7 +10,7 @@ from pydantic import ValidationError
 from app.core.logging import get_logger
 from app.schemas.analysis_schema import AnalysisResult
 from app.schemas.material_schema import MaterialInput
-from backend.services.supabase_client import get_supabase_client
+from app.services.database_service import get_database_service
 
 logger = get_logger("uvicorn.error")
 
@@ -86,9 +86,7 @@ def log_analysis_run(material_input: Any, prediction_output: dict[str, Any]) -> 
     try:
         material_record = _build_material_schema(material_input, prediction_output)
         analysis_record = _build_analysis_schema(prediction_output)
-        supabase = get_supabase_client()
-        if supabase is None:
-            return
+        database = get_database_service()
 
         analysis_runs_payload = {
             "analysis_id": analysis_record.analysis_id,
@@ -100,6 +98,14 @@ def log_analysis_run(material_input: Any, prediction_output: dict[str, Any]) -> 
             "additional_properties": material_record.additional_properties,
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
+        analysis_results_payload = {
+            "dfrs": analysis_record.DFRS,
+            "confidence": analysis_record.confidence,
+            "feature_importance": analysis_record.feature_importance,
+            "prediction_json": analysis_record.prediction_json,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+        custom_material_payload = None
         if bool(prediction_output.get("custom_material")):
             custom_material_payload = {
                 "analysis_id": analysis_record.analysis_id,
@@ -110,25 +116,11 @@ def log_analysis_run(material_input: Any, prediction_output: dict[str, Any]) -> 
                 "descriptor_payload": material_record.additional_properties,
                 "created_at": datetime.now(timezone.utc).isoformat(),
             }
-            supabase.table("custom_materials").insert(custom_material_payload).execute()
-        analysis_run_response = supabase.table("analysis_runs").insert(
-            analysis_runs_payload
-        ).execute()
-        analysis_rows = analysis_run_response.data or []
-        analysis_run_id = analysis_rows[0].get("id") if analysis_rows else None
-        if analysis_run_id is None:
-            logger.warning("Supabase analysis_runs insert returned no id.")
-            return
-
-        analysis_results_payload = {
-            "analysis_run_id": analysis_run_id,
-            "dfrs": analysis_record.DFRS,
-            "confidence": analysis_record.confidence,
-            "feature_importance": analysis_record.feature_importance,
-            "prediction_json": analysis_record.prediction_json,
-            "created_at": datetime.now(timezone.utc).isoformat(),
-        }
-        supabase.table("analysis_results").insert(analysis_results_payload).execute()
+        database.save_analysis_bundle(
+            material_payload=custom_material_payload,
+            analysis_payload=analysis_runs_payload,
+            results_payload=analysis_results_payload,
+        )
     except (ValidationError, TypeError, ValueError) as exc:
         logger.warning("Skipping analysis logging due to invalid payload: %s", exc)
     except Exception as exc:
@@ -136,53 +128,16 @@ def log_analysis_run(material_input: Any, prediction_output: dict[str, Any]) -> 
 
 
 def get_analysis_by_id(analysis_id: str) -> dict[str, Any] | None:
-    supabase = get_supabase_client()
-    if supabase is None:
-        return None
-
     try:
-        analysis_runs = (
-            supabase.table("analysis_runs")
-            .select("*")
-            .eq("analysis_id", analysis_id)
-            .limit(1)
-            .execute()
-        )
-        run_rows = analysis_runs.data or []
-        if not run_rows:
-            return None
-        run_row = dict(run_rows[0])
-        result_rows = (
-            supabase.table("analysis_results")
-            .select("*")
-            .eq("analysis_run_id", run_row["id"])
-            .order("created_at", desc=True)
-            .limit(1)
-            .execute()
-        ).data or []
-        return {
-            "analysis": run_row,
-            "result": dict(result_rows[0]) if result_rows else None,
-        }
+        return get_database_service().get_analysis(analysis_id)
     except Exception as exc:
         logger.warning("Analysis lookup failed: %s", exc)
         return None
 
 
 def list_recent_analyses(limit: int = 10) -> list[dict[str, Any]]:
-    supabase = get_supabase_client()
-    if supabase is None:
-        return []
-
     try:
-        rows = (
-            supabase.table("analysis_runs")
-            .select("analysis_id, material_name, created_at")
-            .order("created_at", desc=True)
-            .limit(limit)
-            .execute()
-        ).data or []
-        return [dict(row) for row in rows]
+        return get_database_service().get_recent_analyses(limit=limit)
     except Exception as exc:
         logger.warning("Recent analyses lookup failed: %s", exc)
         return []
