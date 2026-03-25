@@ -27,7 +27,6 @@ from backend.services.prediction_logger import log_prediction
 from backend.services.supabase_client import get_supabase_status
 from app.api.advisor import router as advisor_router
 from app.api.analysis import router as analysis_router
-from app.api.analysis import schedule_analysis_logging
 from app.api.coatings import router as coatings_router
 from app.api.comparison import router as comparison_router
 from app.api.datasets import router as datasets_router
@@ -36,6 +35,13 @@ from app.api.reports import router as reports_router
 from app.core.config import SUPABASE_URL
 from app.services.coating_analysis_service import analyze_coating_effect
 from app.services.counterfactual_engine import suggest_counterfactuals
+from app.services.database import (
+    insert_analysis_result,
+    insert_analysis_run,
+    insert_custom_material,
+    insert_simulation_log,
+    register_model_version,
+)
 from app.services.database_service import initialize_database_service
 from app.services.dataset_learning_service import log_simulation_modification
 from app.services.experiment_recommender import recommend_experiments
@@ -923,6 +929,16 @@ def load_phase3_runtime() -> None:
         "coatings_dataset": str(COATINGS_DATASET_PATH),
         "model_artifact": str(MODEL_PATH),
     }
+    try:
+        register_model_version(
+            model_name=model.__class__.__name__,
+            model_version=str(app.state.model_version),
+            dataset_version=str(app.state.dataset_version),
+            artifact_path=str(MODEL_PATH),
+            feature_count=int(len(feature_names)),
+        )
+    except Exception:
+        logger.warning("Model registry startup logging skipped.", exc_info=True)
     supabase_status = get_supabase_status()
     supabase_connected = bool(supabase_status["connected"])
     logger.info("--------------------------------")
@@ -982,10 +998,49 @@ def login(credentials: LoginInput) -> Dict[str, str]:
 def predict(input: Phase3Input) -> Dict[str, Any]:
     prediction = _predict_response_payload(input)
     try:
+        analysis_row = insert_analysis_run(
+            analysis_id=prediction.get("analysis_id"),
+            endpoint="/predict",
+            material_name=str(prediction.get("material_name")),
+            use_case=input.use_case,
+            model_version=prediction.get("model_version"),
+            dataset_version=(prediction.get("dataset") or {}).get("version"),
+        )
+        top_drivers = prediction.get("top_drivers") or []
+        top_driver = top_drivers[0].get("feature") if top_drivers else None
+        insert_analysis_result(
+            analysis_id=str(prediction.get("analysis_id")),
+            material_name=str(prediction.get("material_name")),
+            risk_score=prediction.get("risk_score"),
+            resistance_index=prediction.get("resistance_index"),
+            confidence=prediction.get("confidence"),
+            top_driver=top_driver,
+            dataset_version=(prediction.get("dataset") or {}).get("version"),
+            model_version=prediction.get("model_version"),
+            prediction_output=prediction,
+            analysis_run_id=None if analysis_row is None else analysis_row.get("id"),
+        )
+        if bool(prediction.get("custom_material")):
+            input_payload = (
+                input.model_dump(exclude_none=True)
+                if hasattr(input, "model_dump")
+                else dict(input.dict(exclude_none=True))
+            )
+            confidence = prediction.get("confidence") or {}
+            confidence_score = confidence.get("score") if isinstance(confidence, dict) else None
+            insert_custom_material(
+                analysis_id=str(prediction.get("analysis_id")),
+                material_name=str(prediction.get("material_name")),
+                features=input_payload,
+                resistance_score=prediction.get("DFRS"),
+                confidence=confidence_score,
+            )
+    except Exception:
+        logger.warning("Database logging skipped for /predict.", exc_info=True)
+    try:
         log_prediction(input, prediction)
     except Exception:
         logger.exception("Prediction logging failed.")
-    schedule_analysis_logging(input, prediction)
     return prediction
 
 
@@ -1050,6 +1105,17 @@ def rank(request: RankRequest) -> Dict[str, Any]:
                     "notes": f"{confidence_label} confidence screening output.",
                 }
             )
+            try:
+                insert_analysis_run(
+                    analysis_id=None,
+                    endpoint="/rank",
+                    material_name=_material_name_for_response(material_input, payload_data),
+                    use_case=effective_use_case,
+                    model_version=str(getattr(app.state, "model_version", API_VERSION)),
+                    dataset_version=str(getattr(app.state, "dataset_version", DATASET_VERSION)),
+                )
+            except Exception:
+                logger.warning("Database logging skipped for /rank.", exc_info=True)
 
     ranking_rows.sort(key=lambda item: (item["risk_score"], item["material_name"]))
     ranking = [
@@ -1207,6 +1273,23 @@ def simulate(request: SimulationRequest) -> Dict[str, Any]:
         "limitations_notice": LIMITATIONS_NOTICE,
     }
     try:
+        insert_analysis_run(
+            analysis_id=baseline_analysis.get("analysis_id"),
+            endpoint="/simulate",
+            material_name=material_name,
+            use_case=effective_use_case,
+            model_version=baseline_analysis.get("model_version"),
+            dataset_version=(baseline_analysis.get("dataset") or {}).get("version"),
+        )
+        insert_simulation_log(
+            analysis_id=baseline_analysis.get("analysis_id"),
+            material_name=material_name,
+            baseline_score=_stable_float(baseline_score),
+            modified_score=_stable_float(modified_score),
+            delta_score=_stable_float(delta),
+            use_case=effective_use_case,
+            simulation_output=response_payload,
+        )
         log_simulation_modification(
             analysis_id=baseline_analysis.get("analysis_id"),
             material_name=material_name,
