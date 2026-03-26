@@ -104,3 +104,75 @@ def build_advisor_response(analysis_id: str) -> dict[str, Any]:
         "risk_mitigation_strategies": list(parsed.get("risk_mitigation_strategies", [])),
         "material_family_recommendations": list(parsed.get("material_family_recommendations", [])),
     }
+
+
+def build_advisor_chat_response(analysis_id: str, user_question: str) -> dict[str, Any]:
+    stored = get_database_service().get_analysis(analysis_id)
+    if stored is None:
+        raise KeyError(f"Analysis not found: {analysis_id}")
+
+    prediction = (stored.get("result") or {}).get("prediction_json") or {}
+    if not OPENAI_API_KEY:
+        logger.info("[DRAVIX] Advisor fallback mode")
+        return {
+            "analysis_id": analysis_id,
+            "answer": (
+                "Advisor fallback mode is active. "
+                f"Question received: {user_question}. "
+                f"Top drivers: {prediction.get('top_drivers', [])}. "
+                f"Recommended tests: {prediction.get('recommended_tests', [])}."
+            ),
+            "grounded_sources": [
+                "prediction_json.top_drivers",
+                "prediction_json.sensitivity_summary",
+                "prediction_json.recommended_tests",
+            ],
+        }
+
+    try:
+        from openai import OpenAI
+        logger.info("[DRAVIX] Advisor using OpenAI")
+        client = OpenAI(api_key=OPENAI_API_KEY)
+        response = client.chat.completions.create(
+            model=ADVISOR_MODEL,
+            temperature=0.2,
+            messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are the Dravix advisor. Answer using only the supplied analysis context. "
+                        "Be concise and grounded."
+                    ),
+                },
+                {
+                    "role": "user",
+                    "content": json.dumps(
+                        {
+                            "analysis_id": analysis_id,
+                            "question": user_question,
+                            "analysis_context": prediction,
+                        },
+                        default=str,
+                    ),
+                },
+            ],
+        )
+        answer = response.choices[0].message.content or ""
+    except Exception:
+        logger.info("[DRAVIX] Advisor fallback mode")
+        answer = (
+            "OpenAI advisor was unavailable, so this answer is based on stored Dravix outputs only. "
+            f"Question: {user_question}. "
+            f"Counterfactual suggestions: {prediction.get('counterfactual_suggestions', [])}."
+        )
+
+    return {
+        "analysis_id": analysis_id,
+        "answer": answer,
+        "grounded_sources": [
+            "prediction_json.top_drivers",
+            "prediction_json.subscores",
+            "prediction_json.sensitivity_summary",
+            "prediction_json.counterfactual_suggestions",
+        ],
+    }

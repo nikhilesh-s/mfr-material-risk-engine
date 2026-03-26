@@ -45,3 +45,23 @@ def analysis_by_id(analysis_id: str) -> dict[str, Any]:
     if result is None:
         raise HTTPException(status_code=404, detail="Analysis not found")
     return result
+
+
+@router.get("/analysis/{analysis_id}/interactive")
+def analysis_interactive(analysis_id: str) -> dict[str, Any]:
+    result = get_analysis_by_id(analysis_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Analysis not found")
+
+    prediction = ((result.get("result") or {}).get("prediction_json")) or {}
+    return {
+        "analysis_id": analysis_id,
+        "top_drivers": prediction.get("top_drivers", []),
+        "sensitivity_summary": prediction.get("sensitivity_summary", []),
+        "counterfactual_suggestions": prediction.get("counterfactual_suggestions", []),
+        "recommended_tests": prediction.get("recommended_tests", []),
+        "recommended_test_details": prediction.get("recommended_test_details", []),
+        "property_response_curves": prediction.get("property_response_curves", {}),
+        "out_of_domain": prediction.get("out_of_domain", False),
+        "out_of_domain_reasons": prediction.get("out_of_domain_reasons", []),
+    }

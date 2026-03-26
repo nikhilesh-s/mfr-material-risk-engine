@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import Any
 
 from backend.core.material_input import normalize_material_payload
+from app.services.database import insert_analysis_run
 
 
 def _dominant_property_differences(material_payloads: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -55,9 +56,23 @@ def compare_materials(material_list: list[Any], use_case: str | None = None) -> 
                 "risk_score": prediction["risk_score"],
                 "confidence": prediction["confidence"]["label"],
                 "top_drivers": prediction.get("top_drivers", []),
+                "counterfactual_suggestions": prediction.get("counterfactual_suggestions", []),
+                "recommended_test_details": prediction.get("recommended_test_details", []),
+                "out_of_domain": prediction.get("out_of_domain", False),
             }
         )
         normalized_payloads.append(normalize_material_payload(material))
+        try:
+            insert_analysis_run(
+                analysis_id=prediction.get("analysis_id"),
+                endpoint="/compare",
+                material_name=prediction["material_name"],
+                use_case=use_case,
+                model_version=prediction.get("model_version"),
+                dataset_version=(prediction.get("dataset") or {}).get("version"),
+            )
+        except Exception:
+            pass
 
     if not materials:
         return {
@@ -78,10 +93,17 @@ def compare_materials(material_list: list[Any], use_case: str | None = None) -> 
             f" The largest descriptor spread was observed in "
             f"{dominant_differences[0]['property']}."
         )
+    design_tradeoffs = [
+        f"{item['property']} varies by {item['spread']:.3f} across the comparison set."
+        for item in dominant_differences[:3]
+    ]
 
     return {
         "materials": materials,
         "best_material": best_material,
         "comparison_summary": comparison_summary,
+        "design_tradeoffs": design_tradeoffs,
+        "counterfactual_suggestions": best_material.get("counterfactual_suggestions", []),
+        "recommended_test_details": best_material.get("recommended_test_details", []),
         "dominant_property_differences": dominant_differences,
     }

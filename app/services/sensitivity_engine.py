@@ -73,3 +73,33 @@ def summarize_sensitivity(sensitivity_map: dict[str, float], limit: int = 3) -> 
         }
         for property_name, impact in ranked
     ]
+
+
+def compute_property_response_curves(
+    payload: dict[str, Any],
+    predict_fn: Callable[[dict[str, Any]], float],
+    properties: list[str],
+    points: int = 5,
+) -> dict[str, list[dict[str, float]]]:
+    curves: dict[str, list[dict[str, float]]] = {}
+    for property_name in properties:
+        payload_key = NUMERIC_PROPERTIES.get(property_name)
+        if payload_key is None:
+            continue
+        current_value = _get_numeric(payload, payload_key)
+        if current_value is None:
+            continue
+
+        x_values = np.linspace(current_value * 0.8, current_value * 1.2, num=points)
+        curve: list[dict[str, float]] = []
+        for x_value in x_values:
+            updated = dict(payload)
+            updated[payload_key] = float(max(x_value, 0.0)) if current_value >= 0 else float(x_value)
+            curve.append(
+                {
+                    "x": float(updated[payload_key]),
+                    "y": float(predict_fn(updated)),
+                }
+            )
+        curves[property_name] = curve
+    return curves

@@ -35,6 +35,7 @@ from app.api.reports import router as reports_router
 from app.core.config import SUPABASE_URL
 from app.services.coating_analysis_service import analyze_coating_effect
 from app.services.counterfactual_engine import suggest_counterfactuals
+from app.services.comparison_engine import compare_materials
 from app.services.database import (
     insert_analysis_result,
     insert_analysis_run,
@@ -46,7 +47,11 @@ from app.services.database_service import initialize_database_service
 from app.services.dataset_learning_service import log_simulation_modification
 from app.services.experiment_recommender import recommend_experiments
 from app.services.scoring_engine import compute_subscores
-from app.services.sensitivity_engine import compute_sensitivity_map, summarize_sensitivity
+from app.services.sensitivity_engine import (
+    compute_property_response_curves,
+    compute_sensitivity_map,
+    summarize_sensitivity,
+)
 from app.training.feature_engineering import (
     DERIVED_FEATURE_COLUMNS,
     STANDARD_FEATURE_COLUMNS,
@@ -137,6 +142,14 @@ app = FastAPI(
     version=API_VERSION,
     docs_url="/docs",
     openapi_url="/openapi.json",
+    openapi_tags=[
+        {"name": "system", "description": "Runtime diagnostics and deployment visibility."},
+        {"name": "analysis", "description": "Core material analysis, ranking, comparison, simulation, and analysis history."},
+        {"name": "coatings", "description": "Coating lookup and coating-adjusted material analysis."},
+        {"name": "datasets", "description": "Material dataset exploration, clustering, upload, and export workflows."},
+        {"name": "advisor", "description": "AI-assisted and deterministic advisor outputs grounded in stored analyses."},
+        {"name": "reports", "description": "Technical datasheets and exportable Dravix report outputs."},
+    ],
 )
 app.add_middleware(
     CORSMiddleware,
@@ -150,14 +163,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(system_router)
-app.include_router(analysis_router)
-app.include_router(ranking_router)
-app.include_router(comparison_router)
-app.include_router(coatings_router)
-app.include_router(datasets_router)
-app.include_router(advisor_router)
-app.include_router(reports_router)
 
 
 def _stable_float(value: float, digits: int = 12) -> float:
@@ -357,8 +362,13 @@ def _predict_composite_dfrs(payload_data: dict[str, Any]) -> float:
 
 
 def _is_out_of_distribution(payload_data: dict[str, Any], feature_vector: pd.DataFrame) -> bool:
+    return bool(_out_of_domain_reasons(payload_data, feature_vector))
+
+
+def _out_of_domain_reasons(payload_data: dict[str, Any], feature_vector: pd.DataFrame) -> list[str]:
+    reasons: list[str] = []
     if feature_vector.isna().any(axis=None):
-        return True
+        reasons.append("feature_vector_contains_missing_values")
     for feature in COMBUSTION_COLUMNS:
         if feature not in payload_data:
             continue
@@ -373,8 +383,8 @@ def _is_out_of_distribution(payload_data: dict[str, Any], feature_vector: pd.Dat
         if feature in bounds and (
             numeric_value < float(bounds[feature]["min"]) or numeric_value > float(bounds[feature]["max"])
         ):
-            return True
-    return False
+            reasons.append(f"{feature}_outside_training_bounds")
+    return reasons
 
 
 def _build_enriched_analysis(
@@ -457,6 +467,7 @@ def _build_enriched_analysis(
     sensitivity_map: dict[str, float] = {}
     sensitivity_summary: list[dict[str, Any]] = []
     counterfactual_suggestions: list[str] = []
+    property_response_curves: dict[str, list[dict[str, float]]] = {}
     if include_sensitivity:
         sensitivity_map = compute_sensitivity_map(
             payload=payload_data,
@@ -464,12 +475,18 @@ def _build_enriched_analysis(
             baseline_score=effective_dfrs,
         )
         sensitivity_summary = summarize_sensitivity(sensitivity_map)
+        property_response_curves = compute_property_response_curves(
+            payload=payload_data,
+            predict_fn=_predict_composite_dfrs,
+            properties=[str(item["property"]) for item in sensitivity_summary],
+        )
         counterfactual_suggestions = suggest_counterfactuals(
             payload=payload_data,
             sensitivity_map=sensitivity_map,
         )["suggestions"]
 
-    out_of_distribution = _is_out_of_distribution(payload_data, feature_vector)
+    out_of_domain_reasons = _out_of_domain_reasons(payload_data, feature_vector)
+    out_of_distribution = bool(out_of_domain_reasons)
     recommended_tests = recommend_experiments(
         confidence_score=float(confidence["score"]),
         dfrs=stable_effective,
@@ -517,9 +534,12 @@ def _build_enriched_analysis(
             for property_name, impact in sensitivity_map.items()
         },
         "sensitivity_summary": sensitivity_summary,
+        "property_response_curves": property_response_curves,
         "recommended_tests": recommended_tests["recommended_tests"],
         "recommended_test_details": recommended_tests["recommended_test_details"],
         "counterfactual_suggestions": counterfactual_suggestions,
+        "out_of_domain": out_of_distribution,
+        "out_of_domain_reasons": out_of_domain_reasons,
         "explanation": _build_prediction_explanation(
             material_name=material_name,
             risk_score=risk_score,
@@ -951,7 +971,7 @@ def load_phase3_runtime() -> None:
     logger.info("--------------------------------")
 
 
-@app.get("/schema", response_model=FeatureSchemaResponse)
+@app.get("/schema", response_model=FeatureSchemaResponse, include_in_schema=False)
 def schema() -> Dict[str, list[str]]:
     return {
         "model_features": list(getattr(app.state, "feature_names", [])),
@@ -977,24 +997,24 @@ def schema() -> Dict[str, list[str]]:
     }
 
 
-@app.get("/materials", response_model=MaterialsOutput)
+@app.get("/materials", response_model=MaterialsOutput, tags=["datasets"])
 def materials() -> Dict[str, list[str]]:
     return {"materials": get_material_names()}
 
 
-@app.get("/coatings", response_model=CoatingsOutput)
+@app.get("/coatings", response_model=CoatingsOutput, tags=["coatings"])
 def coatings() -> Dict[str, list[str]]:
     return {"coatings": get_coating_names()}
 
 
-@app.post("/login", response_model=LoginResponse)
+@app.post("/login", response_model=LoginResponse, include_in_schema=False)
 def login(credentials: LoginInput) -> Dict[str, str]:
     if credentials.email != ADMIN_EMAIL or credentials.password != ADMIN_PASSWORD:
         raise HTTPException(status_code=401, detail={"error": "Invalid credentials"})
     return {"token": MOCK_SESSION_TOKEN}
 
 
-@app.post("/predict", response_model=Phase3PredictResponse)
+@app.post("/predict", response_model=Phase3PredictResponse, tags=["analysis"])
 def predict(input: Phase3Input) -> Dict[str, Any]:
     prediction = _predict_response_payload(input)
     try:
@@ -1044,7 +1064,7 @@ def predict(input: Phase3Input) -> Dict[str, Any]:
     return prediction
 
 
-@app.post("/rank", response_model=RankResponse)
+@app.post("/rank", response_model=RankResponse, tags=["analysis"])
 def rank(request: RankRequest) -> Dict[str, Any]:
     ranking_rows: list[dict[str, Any]] = []
     errors: list[dict[str, str]] = []
@@ -1130,7 +1150,12 @@ def rank(request: RankRequest) -> Dict[str, Any]:
     }
 
 
-@app.post("/simulate", response_model=SimulationResponse)
+@app.post("/compare", tags=["analysis"])
+def compare(request: RankRequest) -> Dict[str, Any]:
+    return compare_materials(request.materials, use_case=request.use_case)
+
+
+@app.post("/simulate", response_model=SimulationResponse, tags=["analysis"])
 def simulate(request: SimulationRequest) -> Dict[str, Any]:
     base_payload = _resolve_phase3_payload(request.base_material)
     modified_payload = _apply_simulation_modifications(
@@ -1302,7 +1327,7 @@ def simulate(request: SimulationRequest) -> Dict[str, Any]:
     return response_payload
 
 
-@app.post("/export/ranking", response_model=ExportResponse)
+@app.post("/export/ranking", response_model=ExportResponse, tags=["reports"])
 def export_ranking(request: ExportRequest) -> Dict[str, str]:
     ranking_payload = rank(RankRequest(materials=request.materials, use_case=request.use_case))
     filename_base = "dravix_recommended_test_candidates"
@@ -1335,3 +1360,13 @@ def export_ranking(request: ExportRequest) -> Dict[str, str]:
         "content_type": "text/csv",
         "content": "\n".join(rows),
     }
+
+
+app.include_router(system_router)
+app.include_router(analysis_router)
+app.include_router(comparison_router)
+app.include_router(coatings_router)
+app.include_router(datasets_router)
+app.include_router(advisor_router)
+app.include_router(reports_router)
+app.include_router(ranking_router)

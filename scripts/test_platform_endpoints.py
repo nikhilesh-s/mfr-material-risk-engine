@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Quick validation harness for deployed Dravix platform endpoints."""
+"""Validation harness for deployed Dravix platform endpoints."""
 
 from __future__ import annotations
 
@@ -59,35 +59,27 @@ def request_json(method: str, path: str, payload: dict[str, Any] | None = None) 
 def report(name: str, ok: bool, status: int, payload: Any) -> None:
     verdict = "PASS" if ok else "FAIL"
     print(f"[{verdict}] {name} status={status}")
-    print(json.dumps(payload, indent=2, default=str)[:1200])
+    if not ok:
+        print(json.dumps(payload, indent=2, default=str)[:1500])
     print("-" * 60)
 
 
 def main() -> int:
+    overall_ok = True
+
     health_ok, health_status, health_payload = request_json("GET", "/health")
     report("/health", health_ok, health_status, health_payload)
+    overall_ok &= health_ok
+
+    db_ok, db_status_code, db_payload = request_json("GET", "/db-status")
+    report("/db-status", db_ok, db_status_code, db_payload)
+    overall_ok &= db_ok
 
     predict_ok, predict_status, predict_payload = request_json("POST", "/predict", CUSTOM_MATERIAL)
     report("/predict", predict_ok, predict_status, predict_payload)
+    overall_ok &= predict_ok
+
     analysis_id = predict_payload.get("analysis_id") if isinstance(predict_payload, dict) else None
-
-    if analysis_id:
-        time.sleep(2)
-        tds_ok, tds_status, tds_payload = request_json("GET", f"/tds/{analysis_id}")
-        report("/tds/{analysis_id}", tds_ok, tds_status, tds_payload)
-
-        advisor_ok, advisor_status, advisor_payload = request_json("GET", f"/advisor/{analysis_id}")
-        report("/advisor/{analysis_id}", advisor_ok, advisor_status, advisor_payload)
-    else:
-        print("[FAIL] analysis-dependent endpoints skipped because /predict returned no analysis_id")
-        print("-" * 60)
-        tds_ok = advisor_ok = False
-
-    clusters_ok, clusters_status, clusters_payload = request_json("GET", "/clusters")
-    report("/clusters", clusters_ok, clusters_status, clusters_payload)
-
-    export_ok, export_status, export_payload = request_json("GET", "/dataset/export")
-    report("/dataset/export", export_ok, export_status, export_payload)
 
     rank_payload = {
         "materials": [
@@ -99,22 +91,57 @@ def main() -> int:
     }
     rank_ok, rank_status, rank_response = request_json("POST", "/rank", rank_payload)
     report("/rank", rank_ok, rank_status, rank_response)
+    overall_ok &= rank_ok
+
+    simulate_payload = {
+        "base_material": CUSTOM_MATERIAL,
+        "modifications": {
+            "Limiting_Oxygen_Index_pct": 33.0,
+            "Decomp_Temp_C": 356.0,
+        },
+        "use_case": "Fire-resistant building polymers",
+    }
+    simulate_ok, simulate_status, simulate_response = request_json("POST", "/simulate", simulate_payload)
+    report("/simulate", simulate_ok, simulate_status, simulate_response)
+    overall_ok &= simulate_ok
 
     compare_ok, compare_status, compare_payload = request_json("POST", "/compare", rank_payload)
     report("/compare", compare_ok, compare_status, compare_payload)
+    overall_ok &= compare_ok
 
-    overall_ok = all(
-        [
-            health_ok,
-            predict_ok,
-            clusters_ok,
-            export_ok,
-            rank_ok,
-            compare_ok,
-            tds_ok,
-            advisor_ok,
-        ]
-    )
+    clusters_ok, clusters_status, clusters_payload = request_json("GET", "/clusters")
+    report("/clusters", clusters_ok, clusters_status, clusters_payload)
+    overall_ok &= clusters_ok
+
+    export_ok, export_status, export_payload = request_json("GET", "/dataset/export")
+    report("/dataset/export", export_ok, export_status, export_payload)
+    overall_ok &= export_ok
+
+    if analysis_id:
+        time.sleep(2)
+        tds_ok, tds_status, tds_payload = request_json("GET", f"/tds/{analysis_id}")
+        report("/tds/{analysis_id}", tds_ok, tds_status, tds_payload)
+        overall_ok &= tds_ok
+
+        advisor_ok, advisor_status, advisor_payload = request_json("GET", f"/advisor/{analysis_id}")
+        report("/advisor/{analysis_id}", advisor_ok, advisor_status, advisor_payload)
+        overall_ok &= advisor_ok
+
+        chat_ok, chat_status, chat_payload = request_json(
+            "POST",
+            "/advisor/chat",
+            {
+                "analysis_id": analysis_id,
+                "user_question": "What would you improve first to lower risk while preserving confidence?",
+            },
+        )
+        report("/advisor/chat", chat_ok, chat_status, chat_payload)
+        overall_ok &= chat_ok
+    else:
+        print("[FAIL] analysis-dependent endpoints skipped because /predict returned no analysis_id")
+        print("-" * 60)
+        overall_ok = False
+
     return 0 if overall_ok else 1
 
 
