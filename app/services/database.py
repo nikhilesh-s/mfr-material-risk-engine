@@ -86,27 +86,14 @@ def insert_analysis_run(
         "analysis_id": analysis_id,
         "material_name": material_name,
         "use_case": use_case,
-        "timestamp": timestamp,
         "model_version": model_version,
-    }
-    try:
-        return _insert("analysis_runs", primary_payload)
-    except Exception:
-        pass
-
-    legacy_payload = {
-        "analysis_id": analysis_id,
-        "material_name": material_name,
-        "material_class": endpoint,
+        "created_at": timestamp,
         "additional_properties": {
             "endpoint": endpoint,
-            "use_case": use_case,
+            "dataset_version": dataset_version,
         },
-        "model_version": model_version,
-        "dataset_version": dataset_version,
-        "created_at": timestamp,
     }
-    return _insert("analysis_runs", legacy_payload)
+    return _insert("analysis_runs", primary_payload)
 
 
 def insert_analysis_result(
@@ -129,23 +116,11 @@ def insert_analysis_result(
         "confidence": _confidence_label(confidence),
         "drivers_json": {"top_driver": top_driver},
         "prediction_json": prediction_output or {},
-        "dataset_version": dataset_version,
-        "model_version": model_version,
-    }
-    try:
-        return _insert("analysis_results", primary_payload)
-    except Exception:
-        pass
-
-    legacy_payload = {
-        "analysis_run_id": analysis_run_id,
-        "dfrs": (prediction_output or {}).get("DFRS", (prediction_output or {}).get("effectiveResistance")),
-        "confidence": confidence,
-        "feature_importance": (prediction_output or {}).get("interpretability", {}),
-        "prediction_json": prediction_output or {},
         "created_at": _utcnow(),
     }
-    return _insert("analysis_results", legacy_payload)
+    if analysis_run_id is not None:
+        primary_payload["analysis_run_id"] = str(analysis_run_id)
+    return _insert("analysis_results", primary_payload)
 
 
 def insert_custom_material(
@@ -159,40 +134,16 @@ def insert_custom_material(
     primary_payload = {
         "analysis_id": analysis_id,
         "material_name": material_name,
-        "input_properties_json": features,
-        "density": features.get("Density_g_cc"),
-        "melting_point": features.get("Melting_Point_C"),
-        "specific_heat": features.get("Specific_Heat_J_g_C"),
-        "thermal_conductivity": features.get("Thermal_Cond_W_mK"),
-        "cte": features.get("CTE_um_m_C"),
-        "flash_point": features.get("Flash_Point_C"),
-        "autoignition_temp": features.get("Autoignition_Temp_C"),
-        "limiting_oxygen_index": features.get("Limiting_Oxygen_Index_pct"),
-        "smoke_density": features.get("Smoke_Density_Ds"),
-        "char_yield": features.get("Char_Yield_pct"),
-        "decomposition_temp": features.get("Decomp_Temp_C"),
-        "heat_of_combustion": features.get("Heat_of_Combustion_MJ_kg"),
-        "flame_spread_index": features.get("Flame_Spread_Index"),
-        "properties": features,
-        "resistance_score": resistance_score,
-        "confidence": confidence,
+        "descriptor_payload": {
+            **features,
+            "_meta": {
+                "resistance_score": resistance_score,
+                "confidence": confidence,
+            },
+        },
         "created_at": _utcnow(),
     }
-    try:
-        return _insert("custom_materials", primary_payload)
-    except Exception:
-        pass
-
-    legacy_payload = {
-        "analysis_id": analysis_id,
-        "material_name": material_name,
-        "density": features.get("Density_g_cc"),
-        "melting_point": features.get("Melting_Point_C"),
-        "thermal_conductivity": features.get("Thermal_Cond_W_mK"),
-        "descriptor_payload": features,
-        "created_at": _utcnow(),
-    }
-    return _insert("custom_materials", legacy_payload)
+    return _insert("custom_materials", primary_payload)
 
 
 def insert_simulation_log(
@@ -210,28 +161,16 @@ def insert_simulation_log(
         "analysis_id": analysis_id,
         "baseline_score": baseline_score,
         "modified_score": modified_score,
-        "delta": {"delta_score": delta_score},
-        "delta_score": delta_score,
+        "delta": delta_score,
         "modifications_json": modifications_json or {},
-        "material_name": material_name,
-        "use_case": use_case,
         "created_at": _utcnow(),
     }
-    try:
-        return _insert("simulation_logs", primary_payload)
-    except Exception:
-        pass
-
-    legacy_payload = {
-        "analysis_id": analysis_id,
-        "material_name": material_name,
-        "baseline_score": baseline_score,
-        "modified_score": modified_score,
-        "delta": {"delta_score": delta_score},
-        "simulation_output": simulation_output or {},
-        "created_at": _utcnow(),
-    }
-    return _insert("simulation_logs", legacy_payload)
+    if use_case is not None:
+        primary_payload["modifications_json"] = {
+            **(modifications_json or {}),
+            "_meta": {"material_name": material_name, "use_case": use_case},
+        }
+    return _insert("simulation_logs", primary_payload)
 
 
 def register_model_version(
@@ -260,25 +199,12 @@ def register_model_version(
         return None
 
     payload = {
-        "model_name": model_name,
         "model_version": model_version,
         "dataset_version": dataset_version,
-        "artifact_path": artifact_path,
-        "feature_count": feature_count,
-        "created_at": _utcnow(),
+        "model_artifact": artifact_path,
+        "registered_at": _utcnow(),
     }
-    inserted = _insert("model_registry", payload)
-    if inserted is not None:
-        return inserted
-
-    fallback_payload = {
-        "model_name": model_name,
-        "model_version": model_version,
-        "dataset_version": dataset_version,
-        "notes": f"artifact_path={artifact_path}; feature_count={feature_count}",
-        "created_at": _utcnow(),
-    }
-    return _insert("model_registry", fallback_payload)
+    return _insert("model_registry", payload)
 
 
 def db_status() -> dict[str, Any]:
