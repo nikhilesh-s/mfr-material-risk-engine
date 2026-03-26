@@ -42,15 +42,10 @@ def register_model(
     model_path: str,
 ) -> None:
     payload = {
-        "model_name": model_name,
         "model_version": model_version,
         "dataset_version": training_dataset,
-        "notes": f"rmse={rmse:.6f}; r2={r2:.6f}",
-        "training_dataset": training_dataset,
-        "rmse": rmse,
-        "r2": r2,
-        "created_at": datetime.now(timezone.utc).isoformat(),
-        "model_path": model_path,
+        "model_artifact": model_path,
+        "registered_at": datetime.now(timezone.utc).isoformat(),
     }
     try:
         get_supabase().table("model_registry").insert(payload).execute()
@@ -64,7 +59,7 @@ def get_latest_registered_model() -> dict[str, Any] | None:
             get_supabase()
             .table("model_registry")
             .select("*")
-            .order("created_at", desc=True)
+            .order("registered_at", desc=True)
             .limit(1)
             .execute()
         )

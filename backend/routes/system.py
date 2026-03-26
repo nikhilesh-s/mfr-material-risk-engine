@@ -14,6 +14,14 @@ from backend.services.supabase_client import get_supabase_status
 router = APIRouter(tags=["system"])
 
 
+@router.get("/", include_in_schema=False)
+def root() -> dict[str, str]:
+    return {
+        "status": "ok",
+        "service": "dravix",
+    }
+
+
 @router.get("/health")
 def health() -> dict[str, str]:
     return {

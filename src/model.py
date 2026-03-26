@@ -53,6 +53,11 @@ MODEL_RUNTIME_CONFIGS: dict[str, dict[str, Any]] = {
 
 SUPPORTED_MODEL_VERSIONS = sorted(MODEL_RUNTIME_CONFIGS.keys())
 
+
+def _use_registry_runtime_config() -> bool:
+    raw_value = os.getenv("DRAVIX_USE_MODEL_REGISTRY", "").strip().lower()
+    return raw_value in {"1", "true", "yes", "on"}
+
 def _resolve_explicit_model_version() -> str | None:
     raw_value = os.getenv("DRAVIX_MODEL_VERSION", "").strip()
     return raw_value or None
@@ -77,7 +82,7 @@ def _resolve_registry_runtime_config() -> dict[str, Any] | None:
     if not registry_record:
         return None
 
-    raw_model_path = registry_record.get("model_path")
+    raw_model_path = registry_record.get("model_artifact") or registry_record.get("model_path")
     if not raw_model_path:
         return None
 
@@ -91,11 +96,13 @@ def _resolve_registry_runtime_config() -> dict[str, Any] | None:
         "model_version": str(registry_record.get("model_version") or DEFAULT_MODEL_VERSION),
         "dataset_version": str(
             metadata.get("training_dataset")
+            or registry_record.get("dataset_version")
             or registry_record.get("training_dataset")
             or "materials-v0.3.1"
         ),
         "dataset_build_date": str(
             metadata.get("training_timestamp")
+            or registry_record.get("registered_at")
             or registry_record.get("created_at")
             or "unknown"
         ),
@@ -117,9 +124,10 @@ def _resolve_active_model_config() -> dict[str, Any]:
             )
         return MODEL_RUNTIME_CONFIGS[requested_model_version]
 
-    registry_config = _resolve_registry_runtime_config()
-    if registry_config is not None:
-        return registry_config
+    if _use_registry_runtime_config():
+        registry_config = _resolve_registry_runtime_config()
+        if registry_config is not None:
+            return registry_config
     return MODEL_RUNTIME_CONFIGS[DEFAULT_MODEL_VERSION]
 
 

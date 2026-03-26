@@ -226,13 +226,22 @@ def db_status() -> dict[str, Any]:
 
     last_model_registered = None
     try:
-        rows = (
-            db.table("model_registry")
-            .select("*")
-            .order("created_at", desc=True)
-            .limit(1)
-            .execute()
-        ).data or []
+        try:
+            rows = (
+                db.table("model_registry")
+                .select("*")
+                .order("registered_at", desc=True)
+                .limit(1)
+                .execute()
+            ).data or []
+        except Exception:
+            rows = (
+                db.table("model_registry")
+                .select("*")
+                .order("created_at", desc=True)
+                .limit(1)
+                .execute()
+            ).data or []
         if rows:
             last_model_registered = rows[0].get("model_version")
     except Exception:
