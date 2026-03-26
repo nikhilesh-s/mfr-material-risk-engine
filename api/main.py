@@ -1017,46 +1017,69 @@ def login(credentials: LoginInput) -> Dict[str, str]:
 @app.post("/predict", response_model=Phase3PredictResponse, tags=["analysis"])
 def predict(input: Phase3Input) -> Dict[str, Any]:
     prediction = _predict_response_payload(input)
+    analysis_row = None
+    logging_failed = False
+    analysis_id = str(prediction.get("analysis_id"))
+    material_name = str(prediction.get("material_name"))
+    dataset_version = (prediction.get("dataset") or {}).get("version")
+    logger.info("Logging analysis run %s", analysis_id)
     try:
         analysis_row = insert_analysis_run(
-            analysis_id=prediction.get("analysis_id"),
+            analysis_id=analysis_id,
             endpoint="/predict",
-            material_name=str(prediction.get("material_name")),
+            material_name=material_name,
             use_case=input.use_case,
             model_version=prediction.get("model_version"),
-            dataset_version=(prediction.get("dataset") or {}).get("version"),
+            dataset_version=dataset_version,
         )
-        top_drivers = prediction.get("top_drivers") or []
-        top_driver = top_drivers[0].get("feature") if top_drivers else None
+        logger.info("analysis_runs insert success")
+    except Exception as e:
+        logging_failed = True
+        logger.error("analysis_runs insert failed: %s", e)
+
+    top_drivers = prediction.get("top_drivers") or []
+    top_driver = top_drivers[0].get("feature") if top_drivers else None
+    try:
         insert_analysis_result(
-            analysis_id=str(prediction.get("analysis_id")),
-            material_name=str(prediction.get("material_name")),
+            analysis_id=analysis_id,
+            material_name=material_name,
+            resistance_score=prediction.get("DFRS"),
             risk_score=prediction.get("risk_score"),
-            resistance_index=prediction.get("resistance_index"),
             confidence=prediction.get("confidence"),
             top_driver=top_driver,
-            dataset_version=(prediction.get("dataset") or {}).get("version"),
+            dataset_version=dataset_version,
             model_version=prediction.get("model_version"),
             prediction_output=prediction,
             analysis_run_id=None if analysis_row is None else analysis_row.get("id"),
         )
-        if bool(prediction.get("custom_material")):
-            input_payload = (
-                input.model_dump(exclude_none=True)
-                if hasattr(input, "model_dump")
-                else dict(input.dict(exclude_none=True))
-            )
-            confidence = prediction.get("confidence") or {}
-            confidence_score = confidence.get("score") if isinstance(confidence, dict) else None
+        logger.info("analysis_results insert success")
+    except Exception as e:
+        logging_failed = True
+        logger.error("analysis_results insert failed: %s", e)
+
+    if bool(prediction.get("custom_material")):
+        input_payload = (
+            input.model_dump(exclude_none=True)
+            if hasattr(input, "model_dump")
+            else dict(input.dict(exclude_none=True))
+        )
+        confidence = prediction.get("confidence") or {}
+        confidence_score = confidence.get("score") if isinstance(confidence, dict) else None
+        try:
             insert_custom_material(
-                analysis_id=str(prediction.get("analysis_id")),
-                material_name=str(prediction.get("material_name")),
+                analysis_id=analysis_id,
+                material_name=material_name,
                 features=input_payload,
                 resistance_score=prediction.get("DFRS"),
                 confidence=confidence_score,
             )
-    except Exception:
-        logger.warning("Database logging skipped for /predict.", exc_info=True)
+            logger.info("custom_materials insert success")
+        except Exception as e:
+            logging_failed = True
+            logger.error("custom_materials insert failed: %s", e)
+
+    if logging_failed:
+        logger.warning("Database logging failed — continuing without persistence")
     try:
         log_prediction(input, prediction)
     except Exception:
@@ -1306,6 +1329,11 @@ def simulate(request: SimulationRequest) -> Dict[str, Any]:
             model_version=baseline_analysis.get("model_version"),
             dataset_version=(baseline_analysis.get("dataset") or {}).get("version"),
         )
+        logger.info("analysis_runs insert success")
+    except Exception as e:
+        logger.error("analysis_runs insert failed: %s", e)
+
+    try:
         insert_simulation_log(
             analysis_id=baseline_analysis.get("analysis_id"),
             material_name=material_name,
@@ -1313,8 +1341,14 @@ def simulate(request: SimulationRequest) -> Dict[str, Any]:
             modified_score=_stable_float(modified_score),
             delta_score=_stable_float(delta),
             use_case=effective_use_case,
+            modifications_json=dict(request.modifications),
             simulation_output=response_payload,
         )
+        logger.info("simulation_logs insert success")
+    except Exception as e:
+        logger.error("simulation_logs insert failed: %s", e)
+
+    try:
         log_simulation_modification(
             analysis_id=baseline_analysis.get("analysis_id"),
             material_name=material_name,

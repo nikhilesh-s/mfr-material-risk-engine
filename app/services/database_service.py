@@ -225,11 +225,19 @@ class DatabaseService:
         result_rows = (
             self.client.table("analysis_results")
             .select("*")
-            .eq("analysis_run_id", run_row["id"])
-            .order("created_at", desc=True)
+            .eq("analysis_id", analysis_id)
             .limit(1)
             .execute()
         ).data or []
+        if not result_rows:
+            result_rows = (
+                self.client.table("analysis_results")
+                .select("*")
+                .eq("analysis_run_id", run_row["id"])
+                .order("created_at", desc=True)
+                .limit(1)
+                .execute()
+            ).data or []
         custom_rows = (
             self.client.table("custom_materials")
             .select("*")

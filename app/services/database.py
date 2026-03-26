@@ -55,14 +55,13 @@ def generate_analysis_id() -> str:
 def _insert(table: str, payload: dict[str, Any]) -> dict[str, Any] | None:
     db = get_db()
     if db is None:
-        return None
-    try:
-        response = db.table(table).insert(payload).execute()
-        rows = response.data or []
-        return dict(rows[0]) if rows else None
-    except Exception as exc:
-        logger.warning("Supabase insert skipped for %s: %s", table, exc)
-        return None
+        raise RuntimeError("Supabase client is unavailable")
+    response = db.table(table).insert(payload).execute()
+    response_error = getattr(response, "error", None)
+    if response_error:
+        raise RuntimeError(str(response_error))
+    rows = response.data or []
+    return dict(rows[0]) if rows else {}
 
 
 def _confidence_label(value: Any) -> Any:
@@ -85,16 +84,15 @@ def insert_analysis_run(
     timestamp = timestamp or _utcnow()
     primary_payload = {
         "analysis_id": analysis_id,
-        "endpoint": endpoint,
         "material_name": material_name,
         "use_case": use_case,
-        "model_version": model_version,
-        "dataset_version": dataset_version,
         "timestamp": timestamp,
+        "model_version": model_version,
     }
-    inserted = _insert("analysis_runs", primary_payload)
-    if inserted is not None:
-        return inserted
+    try:
+        return _insert("analysis_runs", primary_payload)
+    except Exception:
+        pass
 
     legacy_payload = {
         "analysis_id": analysis_id,
@@ -115,8 +113,8 @@ def insert_analysis_result(
     *,
     analysis_id: str,
     material_name: str,
+    resistance_score: float | None,
     risk_score: float | None,
-    resistance_index: float | None,
     confidence: Any,
     top_driver: str | None,
     dataset_version: str | None,
@@ -126,17 +124,18 @@ def insert_analysis_result(
 ) -> dict[str, Any] | None:
     primary_payload = {
         "analysis_id": analysis_id,
-        "material_name": material_name,
+        "resistance_score": resistance_score,
         "risk_score": risk_score,
-        "resistance_index": resistance_index,
         "confidence": _confidence_label(confidence),
-        "top_driver": top_driver,
+        "drivers_json": {"top_driver": top_driver},
+        "prediction_json": prediction_output or {},
         "dataset_version": dataset_version,
         "model_version": model_version,
     }
-    inserted = _insert("analysis_results", primary_payload)
-    if inserted is not None:
-        return inserted
+    try:
+        return _insert("analysis_results", primary_payload)
+    except Exception:
+        pass
 
     legacy_payload = {
         "analysis_run_id": analysis_run_id,
@@ -160,6 +159,7 @@ def insert_custom_material(
     primary_payload = {
         "analysis_id": analysis_id,
         "material_name": material_name,
+        "input_properties_json": features,
         "density": features.get("Density_g_cc"),
         "melting_point": features.get("Melting_Point_C"),
         "specific_heat": features.get("Specific_Heat_J_g_C"),
@@ -178,9 +178,10 @@ def insert_custom_material(
         "confidence": confidence,
         "created_at": _utcnow(),
     }
-    inserted = _insert("custom_materials", primary_payload)
-    if inserted is not None:
-        return inserted
+    try:
+        return _insert("custom_materials", primary_payload)
+    except Exception:
+        pass
 
     legacy_payload = {
         "analysis_id": analysis_id,
@@ -202,20 +203,24 @@ def insert_simulation_log(
     modified_score: float | None,
     delta_score: float | None,
     use_case: str | None,
+    modifications_json: dict[str, Any] | None = None,
     simulation_output: dict[str, Any] | None = None,
 ) -> dict[str, Any] | None:
     primary_payload = {
         "analysis_id": analysis_id,
-        "material_name": material_name,
         "baseline_score": baseline_score,
         "modified_score": modified_score,
+        "delta": {"delta_score": delta_score},
         "delta_score": delta_score,
+        "modifications_json": modifications_json or {},
+        "material_name": material_name,
         "use_case": use_case,
         "created_at": _utcnow(),
     }
-    inserted = _insert("simulation_logs", primary_payload)
-    if inserted is not None:
-        return inserted
+    try:
+        return _insert("simulation_logs", primary_payload)
+    except Exception:
+        pass
 
     legacy_payload = {
         "analysis_id": analysis_id,
