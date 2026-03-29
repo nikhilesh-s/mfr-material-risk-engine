@@ -4,19 +4,23 @@
 
 :root {
   color-scheme: light;
-  --dravix-gradient-primary: linear-gradient(90deg, #FFDC6A 0%, #FF8D7C 100%);
-  --dravix-gradient-accent: linear-gradient(135deg, #232422 0%, #24262E 100%);
-  --dravix-bg-app: #F5F1EC;
-  --dravix-bg-surface: #FEFEFE;
-  --dravix-bg-panel: #F5F1EC;
-  --dravix-bg-surface-warm: #D0C7B5;
-  --dravix-text: #232422;
-  --dravix-text-muted: rgba(35, 36, 34, 0.6);
-  --dravix-border: rgba(35, 36, 34, 0.12);
-  --dravix-accent-yellow: #FFDC6A;
-  --dravix-accent-coral: #FF8D7C;
-  --dravix-dark: #232422;
-  --dravix-dark-secondary: #24262E;
+  --dravix-gradient-primary: linear-gradient(90deg, #784F74 0%, #E8967F 100%);
+  --dravix-gradient-accent: linear-gradient(135deg, #20181A 0%, #762123 56%, #9E2A2A 100%);
+  --dravix-bg-app: #F8F8F8;
+  --dravix-bg-surface: #FFFFFF;
+  --dravix-bg-panel: #F4F2F0;
+  --dravix-bg-surface-warm: #F0F0F0;
+  --dravix-text: #762123;
+  --dravix-text-muted: rgba(118, 33, 35, 0.68);
+  --dravix-border: rgba(118, 33, 35, 0.12);
+  --dravix-accent-yellow: #E8967F;
+  --dravix-accent-coral: #E8967F;
+  --dravix-dark: #20181A;
+  --dravix-dark-secondary: #762123;
+  --dravix-ink: #762123;
+  --dravix-ink-soft: rgba(118, 33, 35, 0.68);
+  --dravix-panel: #F4F2F0;
+  --dravix-shadow-soft: 0 18px 60px rgba(118, 33, 35, 0.08);
   --dravix-font-sans: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
   --dravix-font-mono: "SFMono-Regular", "SF Mono", "Menlo", "Consolas", monospace;
   font-family: var(--dravix-font-sans);
@@ -24,33 +28,34 @@
   color: var(--dravix-text);
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   min-width: 320px;
   background:
-    radial-gradient(circle at top, rgba(255, 220, 106, 0.3), transparent 24%),
-    radial-gradient(circle at 85% 15%, rgba(255, 141, 124, 0.18), transparent 20%),
-    linear-gradient(180deg, #f5f1ec 0%, #ece5db 100%);
+    radial-gradient(circle at top, rgba(232, 150, 127, 0.16), transparent 26%),
+    radial-gradient(circle at 88% 14%, rgba(120, 79, 116, 0.14), transparent 22%),
+    linear-gradient(180deg, #f8f8f8 0%, #f2efee 100%);
 }
 
 #root {
   min-height: 100vh;
 }
 
-* {
-  box-sizing: border-box;
-}
-
 .dravix-shell {
   background:
-    radial-gradient(circle at top right, rgba(255, 220, 106, 0.16), transparent 18%),
+    radial-gradient(circle at top right, rgba(232, 150, 127, 0.14), transparent 18%),
     linear-gradient(180deg, rgba(254, 254, 254, 0.7) 0%, rgba(254, 254, 254, 0.48) 100%);
+  box-shadow: var(--dravix-shadow-soft);
 }
 
 .dravix-hero {
   background:
-    radial-gradient(circle at 0% 0%, rgba(255, 220, 106, 0.18), transparent 28%),
-    radial-gradient(circle at 100% 100%, rgba(255, 141, 124, 0.14), transparent 26%),
+    radial-gradient(circle at 0% 0%, rgba(232, 150, 127, 0.18), transparent 28%),
+    radial-gradient(circle at 100% 100%, rgba(120, 79, 116, 0.16), transparent 26%),
     var(--dravix-gradient-accent);
 }
 
@@ -66,9 +71,16 @@ body {
 
 .dravix-button-primary {
   background: var(--dravix-gradient-primary);
-  color: var(--dravix-text);
+  color: white;
 }
 
 .dravix-mono {
   font-family: var(--dravix-font-mono);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
