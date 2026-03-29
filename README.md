@@ -150,6 +150,12 @@ Override the target base URL if needed:
 DRAVIX_BASE_URL=http://127.0.0.1:8000 python scripts/test_platform_endpoints.py
 ```
 
+## UI Design Ingestion System
+
+Dravix stores UI snapshots in dated ingestion folders under `design_ingestion/` so design packages can be versioned, reviewed, and reused without disrupting backend development or deployment stability.
+
+Each ingestion snapshot preserves raw source files, reusable stripped components, and design tokens before any frontend integration work begins.
+
 ## Roadmap
 
 - Phase 2 - Engineering Prototype (current release baseline)
