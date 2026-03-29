@@ -20,14 +20,28 @@ def _fallback_advisor_response(prediction: dict[str, Any], reason: str) -> dict[
     recommended_tests = prediction.get("recommended_tests", [])
     dominant_driver_names = [str(item.get("feature")) for item in top_drivers[:3] if item.get("feature")]
     sensitive_properties = [str(item.get("property")) for item in sensitivity_summary[:3] if item.get("property")]
+    property_targets = {
+        str(item.get("property")): str(item.get("suggested_range"))
+        for item in prediction.get("optimization_targets", [])
+        if item.get("property") and item.get("suggested_range")
+    }
 
     return {
         "advisor_summary": (
             f"Advisor fallback generated without OpenAI because {reason}. "
             f"Use the stored Dravix analysis outputs for review."
         ),
+        "design_tradeoffs": [
+            (
+                f"Balance changes in {', '.join(dominant_driver_names[:2])} "
+                "against manufacturability and thermal stability."
+            )
+            if dominant_driver_names
+            else "Balance combustion-energy reduction against manufacturability and thermal stability."
+        ],
         "design_improvement_suggestions": counterfactuals,
         "recommended_tests": recommended_tests,
+        "property_targets": property_targets,
         "risk_mitigation_strategies": [
             f"Review dominant drivers: {', '.join(dominant_driver_names)}." if dominant_driver_names else "Review top fire-risk drivers.",
             f"Validate the most sensitive properties: {', '.join(sensitive_properties)}." if sensitive_properties else "Validate the most sensitive properties experimentally.",
@@ -46,6 +60,11 @@ def build_advisor_response(analysis_id: str) -> dict[str, Any]:
         raise KeyError(f"Analysis not found: {analysis_id}")
 
     prediction = (stored.get("result") or {}).get("prediction_json") or {}
+    property_summary = (
+        (stored.get("custom_material") or {}).get("descriptor_payload")
+        or (stored.get("analysis") or {}).get("additional_properties")
+        or {}
+    )
     if not OPENAI_API_KEY:
         logger.info("[DRAVIX] Advisor fallback mode")
         return _fallback_advisor_response(prediction, "OPENAI_API_KEY is not configured")
@@ -60,17 +79,20 @@ def build_advisor_response(analysis_id: str) -> dict[str, Any]:
         "material_name": prediction.get("material_name"),
         "DFRS": prediction.get("DFRS"),
         "confidence": prediction.get("confidence"),
-        "drivers": prediction.get("top_drivers", []),
+        "top_drivers": prediction.get("top_drivers", []),
         "subscores": prediction.get("subscores", {}),
         "sensitivity_summary": prediction.get("sensitivity_summary", []),
-        "counterfactual_suggestions": prediction.get("counterfactual_suggestions", []),
+        "design_suggestions": prediction.get("counterfactual_suggestions", []),
         "recommended_tests": prediction.get("recommended_tests", []),
+        "property_summary": property_summary,
         "analysis_explanation": prediction.get("explanation"),
     }
     system_prompt = (
         "You are the Dravix materials advisor. Return strict JSON with keys "
-        "advisor_summary, design_improvement_suggestions, recommended_tests, "
-        "risk_mitigation_strategies, material_family_recommendations. "
+        "advisor_summary, design_tradeoffs, design_improvement_suggestions, recommended_tests, "
+        "property_targets, risk_mitigation_strategies, material_family_recommendations. "
+        "Cover design tradeoffs, fire resistance improvement strategy, property targets, "
+        "and validation experiments. "
         "Do not include markdown."
     )
     user_prompt = (
@@ -99,8 +121,10 @@ def build_advisor_response(analysis_id: str) -> dict[str, Any]:
 
     return {
         "advisor_summary": parsed.get("advisor_summary", ""),
+        "design_tradeoffs": list(parsed.get("design_tradeoffs", [])),
         "design_improvement_suggestions": list(parsed.get("design_improvement_suggestions", [])),
         "recommended_tests": list(parsed.get("recommended_tests", prediction.get("recommended_tests", []))),
+        "property_targets": dict(parsed.get("property_targets", {})),
         "risk_mitigation_strategies": list(parsed.get("risk_mitigation_strategies", [])),
         "material_family_recommendations": list(parsed.get("material_family_recommendations", [])),
     }
@@ -112,6 +136,11 @@ def build_advisor_chat_response(analysis_id: str, user_question: str) -> dict[st
         raise KeyError(f"Analysis not found: {analysis_id}")
 
     prediction = (stored.get("result") or {}).get("prediction_json") or {}
+    property_summary = (
+        (stored.get("custom_material") or {}).get("descriptor_payload")
+        or (stored.get("analysis") or {}).get("additional_properties")
+        or {}
+    )
     if not OPENAI_API_KEY:
         logger.info("[DRAVIX] Advisor fallback mode")
         return {
@@ -124,8 +153,10 @@ def build_advisor_chat_response(analysis_id: str, user_question: str) -> dict[st
             ),
             "grounded_sources": [
                 "prediction_json.top_drivers",
+                "prediction_json.subscores",
                 "prediction_json.sensitivity_summary",
                 "prediction_json.recommended_tests",
+                "analysis.property_summary",
             ],
         }
 
@@ -141,7 +172,8 @@ def build_advisor_chat_response(analysis_id: str, user_question: str) -> dict[st
                     "role": "system",
                     "content": (
                         "You are the Dravix advisor. Answer using only the supplied analysis context. "
-                        "Be concise and grounded."
+                        "Be concise and grounded. When helpful, discuss design tradeoffs, fire resistance "
+                        "improvement strategy, property targets, and validation experiments."
                     ),
                 },
                 {
@@ -151,6 +183,7 @@ def build_advisor_chat_response(analysis_id: str, user_question: str) -> dict[st
                             "analysis_id": analysis_id,
                             "question": user_question,
                             "analysis_context": prediction,
+                            "property_summary": property_summary,
                         },
                         default=str,
                     ),

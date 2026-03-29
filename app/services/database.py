@@ -130,6 +130,7 @@ def insert_custom_material(
     features: dict[str, Any],
     resistance_score: float | None = None,
     confidence: float | None = None,
+    descriptor_hash: str | None = None,
 ) -> dict[str, Any] | None:
     primary_payload = {
         "analysis_id": analysis_id,
@@ -139,6 +140,7 @@ def insert_custom_material(
             "_meta": {
                 "resistance_score": resistance_score,
                 "confidence": confidence,
+                "descriptor_hash": descriptor_hash,
             },
         },
         "created_at": _utcnow(),

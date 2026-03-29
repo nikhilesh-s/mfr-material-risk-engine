@@ -15,13 +15,18 @@ def generate_tds(analysis_id: str) -> dict[str, Any]:
 
     result_row = stored.get("result") or {}
     prediction = result_row.get("prediction_json") or {}
+    property_summary = (
+        (stored.get("custom_material") or {}).get("descriptor_payload")
+        or ((stored.get("analysis") or {}).get("additional_properties"))
+        or {}
+    )
     return {
         "analysis_id": analysis_id,
         "material_name": prediction.get("material_name", stored["analysis"].get("material_name")),
         "predicted_fire_resistance": prediction.get("DFRS", prediction.get("effectiveResistance")),
         "resistance_score": prediction.get("DFRS", prediction.get("effectiveResistance")),
         "risk_score": prediction.get("risk_score"),
-        "property_summary": ((stored.get("analysis") or {}).get("additional_properties")) or {},
+        "property_summary": property_summary,
         "confidence": prediction.get("confidence"),
         "coating_compatibility": prediction.get("coating_analysis"),
         "top_drivers": prediction.get("top_drivers", []),

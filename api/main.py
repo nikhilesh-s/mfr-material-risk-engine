@@ -36,6 +36,7 @@ from app.core.config import SUPABASE_URL
 from app.services.coating_analysis_service import analyze_coating_effect
 from app.services.counterfactual_engine import suggest_counterfactuals
 from app.services.comparison_engine import compare_materials
+from app.services.analysis_cache import get_or_create_analysis
 from app.services.database import (
     insert_analysis_result,
     insert_analysis_run,
@@ -46,6 +47,7 @@ from app.services.database import (
 from app.services.database_service import initialize_database_service
 from app.services.dataset_learning_service import log_simulation_modification
 from app.services.experiment_recommender import recommend_experiments
+from app.services.optimization import optimize_material_properties
 from app.services.scoring_engine import compute_subscores
 from app.services.sensitivity_engine import (
     compute_property_response_curves,
@@ -1016,7 +1018,13 @@ def login(credentials: LoginInput) -> Dict[str, str]:
 
 @app.post("/predict", response_model=Phase3PredictResponse, tags=["analysis"])
 def predict(input: Phase3Input) -> Dict[str, Any]:
-    prediction = _predict_response_payload(input)
+    prediction, cache_hit, descriptor_hash = get_or_create_analysis(
+        input,
+        compute_fn=_predict_response_payload,
+    )
+    if cache_hit:
+        return prediction
+
     analysis_row = None
     logging_failed = False
     analysis_id = str(prediction.get("analysis_id"))
@@ -1072,6 +1080,7 @@ def predict(input: Phase3Input) -> Dict[str, Any]:
                 features=input_payload,
                 resistance_score=prediction.get("DFRS"),
                 confidence=confidence_score,
+                descriptor_hash=descriptor_hash,
             )
             logger.info("custom_materials insert success")
         except Exception as e:
@@ -1085,6 +1094,16 @@ def predict(input: Phase3Input) -> Dict[str, Any]:
     except Exception:
         logger.exception("Prediction logging failed.")
     return prediction
+
+
+@app.post("/optimize", tags=["analysis"])
+def optimize(input: Phase3Input) -> Dict[str, Any]:
+    """Estimate descriptor target ranges that improve the composite fire-resistance score."""
+    payload_data = _resolve_phase3_payload(input)
+    return optimize_material_properties(
+        payload_data,
+        predict_fn=_predict_composite_dfrs,
+    )
 
 
 @app.post("/rank", response_model=RankResponse, tags=["analysis"])

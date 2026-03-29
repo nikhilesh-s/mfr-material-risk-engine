@@ -205,6 +205,80 @@ curl -X POST https://mfr-material-risk-engine.onrender.com/predict \
   }'
 ```
 
+## Clusters Test
+
+`/clusters` is a GET endpoint. The default cluster count is 6.
+
+```bash
+curl "https://mfr-material-risk-engine.onrender.com/clusters"
+```
+
+Optional custom cluster count:
+
+```bash
+curl "https://mfr-material-risk-engine.onrender.com/clusters?n_clusters=6"
+```
+
+## Dataset Search Test
+
+`/dataset/search` is a GET endpoint with optional filters.
+
+```bash
+curl "https://mfr-material-risk-engine.onrender.com/dataset/search?material_name=ABS"
+```
+
+```bash
+curl "https://mfr-material-risk-engine.onrender.com/dataset/search?density_min=1.0&density_max=1.5&melting_point_min=150"
+```
+
+## Optimize Test
+
+`/optimize` accepts the same payload shape as `/predict`.
+
+```json
+{
+  "material_name": "ABS (FR Grade)"
+}
+```
+
+```bash
+curl -X POST https://mfr-material-risk-engine.onrender.com/optimize \
+  -H "Content-Type: application/json" \
+  -d '{
+    "material_name": "ABS (FR Grade)"
+  }'
+```
+
+Custom optimize example:
+
+```json
+{
+  "material_name": "Custom Flame Polymer B",
+  "density": 1.18,
+  "melting_point": 215,
+  "specific_heat": 1.42,
+  "thermal_conductivity": 0.24,
+  "cte": 81,
+  "flash_point": 335,
+  "autoignition_temp": 455,
+  "ul94_flammability": 1,
+  "limiting_oxygen_index": 27,
+  "smoke_density": 102,
+  "char_yield": 21,
+  "decomposition_temp": 325,
+  "heat_of_combustion": 26,
+  "flame_spread_index": 29
+}
+```
+
+## TDS PDF Test
+
+Use an `analysis_id` returned from `/predict`.
+
+```bash
+curl -L "https://mfr-material-risk-engine.onrender.com/tds/DRX-20260328-1234/pdf" -o dravix_tds.pdf
+```
+
 ## Contract Notes
 
 - Inconsistency: `/predict` accepts `Phase3Input` directly, while `/simulate` wraps the same type inside `base_material`, and `/rank` wraps a list of the same type inside `materials`.
