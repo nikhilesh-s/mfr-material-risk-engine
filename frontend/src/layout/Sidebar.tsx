@@ -1,17 +1,10 @@
 import type { ComponentType } from 'react';
 import {
   Bot,
-  Boxes,
-  FlaskConical,
-  FileText,
-  LayoutDashboard,
-  Layers3,
   Microscope,
   Rocket,
-  Radar,
   ScanSearch,
   ShieldCheck,
-  SlidersHorizontal,
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import logoSrc from '../assets/chemistry-svgrepo-com.svg';
@@ -23,17 +16,10 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/analysis', label: 'Analysis', icon: ShieldCheck },
-  { to: '/optimization', label: 'Optimization', icon: Radar },
-  { to: '/ranking', label: 'Ranking', icon: Layers3 },
-  { to: '/comparison', label: 'Comparison', icon: Boxes },
-  { to: '/simulation', label: 'Simulation', icon: SlidersHorizontal },
+  { to: '/analyze', label: 'Analyze', icon: ShieldCheck },
+  { to: '/screen', label: 'Screen', icon: ScanSearch },
+  { to: '/advisor', label: 'AI Advisor', icon: Bot },
   { to: '/history', label: 'History', icon: Microscope },
-  { to: '/coatings', label: 'Coatings', icon: FlaskConical },
-  { to: '/dataset', label: 'Dataset', icon: ScanSearch },
-  { to: '/advisor', label: 'Advisor', icon: Bot },
-  { to: '/reports', label: 'Reports', icon: FileText },
 ];
 
 function Sidebar() {

@@ -3,17 +3,10 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import SiteLockGate from './components/SiteLockGate';
 import Sidebar from './layout/Sidebar';
 import TopNav from './layout/TopNav';
-import AnalysisPage from './pages/AnalysisPage';
+import AnalyzePage from './pages/AnalyzePage';
 import AdvisorPage from './pages/AdvisorPage';
-import CoatingsPage from './pages/CoatingsPage';
-import ComparisonPage from './pages/ComparisonPage';
-import DashboardPage from './pages/DashboardPage';
-import DatasetPage from './pages/DatasetPage';
 import HistoryPage from './pages/HistoryPage';
-import OptimizationPage from './pages/OptimizationPage';
-import RankingPage from './pages/RankingPage';
-import ReportsPage from './pages/ReportsPage';
-import SimulationPage from './pages/SimulationPage';
+import ScreenPage from './pages/ScreenPage';
 
 const ACCESS_KEY = 'dravix-site-unlocked-v0.3.2';
 
@@ -47,19 +40,12 @@ function App() {
         <main className="dravix-shell min-w-0 flex-1 rounded-[2rem] border border-[#762123]/10 p-4 md:p-6">
           <TopNav onLock={lockSite} />
           <Routes>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/analysis" element={<AnalysisPage />} />
-            <Route path="/optimization" element={<OptimizationPage />} />
-            <Route path="/ranking" element={<RankingPage />} />
-            <Route path="/comparison" element={<ComparisonPage />} />
-            <Route path="/simulation" element={<SimulationPage />} />
+            <Route path="/" element={<Navigate to="/analyze" replace />} />
+            <Route path="/analyze" element={<AnalyzePage />} />
+            <Route path="/screen" element={<ScreenPage />} />
             <Route path="/history" element={<HistoryPage />} />
-            <Route path="/coatings" element={<CoatingsPage />} />
-            <Route path="/dataset" element={<DatasetPage />} />
             <Route path="/advisor" element={<AdvisorPage />} />
-            <Route path="/reports" element={<ReportsPage />} />
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/analyze" replace />} />
           </Routes>
         </main>
       </div>
