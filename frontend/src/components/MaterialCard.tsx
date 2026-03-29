@@ -8,8 +8,8 @@ type Props = {
 
 function MaterialCard({ title, subtitle, children }: Props) {
   return (
-    <div className="rounded-[1.5rem] border border-[var(--dravix-border)] bg-white p-5 shadow-[var(--dravix-shadow-soft)]">
-      <h3 className="text-lg font-light text-[var(--dravix-ink)]">{title}</h3>
+    <div className="dravix-card rounded-[1.75rem] p-5 md:p-6">
+      <h3 className="text-xl font-light text-[var(--dravix-ink)]">{title}</h3>
       {subtitle ? <p className="mt-1 text-sm text-[var(--dravix-ink-soft)]">{subtitle}</p> : null}
       {children ? <div className="mt-4">{children}</div> : null}
     </div>

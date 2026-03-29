@@ -14,14 +14,14 @@ function ClusterScatterPlot({ clusters }: Props) {
   }));
 
   return (
-    <div className="rounded-[1.5rem] border border-[var(--dravix-border)] bg-white p-4 shadow-[var(--dravix-shadow-soft)]">
+    <div className="dravix-card rounded-[1.75rem] p-4">
       <div className="mb-4 text-lg font-light text-[var(--dravix-ink)]">Cluster scatter</div>
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <ScatterChart>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(118,33,35,0.1)" />
-            <XAxis dataKey="x" name="Density" />
-            <YAxis dataKey="y" name="Melting point" />
+            <CartesianGrid strokeDasharray="3 3" stroke="rgba(118,33,35,0.08)" />
+            <XAxis dataKey="x" name="Density" tick={{ fill: '#762123', fontSize: 12 }} />
+            <YAxis dataKey="y" name="Melting point" tick={{ fill: '#762123', fontSize: 12 }} />
             <Tooltip cursor={{ strokeDasharray: '3 3' }} />
             <Legend />
             <Scatter data={data} fill="#E8967F" name="Clusters" />

@@ -24,17 +24,17 @@ function CoatingsPage() {
   };
 
   return (
-    <PageContainer eyebrow="Coatings" title="Coating-material performance analysis" description="Evaluate base-material and coating combinations through the active backend coating-adjustment path.">
+    <PageContainer eyebrow="Coatings" title="Coating compatibility check" description="Evaluate a base material with a coating inside the same clean Dravix analysis language used elsewhere in the app.">
       <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
         <MaterialCard title="Material + coating">
           <div className="grid gap-4">
-            <select value={materialName} onChange={(e) => setMaterialName(e.target.value)} className="rounded-2xl border border-[var(--dravix-border)] bg-[var(--dravix-panel)] px-4 py-3 text-sm">
+            <select value={materialName} onChange={(e) => setMaterialName(e.target.value)} className="rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm">
               {materials.map((item) => <option key={item} value={item}>{item}</option>)}
             </select>
-            <select value={coatingCode} onChange={(e) => setCoatingCode(e.target.value)} className="rounded-2xl border border-[var(--dravix-border)] bg-[var(--dravix-panel)] px-4 py-3 text-sm">
+            <select value={coatingCode} onChange={(e) => setCoatingCode(e.target.value)} className="rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm">
               {coatings.map((item) => <option key={item} value={item}>{item}</option>)}
             </select>
-            <button onClick={run} className="rounded-full bg-[var(--dravix-gradient-primary)] px-4 py-2 text-sm text-white">Analyze coating</button>
+            <button onClick={run} className="rounded-full bg-gradient-to-r from-[#784F74] to-[#E8967F] px-4 py-2 text-sm text-white">Analyze coating</button>
           </div>
         </MaterialCard>
         <MaterialCard title="Coating result" subtitle={result?.coating_compatibility_summary ?? 'Run coating analysis to populate this panel.'}>

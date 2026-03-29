@@ -34,7 +34,7 @@ function OptimizationPage() {
   };
 
   return (
-    <PageContainer eyebrow="Optimization" title="Property optimization lab" description="Estimate descriptor target ranges that improve the composite Dravix fire-resistance score.">
+    <PageContainer eyebrow="Optimization Lab" title="Descriptor target explorer" description="Estimate property shifts that move a material toward stronger fire resistance without changing the deterministic backend logic.">
       <div className="grid gap-6 xl:grid-cols-[1.1fr_1fr]">
         <MaterialInputForm mode={mode} setMode={setMode} materials={materials} form={form} onChange={setForm} onSubmit={runOptimization} submitLabel="Estimate optimization" loading={loading} />
         <MaterialCard title="Optimization output" subtitle="Deterministic local search using lightweight descriptor perturbations.">

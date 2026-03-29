@@ -59,31 +59,31 @@ function MaterialInputForm({ mode, setMode, materials, coatings = [], form, onCh
   };
 
   return (
-    <form onSubmit={submit} className="rounded-[1.5rem] border border-[var(--dravix-border)] bg-white p-6 shadow-[var(--dravix-shadow-soft)]">
+    <form onSubmit={submit} className="dravix-card rounded-[1.75rem] p-6">
       <div className="flex flex-wrap gap-3">
-        <button type="button" onClick={() => setMode('lookup')} className={`rounded-full px-4 py-2 text-sm ${mode === 'lookup' ? 'bg-[var(--dravix-gradient-primary)] text-white' : 'bg-[var(--dravix-panel)] text-[var(--dravix-ink)]'}`}>Material lookup</button>
-        <button type="button" onClick={() => setMode('custom')} className={`rounded-full px-4 py-2 text-sm ${mode === 'custom' ? 'bg-[var(--dravix-gradient-primary)] text-white' : 'bg-[var(--dravix-panel)] text-[var(--dravix-ink)]'}`}>Custom descriptors</button>
+        <button type="button" onClick={() => setMode('lookup')} className={`rounded-full px-4 py-2 text-sm ${mode === 'lookup' ? 'bg-gradient-to-r from-[#784F74] to-[#E8967F] text-white' : 'bg-[#f8f8f8] text-[var(--dravix-ink)]'}`}>Material lookup</button>
+        <button type="button" onClick={() => setMode('custom')} className={`rounded-full px-4 py-2 text-sm ${mode === 'custom' ? 'bg-gradient-to-r from-[#784F74] to-[#E8967F] text-white' : 'bg-[#f8f8f8] text-[var(--dravix-ink)]'}`}>Custom descriptors</button>
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
         {exampleMaterialNames.map((name) => (
-          <button key={name} type="button" onClick={() => { setMode('lookup'); onChange({ ...form, material_name: name }); }} className="rounded-full border border-[var(--dravix-border)] px-3 py-1 text-xs text-[var(--dravix-ink)]">
+          <button key={name} type="button" onClick={() => { setMode('lookup'); onChange({ ...form, material_name: name }); }} className="rounded-full border border-[var(--dravix-border)] bg-white px-3 py-1 text-xs text-[var(--dravix-ink)]">
             {name}
           </button>
         ))}
-        <button type="button" onClick={() => { setMode('custom'); onChange(exampleManualMaterial); }} className="rounded-full border border-[var(--dravix-border)] px-3 py-1 text-xs text-[var(--dravix-ink)]">
+        <button type="button" onClick={() => { setMode('custom'); onChange(exampleManualMaterial); }} className="rounded-full border border-[var(--dravix-border)] bg-white px-3 py-1 text-xs text-[var(--dravix-ink)]">
           Demo custom
         </button>
       </div>
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <div>
           <label className="mb-2 block text-sm text-[var(--dravix-ink-soft)]">Use case</label>
-          <select value={form.use_case} onChange={(e) => setField('use_case', e.target.value)} className="w-full rounded-2xl border border-[var(--dravix-border)] bg-[var(--dravix-panel)] px-4 py-3 text-sm">
+          <select value={form.use_case} onChange={(e) => setField('use_case', e.target.value)} className="w-full rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm">
             {useCases.map((useCase) => <option key={useCase} value={useCase}>{useCase}</option>)}
           </select>
         </div>
         <div>
           <label className="mb-2 block text-sm text-[var(--dravix-ink-soft)]">Coating</label>
-          <select value={form.coating_code} onChange={(e) => setField('coating_code', e.target.value)} className="w-full rounded-2xl border border-[var(--dravix-border)] bg-[var(--dravix-panel)] px-4 py-3 text-sm">
+          <select value={form.coating_code} onChange={(e) => setField('coating_code', e.target.value)} className="w-full rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm">
             <option value="">None</option>
             {coatings.map((coating) => <option key={coating} value={coating}>{coating}</option>)}
           </select>
@@ -92,9 +92,9 @@ function MaterialInputForm({ mode, setMode, materials, coatings = [], form, onCh
       <div className="mt-4">
         <label className="mb-2 block text-sm text-[var(--dravix-ink-soft)]">Material name</label>
         {mode === 'lookup' ? (
-          <input list="material-options" value={form.material_name} onChange={(e) => setField('material_name', e.target.value)} className="w-full rounded-2xl border border-[var(--dravix-border)] bg-[var(--dravix-panel)] px-4 py-3 text-sm" placeholder="ABS (FR Grade)" />
+          <input list="material-options" value={form.material_name} onChange={(e) => setField('material_name', e.target.value)} className="w-full rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm" placeholder="ABS (FR Grade)" />
         ) : (
-          <input value={form.material_name} onChange={(e) => setField('material_name', e.target.value)} className="w-full rounded-2xl border border-[var(--dravix-border)] bg-[var(--dravix-panel)] px-4 py-3 text-sm" placeholder="Custom Flame Polymer A" />
+          <input value={form.material_name} onChange={(e) => setField('material_name', e.target.value)} className="w-full rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm" placeholder="Custom Flame Polymer A" />
         )}
         <datalist id="material-options">
           {materials.map((material) => <option key={material} value={material} />)}
@@ -105,12 +105,12 @@ function MaterialInputForm({ mode, setMode, materials, coatings = [], form, onCh
           {descriptorFields.map((field) => (
             <div key={field.key}>
               <label className="mb-2 block text-sm text-[var(--dravix-ink-soft)]">{field.label}</label>
-              <input value={form[field.key]} onChange={(e) => setField(field.key, e.target.value)} className="w-full rounded-2xl border border-[var(--dravix-border)] bg-[var(--dravix-panel)] px-4 py-3 text-sm" placeholder={field.unit || 'value'} />
+              <input value={form[field.key]} onChange={(e) => setField(field.key, e.target.value)} className="w-full rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm" placeholder={field.unit || 'value'} />
             </div>
           ))}
         </div>
       ) : null}
-      <button type="submit" disabled={loading} className="mt-6 rounded-full bg-[var(--dravix-gradient-primary)] px-5 py-3 text-sm text-white disabled:opacity-60">
+      <button type="submit" disabled={loading} className="mt-6 rounded-full bg-gradient-to-r from-[#784F74] to-[#E8967F] px-5 py-3 text-sm text-white disabled:opacity-60">
         {loading ? 'Loading…' : submitLabel}
       </button>
     </form>

@@ -34,7 +34,7 @@ function DashboardPage() {
     <PageContainer
       eyebrow="System"
       title="Deployment visibility dashboard"
-      description="Operational status, model metadata, runtime diagnostics, and database visibility for the live Dravix backend."
+      description="Brand-aligned operations view for runtime health, active model metadata, and database readiness."
     >
       <div className="grid gap-6 xl:grid-cols-3">
         <MaterialCard title="API status">
@@ -76,7 +76,7 @@ function DashboardPage() {
         <MaterialCard title="Feature list">
           <div className="flex flex-wrap gap-2">
             {(metadata?.feature_names ?? []).map((feature) => (
-              <span key={feature} className="rounded-full bg-[var(--dravix-panel)] px-3 py-1 text-xs text-[var(--dravix-ink)]">{feature}</span>
+              <span key={feature} className="rounded-full bg-[#f8f8f8] px-3 py-1 text-xs text-[var(--dravix-ink)]">{feature}</span>
             ))}
           </div>
         </MaterialCard>

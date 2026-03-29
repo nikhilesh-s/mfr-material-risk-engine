@@ -25,16 +25,16 @@ function SimulationPage() {
   };
 
   return (
-    <PageContainer eyebrow="Simulation" title="Sensitivity simulation" description="Change descriptor values and inspect how the fire-risk proxy moves relative to the baseline material.">
+    <PageContainer eyebrow="Simulation Lab" title="Property-response simulation" description="A more scientific interaction pattern for exploring how descriptor shifts affect fire-resistance output.">
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
         <SimulationForm materials={materials} materialName={materialName} setMaterialName={setMaterialName} modifications={modifications} setModifications={setModifications} onSubmit={runSimulation} />
         <MaterialCard title="Simulation result" subtitle={result?.simulation_summary ?? 'Run a simulation to populate this panel.'}>
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-2xl bg-[var(--dravix-panel)] p-4">
+            <div className="rounded-[1.5rem] bg-[#f8f8f8] p-4">
               <div className="text-xs uppercase tracking-[0.2em] text-[var(--dravix-ink-soft)]">Baseline</div>
               <div className="mt-2 text-3xl font-light text-[var(--dravix-ink)]">{result?.baseline.resistanceScore.toFixed(3) ?? 'n/a'}</div>
             </div>
-            <div className="rounded-2xl bg-[var(--dravix-panel)] p-4">
+            <div className="rounded-[1.5rem] bg-[#f8f8f8] p-4">
               <div className="text-xs uppercase tracking-[0.2em] text-[var(--dravix-ink-soft)]">Modified</div>
               <div className="mt-2 text-3xl font-light text-[var(--dravix-ink)]">{result?.modified.resistanceScore.toFixed(3) ?? 'n/a'}</div>
             </div>

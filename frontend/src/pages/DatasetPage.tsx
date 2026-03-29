@@ -43,7 +43,7 @@ function DatasetPage() {
   };
 
   return (
-    <PageContainer eyebrow="Dataset" title="Dataset explorer" description="Search the in-memory dataset, inspect cluster structure, upload CSV data, and review exportable learning records.">
+    <PageContainer eyebrow="Dataset Intelligence" title="Materials dataset explorer" description="Search, cluster, inspect, and prepare materials data inside the same design language as the analysis workflow.">
       <div className="grid gap-6 xl:grid-cols-[1.05fr_1fr]">
         <DatasetSearchForm state={searchState} onChange={setSearchState} onSubmit={runSearch} />
         <DatasetUploadForm onSubmit={runUpload} />
@@ -51,15 +51,15 @@ function DatasetPage() {
       <div className="grid gap-6 xl:grid-cols-2">
         <ClusterScatterPlot clusters={clusters?.clusters ?? []} />
         <MaterialCard title="Dataset upload status">
-          <pre className="max-h-80 overflow-auto rounded-2xl bg-[var(--dravix-panel)] p-4 text-xs">{JSON.stringify(uploadResult ?? exportData?.counts ?? {}, null, 2)}</pre>
+          <pre className="max-h-80 overflow-auto rounded-[1.25rem] bg-[#f8f8f8] p-4 text-xs">{JSON.stringify(uploadResult ?? exportData?.counts ?? {}, null, 2)}</pre>
         </MaterialCard>
       </div>
       <div className="grid gap-6 xl:grid-cols-2">
         <MaterialCard title={`Dataset search results (${searchResult?.count ?? 0})`}>
-          <pre className="max-h-96 overflow-auto rounded-2xl bg-[var(--dravix-panel)] p-4 text-xs">{JSON.stringify(searchResult?.results?.slice(0, 15) ?? [], null, 2)}</pre>
+          <pre className="max-h-96 overflow-auto rounded-[1.25rem] bg-[#f8f8f8] p-4 text-xs">{JSON.stringify(searchResult?.results?.slice(0, 15) ?? [], null, 2)}</pre>
         </MaterialCard>
         <MaterialCard title="Dataset export">
-          <pre className="max-h-96 overflow-auto rounded-2xl bg-[var(--dravix-panel)] p-4 text-xs">{JSON.stringify(exportData ?? {}, null, 2)}</pre>
+          <pre className="max-h-96 overflow-auto rounded-[1.25rem] bg-[#f8f8f8] p-4 text-xs">{JSON.stringify(exportData ?? {}, null, 2)}</pre>
         </MaterialCard>
       </div>
     </PageContainer>

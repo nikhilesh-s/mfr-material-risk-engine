@@ -30,12 +30,12 @@ function HistoryPage() {
   }, [selectedId]);
 
   return (
-    <PageContainer eyebrow="History" title="Analysis history" description="Review persisted analyses, drill into a selected run, and inspect the stored interactive explanation payload.">
+    <PageContainer eyebrow="History" title="Stored analysis review" description="Open persisted analyses and inspect the stored interpretation payload in a cleaner research-audit layout.">
       <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
         <MaterialCard title="Recent analyses">
           <div className="space-y-3">
             {recent.map((item) => (
-              <button key={item.analysis_id} onClick={() => setSelectedId(item.analysis_id)} className={`flex w-full items-center justify-between rounded-2xl border px-4 py-3 text-left text-sm ${selectedId === item.analysis_id ? 'border-transparent bg-[var(--dravix-gradient-primary)] text-white' : 'border-[var(--dravix-border)] bg-[var(--dravix-panel)] text-[var(--dravix-ink)]'}`}>
+              <button key={item.analysis_id} onClick={() => setSelectedId(item.analysis_id)} className={`flex w-full items-center justify-between rounded-[1.25rem] border px-4 py-3 text-left text-sm ${selectedId === item.analysis_id ? 'border-transparent bg-gradient-to-r from-[#784F74] to-[#E8967F] text-white' : 'border-[var(--dravix-border)] bg-[#f8f8f8] text-[var(--dravix-ink)]'}`}>
                 <span>{item.material_name}</span>
                 <span>{item.analysis_id}</span>
               </button>
@@ -43,7 +43,7 @@ function HistoryPage() {
           </div>
         </MaterialCard>
         <MaterialCard title="Analysis detail" subtitle={selectedId || 'Select a recent analysis'}>
-          <pre className="max-h-80 overflow-auto rounded-2xl bg-[var(--dravix-panel)] p-4 text-xs">{JSON.stringify(analysis?.prediction_json ?? {}, null, 2)}</pre>
+          <pre className="max-h-80 overflow-auto rounded-[1.25rem] bg-[#f8f8f8] p-4 text-xs">{JSON.stringify(analysis?.prediction_json ?? {}, null, 2)}</pre>
         </MaterialCard>
       </div>
       <div className="grid gap-6 xl:grid-cols-2">

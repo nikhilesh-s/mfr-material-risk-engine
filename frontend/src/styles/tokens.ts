@@ -64,3 +64,18 @@ export const exampleManualMaterial: FormDescriptorState = {
   Heat_of_Combustion_MJ_kg: '27',
   Flame_Spread_Index: '32',
 };
+
+export const heroCopy = {
+  dashboard: {
+    eyebrow: 'Platform',
+    title: 'Dravix research command surface',
+    description:
+      'A cleaner operational layer for materials fire-risk screening, dataset intelligence, and analysis review.',
+  },
+  analysis: {
+    eyebrow: 'Discovery Lab',
+    title: 'Screen a material in one pass',
+    description:
+      'Use material lookup or full descriptor input, then inspect score, confidence, subscores, and drivers in the same workspace.',
+  },
+};

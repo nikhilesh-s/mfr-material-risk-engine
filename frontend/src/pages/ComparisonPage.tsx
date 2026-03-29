@@ -14,14 +14,14 @@ function ComparisonPage() {
     materialsText.split('\n').map((value) => value.trim()).filter(Boolean).map((material_name) => ({ material_name }));
 
   return (
-    <PageContainer eyebrow="Comparison" title="Material comparison engine" description="Compare candidate materials side-by-side and inspect the property spreads that drive tradeoffs.">
+    <PageContainer eyebrow="Comparison" title="Side-by-side material tradeoffs" description="Compare candidate materials with a simpler research review layout focused on spreads, tradeoffs, and best-fit selection.">
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
         <MaterialCard title="Comparison input" subtitle="Provide two or more materials.">
-          <select value={useCase} onChange={(e) => setUseCase(e.target.value)} className="mb-4 w-full rounded-2xl border border-[var(--dravix-border)] bg-[var(--dravix-panel)] px-4 py-3 text-sm">
+          <select value={useCase} onChange={(e) => setUseCase(e.target.value)} className="mb-4 w-full rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm">
             {useCases.map((item) => <option key={item} value={item}>{item}</option>)}
           </select>
-          <textarea value={materialsText} onChange={(e) => setMaterialsText(e.target.value)} rows={8} className="w-full rounded-2xl border border-[var(--dravix-border)] bg-[var(--dravix-panel)] px-4 py-3 text-sm" />
-          <button onClick={() => analysisService.compareMaterials({ materials: payload(), use_case: useCase }).then(setResult)} className="mt-4 rounded-full bg-[var(--dravix-gradient-primary)] px-4 py-2 text-sm text-white">
+          <textarea value={materialsText} onChange={(e) => setMaterialsText(e.target.value)} rows={8} className="w-full rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm" />
+          <button onClick={() => analysisService.compareMaterials({ materials: payload(), use_case: useCase }).then(setResult)} className="mt-4 rounded-full bg-gradient-to-r from-[#784F74] to-[#E8967F] px-4 py-2 text-sm text-white">
             Compare materials
           </button>
         </MaterialCard>
@@ -39,7 +39,7 @@ function ComparisonPage() {
         <MaterialCard title="Side-by-side results">
           <div className="space-y-3">
             {(result?.materials ?? []).map((item) => (
-              <div key={item.material_name} className="rounded-2xl border border-[var(--dravix-border)] p-4">
+              <div key={item.material_name} className="rounded-[1.25rem] border border-[var(--dravix-border)] p-4">
                 <div className="text-lg text-[var(--dravix-ink)]">{item.material_name}</div>
                 <div className="mt-2 text-sm text-[var(--dravix-ink-soft)]">Resistance {item.resistance_score.toFixed(3)} • Risk {item.risk_score.toFixed(1)} • {item.confidence}</div>
               </div>
@@ -49,7 +49,7 @@ function ComparisonPage() {
         <MaterialCard title="Dominant property differences">
           <div className="space-y-3">
             {(result?.dominant_property_differences ?? []).map((item) => (
-              <div key={item.property} className="flex justify-between gap-4 rounded-2xl border border-[var(--dravix-border)] p-4 text-sm">
+              <div key={item.property} className="flex justify-between gap-4 rounded-[1.25rem] border border-[var(--dravix-border)] p-4 text-sm">
                 <span className="text-[var(--dravix-ink)]">{item.property}</span>
                 <span className="text-[var(--dravix-ink-soft)]">spread {item.spread.toFixed(3)}</span>
               </div>

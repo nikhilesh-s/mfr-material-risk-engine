@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Sidebar from './layout/Sidebar';
 import TopNav from './layout/TopNav';
@@ -13,18 +12,13 @@ import OptimizationPage from './pages/OptimizationPage';
 import RankingPage from './pages/RankingPage';
 import ReportsPage from './pages/ReportsPage';
 import SimulationPage from './pages/SimulationPage';
-import { applyDesignSystemToDocument } from './theme/designSystem';
 
 function App() {
-  useEffect(() => {
-    applyDesignSystemToDocument();
-  }, []);
-
   return (
     <div className="min-h-screen bg-[var(--dravix-bg-app)] text-[var(--dravix-ink)]">
-      <div className="mx-auto flex min-h-screen w-full max-w-[1600px] flex-col gap-6 px-4 py-4 lg:flex-row lg:px-6">
+      <div className="mx-auto flex min-h-screen w-full max-w-[1720px] gap-4 px-4 py-4 lg:px-6">
         <Sidebar />
-        <main className="dravix-shell min-w-0 flex-1 rounded-[2.25rem] border border-white/60 p-6 backdrop-blur md:p-8">
+        <main className="dravix-shell min-w-0 flex-1 rounded-[2rem] border border-[#762123]/10 p-4 md:p-6">
           <TopNav />
           <Routes>
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
