@@ -1,4 +1,4 @@
-import { ArrowUpRight, Bell, Search } from 'lucide-react';
+import { ArrowUpRight, Bell, Lock, Search } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 function labelFromPath(pathname: string): string {
@@ -6,7 +6,11 @@ function labelFromPath(pathname: string): string {
   return key.charAt(0).toUpperCase() + key.slice(1);
 }
 
-function TopNav() {
+type Props = {
+  onLock: () => void;
+};
+
+function TopNav({ onLock }: Props) {
   const location = useLocation();
   const label = labelFromPath(location.pathname);
 
@@ -21,6 +25,9 @@ function TopNav() {
           <Search className="h-4 w-4" />
           <span>Fire-risk research interface</span>
         </div>
+        <button onClick={onLock} className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#762123]/10 bg-white text-[#762123]">
+          <Lock className="h-4 w-4" />
+        </button>
         <button className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#762123]/10 bg-white text-[#762123]">
           <Bell className="h-4 w-4" />
         </button>
