@@ -1,4 +1,4 @@
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { RankedMaterial } from '../types/index';
 
 type Props = {
@@ -6,18 +6,37 @@ type Props = {
 };
 
 function LeaderboardChart({ ranking }: Props) {
+  const chartData = ranking.map((item) => ({
+    rank: item.rank,
+    material_name: item.material_name,
+    resistance_index: item.resistance_index,
+  }));
+
   return (
     <div className="dravix-card rounded-[1.75rem] p-4">
       <div className="mb-4 text-lg font-light text-[var(--dravix-ink)]">Ranking leaderboard</div>
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={ranking} layout="vertical" margin={{ left: 20, right: 16 }}>
+          <LineChart data={chartData} margin={{ left: 16, right: 16, top: 8, bottom: 8 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(118,33,35,0.08)" />
-            <XAxis type="number" domain={[0, 100]} tick={{ fill: '#762123', fontSize: 12 }} />
-            <YAxis type="category" dataKey="material_name" width={180} tick={{ fill: '#762123', fontSize: 12 }} />
-            <Tooltip />
-            <Bar dataKey="resistance_index" fill="#784F74" radius={[0, 8, 8, 0]} />
-          </BarChart>
+            <XAxis dataKey="rank" tick={{ fill: '#762123', fontSize: 12 }} />
+            <YAxis domain={[0, 100]} tick={{ fill: '#762123', fontSize: 12 }} />
+            <Tooltip
+              formatter={(value: number) => [value.toFixed(2), 'Resistance index']}
+              labelFormatter={(label) => {
+                const row = chartData.find((item) => item.rank === label);
+                return row ? `#${row.rank} ${row.material_name}` : `#${label}`;
+              }}
+            />
+            <Line
+              type="monotone"
+              dataKey="resistance_index"
+              stroke="#784F74"
+              strokeWidth={3}
+              dot={{ r: 4, fill: '#E8967F', stroke: '#784F74', strokeWidth: 2 }}
+              activeDot={{ r: 6 }}
+            />
+          </LineChart>
         </ResponsiveContainer>
       </div>
     </div>

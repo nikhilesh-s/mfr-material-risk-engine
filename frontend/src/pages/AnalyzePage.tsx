@@ -4,6 +4,7 @@ import SensitivityChart from '../charts/SensitivityChart';
 import FeatureImportanceTable from '../components/FeatureImportanceTable';
 import MaterialCard from '../components/MaterialCard';
 import PredictionResultCard from '../components/PredictionResultCard';
+import SectionBanner from '../components/SectionBanner';
 import MaterialInputForm, { buildPhase3Payload } from '../forms/MaterialInputForm';
 import SimulationForm, { buildSimulationPayload } from '../forms/SimulationForm';
 import PageContainer from '../layout/PageContainer';
@@ -43,14 +44,17 @@ function AnalyzePage() {
   const [simulationMaterialName, setSimulationMaterialName] = useState('ABS (FR Grade)');
   const [modifications, setModifications] = useState<Record<string, string>>({ Limiting_Oxygen_Index_pct: '33' });
   const [simulationResult, setSimulationResult] = useState<SimulationResponse | null>(null);
+  const [simulationLoading, setSimulationLoading] = useState(false);
 
   const [comparisonMaterialsText, setComparisonMaterialsText] = useState(exampleMaterialNames.join('\n'));
   const [comparisonUseCase, setComparisonUseCase] = useState(useCases[0]);
   const [comparisonResult, setComparisonResult] = useState<ComparisonResponse | null>(null);
+  const [comparisonLoading, setComparisonLoading] = useState(false);
 
   const [coatingMaterialName, setCoatingMaterialName] = useState(exampleMaterialNames[0]);
   const [coatingCode, setCoatingCode] = useState('');
   const [coatingResult, setCoatingResult] = useState<CoatingAnalysisResponse | null>(null);
+  const [coatingLoading, setCoatingLoading] = useState(false);
 
   useEffect(() => {
     void Promise.allSettled([datasetService.getMaterials(), datasetService.getCoatings()]).then(([m, c]) => {
@@ -89,10 +93,15 @@ function AnalyzePage() {
   };
 
   const runSimulation = async () => {
-    const next = await analysisService.simulateSensitivity(
-      buildSimulationPayload(simulationMaterialName, modifications),
-    );
-    setSimulationResult(next);
+    setSimulationLoading(true);
+    try {
+      const next = await analysisService.simulateSensitivity(
+        buildSimulationPayload(simulationMaterialName, modifications),
+      );
+      setSimulationResult(next);
+    } finally {
+      setSimulationLoading(false);
+    }
   };
 
   const comparisonPayload = (): Phase3Input[] =>
@@ -103,29 +112,39 @@ function AnalyzePage() {
       .map((material_name) => ({ material_name }));
 
   const runComparison = async () => {
-    setComparisonResult(
-      await analysisService.compareMaterials({
-        materials: comparisonPayload(),
-        use_case: comparisonUseCase,
-      }),
-    );
+    setComparisonLoading(true);
+    try {
+      setComparisonResult(
+        await analysisService.compareMaterials({
+          materials: comparisonPayload(),
+          use_case: comparisonUseCase,
+        }),
+      );
+    } finally {
+      setComparisonLoading(false);
+    }
   };
 
   const runCoatingAnalysis = async () => {
-    setCoatingResult(
-      await datasetService.analyzeCoating({
-        base_material: { material_name: coatingMaterialName },
-        coating_code: coatingCode,
-      }),
-    );
+    setCoatingLoading(true);
+    try {
+      setCoatingResult(
+        await datasetService.analyzeCoating({
+          base_material: { material_name: coatingMaterialName },
+          coating_code: coatingCode,
+        }),
+      );
+    } finally {
+      setCoatingLoading(false);
+    }
   };
 
   return (
     <PageContainer
       eyebrow="Analyze"
-      title="Single-material analysis workspace"
-      description="Single-material prediction, feature importance, simulation, optimization, comparison, and coating checks grouped into one analysis surface."
+      title="Analyze"
     >
+      <SectionBanner title="Single-material screening" subtitle="Predict one material and inspect the core result." />
       <div className="grid gap-6 xl:grid-cols-[1.08fr_0.92fr]">
         <MaterialInputForm
           mode={mode}
@@ -140,11 +159,59 @@ function AnalyzePage() {
         <PredictionResultCard prediction={prediction} />
       </div>
 
+      <SectionBanner title="Coating analysis" subtitle="Check the same material with a coating immediately after screening." />
+      <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+        <MaterialCard title="Coating setup">
+          <div className="grid gap-4">
+            <select
+              value={coatingMaterialName}
+              onChange={(event) => setCoatingMaterialName(event.target.value)}
+              className="rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm"
+            >
+              {exampleMaterialNames.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+            <select
+              value={coatingCode}
+              onChange={(event) => setCoatingCode(event.target.value)}
+              className="rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm"
+            >
+              {coatings.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={runCoatingAnalysis}
+              disabled={coatingLoading}
+              className="rounded-full bg-gradient-to-r from-[#784F74] to-[#E8967F] px-4 py-2 text-sm text-white disabled:opacity-60"
+            >
+              {coatingLoading ? 'Analyzing…' : 'Analyze coating'}
+            </button>
+          </div>
+        </MaterialCard>
+
+        <MaterialCard title="Coating result" subtitle={coatingResult?.coating_compatibility_summary ?? 'Run coating analysis to populate this panel.'}>
+          <div className="grid gap-3 text-sm">
+            <div>Material: {coatingResult?.material_name ?? 'n/a'}</div>
+            <div>Coating: {coatingResult?.coating_code ?? 'n/a'}</div>
+            <div>Modifier: {coatingResult?.coating_modifier ?? 'n/a'}</div>
+            <div>Effective score: {coatingResult?.effective_score ?? 'n/a'}</div>
+          </div>
+        </MaterialCard>
+      </div>
+
+      <SectionBanner title="Driver view" subtitle="Read the strongest variables behind the current prediction." />
       <div className="grid gap-6 xl:grid-cols-2">
         <FeatureImportanceBarChart drivers={prediction?.top_drivers ?? []} />
         <FeatureImportanceTable drivers={prediction?.top_drivers ?? []} />
       </div>
 
+      <SectionBanner title="Sensitivity simulation" subtitle="Perturb a few properties and inspect the delta with proper loading feedback." />
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
         <SimulationForm
           materials={materials}
@@ -153,6 +220,7 @@ function AnalyzePage() {
           modifications={modifications}
           setModifications={setModifications}
           onSubmit={runSimulation}
+          loading={simulationLoading}
         />
         <MaterialCard title="Simulation result" subtitle={simulationResult?.simulation_summary ?? 'Run a simulation to populate this panel.'}>
           <div className="grid gap-4 md:grid-cols-2">
@@ -177,6 +245,7 @@ function AnalyzePage() {
 
       <SensitivityChart curves={prediction?.property_response_curves ?? {}} />
 
+      <SectionBanner title="Optimization" subtitle="Estimate stronger property targets without changing the inference model." />
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <MaterialInputForm
           mode={optimizationMode}
@@ -218,8 +287,9 @@ function AnalyzePage() {
         </MaterialCard>
       </div>
 
+      <SectionBanner title="Comparison" subtitle="Place a small candidate set side by side in the same analysis tab." />
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
-        <MaterialCard title="Comparison input" subtitle="Provide two or more materials for a side-by-side tradeoff review.">
+        <MaterialCard title="Comparison input">
           <select
             value={comparisonUseCase}
             onChange={(event) => setComparisonUseCase(event.target.value)}
@@ -237,8 +307,12 @@ function AnalyzePage() {
             rows={8}
             className="w-full rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm"
           />
-          <button onClick={runComparison} className="mt-4 rounded-full bg-gradient-to-r from-[#784F74] to-[#E8967F] px-4 py-2 text-sm text-white">
-            Compare materials
+          <button
+            onClick={runComparison}
+            disabled={comparisonLoading}
+            className="mt-4 rounded-full bg-gradient-to-r from-[#784F74] to-[#E8967F] px-4 py-2 text-sm text-white disabled:opacity-60"
+          >
+            {comparisonLoading ? 'Comparing…' : 'Compare materials'}
           </button>
         </MaterialCard>
 
@@ -253,47 +327,6 @@ function AnalyzePage() {
                 <li key={item}>• {item}</li>
               ))}
             </ul>
-          </div>
-        </MaterialCard>
-      </div>
-
-      <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
-        <MaterialCard title="Coating analysis" subtitle="Evaluate a base material and coating combination.">
-          <div className="grid gap-4">
-            <select
-              value={coatingMaterialName}
-              onChange={(event) => setCoatingMaterialName(event.target.value)}
-              className="rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm"
-            >
-              {exampleMaterialNames.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-            <select
-              value={coatingCode}
-              onChange={(event) => setCoatingCode(event.target.value)}
-              className="rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm"
-            >
-              {coatings.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-            <button onClick={runCoatingAnalysis} className="rounded-full bg-gradient-to-r from-[#784F74] to-[#E8967F] px-4 py-2 text-sm text-white">
-              Analyze coating
-            </button>
-          </div>
-        </MaterialCard>
-
-        <MaterialCard title="Coating result" subtitle={coatingResult?.coating_compatibility_summary ?? 'Run coating analysis to populate this panel.'}>
-          <div className="grid gap-3 text-sm">
-            <div>Material: {coatingResult?.material_name ?? 'n/a'}</div>
-            <div>Coating: {coatingResult?.coating_code ?? 'n/a'}</div>
-            <div>Modifier: {coatingResult?.coating_modifier ?? 'n/a'}</div>
-            <div>Effective score: {coatingResult?.effective_score ?? 'n/a'}</div>
           </div>
         </MaterialCard>
       </div>

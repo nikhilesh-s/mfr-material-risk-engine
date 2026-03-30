@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import ClusterScatterPlot from '../charts/ClusterScatterPlot';
 import LeaderboardChart from '../charts/LeaderboardChart';
 import MaterialCard from '../components/MaterialCard';
+import SectionBanner from '../components/SectionBanner';
 import DatasetSearchForm from '../forms/DatasetSearchForm';
 import type { DatasetSearchState } from '../forms/DatasetSearchForm';
 import PageContainer from '../layout/PageContainer';
@@ -29,11 +30,14 @@ function ScreenPage() {
   const [clusters, setClusters] = useState<ClustersResponse | null>(null);
   const [searchState, setSearchState] = useState<DatasetSearchState>(initialSearchState);
   const [searchResult, setSearchResult] = useState<DatasetSearchResponse | null>(null);
+  const [searchLoading, setSearchLoading] = useState(false);
 
   const [materialsText, setMaterialsText] = useState(exampleMaterialNames.join('\n'));
   const [useCase, setUseCase] = useState(useCases[0]);
   const [rankingResult, setRankingResult] = useState<RankResponse | null>(null);
   const [exportContent, setExportContent] = useState<string | null>(null);
+  const [rankingLoading, setRankingLoading] = useState(false);
+  const [exportLoading, setExportLoading] = useState(false);
 
   useEffect(() => {
     void Promise.allSettled([datasetService.getMaterials(), datasetService.getClusters()]).then(([m, c]) => {
@@ -43,11 +47,16 @@ function ScreenPage() {
   }, []);
 
   const runSearch = async () => {
-    const params = new URLSearchParams();
-    for (const [key, value] of Object.entries(searchState)) {
-      if (value.trim()) params.set(key, value.trim());
+    setSearchLoading(true);
+    try {
+      const params = new URLSearchParams();
+      for (const [key, value] of Object.entries(searchState)) {
+        if (value.trim()) params.set(key, value.trim());
+      }
+      setSearchResult(await datasetService.searchDataset(params));
+    } finally {
+      setSearchLoading(false);
     }
-    setSearchResult(await datasetService.searchDataset(params));
   };
 
   const materialPayload = (): Phase3Input[] =>
@@ -58,26 +67,36 @@ function ScreenPage() {
       .map((material_name) => ({ material_name }));
 
   const runRanking = async () => {
-    setRankingResult(await analysisService.rankMaterials({ materials: materialPayload(), use_case: useCase }));
+    setRankingLoading(true);
+    try {
+      setRankingResult(await analysisService.rankMaterials({ materials: materialPayload(), use_case: useCase }));
+    } finally {
+      setRankingLoading(false);
+    }
   };
 
   const runExport = async () => {
-    const exportResult = await analysisService.exportRanking({
-      materials: materialPayload(),
-      use_case: useCase,
-      format: 'csv',
-    });
-    setExportContent(exportResult.content);
+    setExportLoading(true);
+    try {
+      const exportResult = await analysisService.exportRanking({
+        materials: materialPayload(),
+        use_case: useCase,
+        format: 'csv',
+      });
+      setExportContent(exportResult.content);
+    } finally {
+      setExportLoading(false);
+    }
   };
 
   return (
     <PageContainer
       eyebrow="Screen"
-      title="Multi-material screening workspace"
-      description="Dataset search, material discovery, ranking, and clustering grouped into one screening surface."
+      title="Screen"
     >
+      <SectionBanner title="Dataset search" subtitle="Filter the in-memory material set first, then screen candidates." />
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <DatasetSearchForm state={searchState} onChange={setSearchState} onSubmit={runSearch} />
+        <DatasetSearchForm state={searchState} onChange={setSearchState} onSubmit={runSearch} loading={searchLoading} />
         <MaterialCard title="Materials inventory" subtitle={`Loaded materials: ${materialsResponse?.materials.length ?? 0}`}>
           <div className="grid max-h-72 gap-2 overflow-auto text-sm">
             {(materialsResponse?.materials ?? []).slice(0, 24).map((material) => (
@@ -89,6 +108,23 @@ function ScreenPage() {
         </MaterialCard>
       </div>
 
+      <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
+        <MaterialCard title={`Search results (${searchResult?.count ?? 0})`}>
+          <div className="space-y-2">
+            {(searchResult?.results ?? []).slice(0, 10).map((row, index) => (
+              <div key={`${String(row.material_name ?? 'row')}-${index}`} className="rounded-[1rem] bg-[#f8f8f8] px-4 py-3 text-sm">
+                <div className="font-medium text-[var(--dravix-ink)]">{String(row.material_name ?? 'Unknown material')}</div>
+                <div className="mt-1 text-[var(--dravix-ink-soft)]">
+                  Density {String(row.density ?? 'n/a')} • Melting point {String(row.melting_point ?? 'n/a')}
+                </div>
+              </div>
+            ))}
+          </div>
+        </MaterialCard>
+        <ClusterScatterPlot clusters={clusters?.clusters ?? []} />
+      </div>
+
+      <SectionBanner title="Ranking" subtitle="Rank a shortlist and read the output as a continuous leaderboard curve." />
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
         <MaterialCard title="Ranking input table" subtitle="One material name per line. Demo values are preloaded.">
           <select
@@ -109,26 +145,25 @@ function ScreenPage() {
             className="w-full rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm"
           />
           <div className="mt-4 flex gap-3">
-            <button onClick={runRanking} className="rounded-full bg-gradient-to-r from-[#784F74] to-[#E8967F] px-4 py-2 text-sm text-white">
-              Run ranking
+            <button
+              onClick={runRanking}
+              disabled={rankingLoading}
+              className="rounded-full bg-gradient-to-r from-[#784F74] to-[#E8967F] px-4 py-2 text-sm text-white disabled:opacity-60"
+            >
+              {rankingLoading ? 'Ranking…' : 'Run ranking'}
             </button>
-            <button onClick={runExport} className="rounded-full border border-[var(--dravix-border)] px-4 py-2 text-sm text-[var(--dravix-ink)]">
-              Export ranking
+            <button
+              onClick={runExport}
+              disabled={exportLoading}
+              className="rounded-full border border-[var(--dravix-border)] px-4 py-2 text-sm text-[var(--dravix-ink)] disabled:opacity-60"
+            >
+              {exportLoading ? 'Exporting…' : 'Export ranking'}
             </button>
           </div>
           {exportContent ? <pre className="mt-4 max-h-48 overflow-auto rounded-[1.25rem] bg-[#f8f8f8] p-4 text-xs">{exportContent}</pre> : null}
         </MaterialCard>
 
         <LeaderboardChart ranking={rankingResult?.ranking ?? []} />
-      </div>
-
-      <div className="grid gap-6 xl:grid-cols-2">
-        <ClusterScatterPlot clusters={clusters?.clusters ?? []} />
-        <MaterialCard title={`Dataset search results (${searchResult?.count ?? 0})`}>
-          <pre className="max-h-96 overflow-auto rounded-[1.25rem] bg-[#f8f8f8] p-4 text-xs">
-            {JSON.stringify(searchResult?.results?.slice(0, 15) ?? [], null, 2)}
-          </pre>
-        </MaterialCard>
       </div>
 
       <MaterialCard title="Ranked materials">

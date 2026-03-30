@@ -12,9 +12,10 @@ type Props = {
   state: DatasetSearchState;
   onChange: (state: DatasetSearchState) => void;
   onSubmit: () => void;
+  loading?: boolean;
 };
 
-function DatasetSearchForm({ state, onChange, onSubmit }: Props) {
+function DatasetSearchForm({ state, onChange, onSubmit, loading = false }: Props) {
   const setField = (key: keyof DatasetSearchState, value: string) => onChange({ ...state, [key]: value });
   const submit = (event: FormEvent) => {
     event.preventDefault();
@@ -31,7 +32,9 @@ function DatasetSearchForm({ state, onChange, onSubmit }: Props) {
         <input value={state.melting_point_min} onChange={(e) => setField('melting_point_min', e.target.value)} placeholder="Melting point min" className="rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm" />
         <input value={state.melting_point_max} onChange={(e) => setField('melting_point_max', e.target.value)} placeholder="Melting point max" className="rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm" />
       </div>
-      <button type="submit" className="mt-4 rounded-full bg-gradient-to-r from-[#784F74] to-[#E8967F] px-4 py-2 text-sm text-white">Search dataset</button>
+      <button type="submit" disabled={loading} className="mt-4 rounded-full bg-gradient-to-r from-[#784F74] to-[#E8967F] px-4 py-2 text-sm text-white disabled:opacity-60">
+        {loading ? 'Searching…' : 'Search dataset'}
+      </button>
     </form>
   );
 }

@@ -45,9 +45,6 @@ function SiteLockGate({ onUnlock }: Props) {
             <LockKeyhole className="h-4 w-4" />
             Enter the site password to access the Dravix interface.
           </div>
-          <p className="mt-3 text-sm leading-6 text-[var(--dravix-ink-soft)]">
-            This is a lightweight frontend lock for the deployed experience. Backend endpoints remain unchanged.
-          </p>
         </div>
 
         <form onSubmit={submit} className="mt-6 space-y-4">
@@ -75,9 +72,6 @@ function SiteLockGate({ onUnlock }: Props) {
               <FlaskConical className="h-4 w-4" />
               Enter Dravix
             </button>
-            <div className="text-xs text-[var(--dravix-ink-soft)]">
-              Password required: type the exact release key you were given.
-            </div>
           </div>
         </form>
       </div>
