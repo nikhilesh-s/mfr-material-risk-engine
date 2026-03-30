@@ -1,4 +1,4 @@
-import { ArrowUpRight, Bell, Lock, Search } from 'lucide-react';
+import { ArrowUpRight, Lock } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 function labelFromPath(pathname: string): string {
@@ -21,17 +21,10 @@ function TopNav({ onLock }: Props) {
         <div className="mt-1 text-2xl font-light text-[var(--dravix-ink)]">{label}</div>
       </div>
       <div className="flex flex-wrap items-center gap-3 text-sm">
-        <div className="hidden items-center gap-2 rounded-full bg-[#f8f8f8] px-4 py-2 text-[#762123]/55 md:flex">
-          <Search className="h-4 w-4" />
-          <span>Fire-risk research interface</span>
-        </div>
         <button onClick={onLock} className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#762123]/10 bg-white text-[#762123]">
           <Lock className="h-4 w-4" />
         </button>
-        <button className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#762123]/10 bg-white text-[#762123]">
-          <Bell className="h-4 w-4" />
-        </button>
-        <Link to="/analysis" className="flex items-center gap-2 rounded-full bg-gradient-to-r from-[#784F74] to-[#E8967F] px-5 py-2.5 text-white shadow-sm">
+        <Link to="/analyze" className="flex items-center gap-2 rounded-full bg-gradient-to-r from-[#784F74] to-[#E8967F] px-5 py-2.5 text-white shadow-sm">
           Run analysis <ArrowUpRight className="h-4 w-4" />
         </Link>
       </div>

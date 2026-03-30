@@ -11,7 +11,7 @@ function AdvisorPage() {
   const [chat, setChat] = useState<AdvisorChatResponse | null>(null);
 
   return (
-    <PageContainer eyebrow="Advisor" title="Grounded material advisor" description="Use stored analysis context and grounded backend outputs to ask design questions in a cleaner review interface.">
+    <PageContainer eyebrow="Advisor" title="Advisor" description="Use stored analysis context and backend outputs to ask design questions in a cleaner review interface.">
       <div className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
         <MaterialCard title="Advisor query">
           <div className="grid gap-4">

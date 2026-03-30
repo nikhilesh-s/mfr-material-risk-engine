@@ -159,6 +159,12 @@ function AnalyzePage() {
         <PredictionResultCard prediction={prediction} />
       </div>
 
+      <SectionBanner title="Driver view" subtitle="Read the strongest variables behind the current prediction." />
+      <div className="grid gap-6 xl:grid-cols-2">
+        <FeatureImportanceBarChart drivers={prediction?.top_drivers ?? []} />
+        <FeatureImportanceTable drivers={prediction?.top_drivers ?? []} />
+      </div>
+
       <SectionBanner title="Coating analysis" subtitle="Check the same material with a coating immediately after screening." />
       <div className="grid gap-6 xl:grid-cols-[0.95fr_1.05fr]">
         <MaterialCard title="Coating setup">
@@ -203,12 +209,6 @@ function AnalyzePage() {
             <div>Effective score: {coatingResult?.effective_score ?? 'n/a'}</div>
           </div>
         </MaterialCard>
-      </div>
-
-      <SectionBanner title="Driver view" subtitle="Read the strongest variables behind the current prediction." />
-      <div className="grid gap-6 xl:grid-cols-2">
-        <FeatureImportanceBarChart drivers={prediction?.top_drivers ?? []} />
-        <FeatureImportanceTable drivers={prediction?.top_drivers ?? []} />
       </div>
 
       <SectionBanner title="Sensitivity simulation" subtitle="Perturb a few properties and inspect the delta with proper loading feedback." />

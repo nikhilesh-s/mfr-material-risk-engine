@@ -89,6 +89,22 @@ function ScreenPage() {
     }
   };
 
+  const describeSearchRow = (row: Record<string, unknown>) => {
+    const name =
+      row['material_name'] ??
+      row['Material Name'] ??
+      row['material'] ??
+      row['name'] ??
+      'Unknown material';
+    const density = row['density'] ?? row['Density (g/cc)'] ?? 'n/a';
+    const meltingPoint = row['melting_point'] ?? row['Melting Point (°C)'] ?? 'n/a';
+    const thermal = row['thermal_conductivity'] ?? row['Thermal Cond. (W/m-K)'] ?? 'n/a';
+    return {
+      name: String(name),
+      detail: `Density ${String(density)} • Melting point ${String(meltingPoint)} • Thermal cond. ${String(thermal)}`,
+    };
+  };
+
   return (
     <PageContainer
       eyebrow="Screen"
@@ -112,11 +128,9 @@ function ScreenPage() {
         <MaterialCard title={`Search results (${searchResult?.count ?? 0})`}>
           <div className="space-y-2">
             {(searchResult?.results ?? []).slice(0, 10).map((row, index) => (
-              <div key={`${String(row.material_name ?? 'row')}-${index}`} className="rounded-[1rem] bg-[#f8f8f8] px-4 py-3 text-sm">
-                <div className="font-medium text-[var(--dravix-ink)]">{String(row.material_name ?? 'Unknown material')}</div>
-                <div className="mt-1 text-[var(--dravix-ink-soft)]">
-                  Density {String(row.density ?? 'n/a')} • Melting point {String(row.melting_point ?? 'n/a')}
-                </div>
+              <div key={`${describeSearchRow(row).name}-${index}`} className="rounded-[1rem] bg-[#f8f8f8] px-4 py-3 text-sm">
+                <div className="font-medium text-[var(--dravix-ink)]">{describeSearchRow(row).name}</div>
+                <div className="mt-1 text-[var(--dravix-ink-soft)]">{describeSearchRow(row).detail}</div>
               </div>
             ))}
           </div>

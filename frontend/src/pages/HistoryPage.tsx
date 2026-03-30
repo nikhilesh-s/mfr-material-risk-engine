@@ -3,13 +3,13 @@ import FeatureImportanceTable from '../components/FeatureImportanceTable';
 import MaterialCard from '../components/MaterialCard';
 import PageContainer from '../layout/PageContainer';
 import { analysisService } from '../services/analysisService';
-import type { AnalysisByIdResponse, InteractiveAnalysisResponse } from '../types/index';
+import type { AnalysisByIdResponse, PredictionResponse } from '../types/index';
 
 function HistoryPage() {
   const [recent, setRecent] = useState<Array<{ analysis_id: string; material_name: string; created_at: string }>>([]);
   const [selectedId, setSelectedId] = useState<string>('');
   const [analysis, setAnalysis] = useState<AnalysisByIdResponse | null>(null);
-  const [interactive, setInteractive] = useState<InteractiveAnalysisResponse | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     void analysisService.getRecentAnalyses().then((res) => {
@@ -20,17 +20,16 @@ function HistoryPage() {
 
   useEffect(() => {
     if (!selectedId) return;
-    void Promise.allSettled([
-      analysisService.getAnalysisById(selectedId),
-      analysisService.getInteractiveAnalysis(selectedId),
-    ]).then(([a, i]) => {
-      if (a.status === 'fulfilled') setAnalysis(a.value);
-      if (i.status === 'fulfilled') setInteractive(i.value);
-    });
+    setLoading(true);
+    void analysisService.getAnalysisById(selectedId)
+      .then((result) => setAnalysis(result))
+      .finally(() => setLoading(false));
   }, [selectedId]);
 
+  const prediction = (analysis?.prediction_json ?? null) as PredictionResponse | null;
+
   return (
-    <PageContainer eyebrow="History" title="Stored analysis review" description="Open persisted analyses and inspect the stored interpretation payload in a cleaner research-audit layout.">
+    <PageContainer eyebrow="History" title="Analysis review">
       <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
         <MaterialCard title="Recent analyses">
           <div className="space-y-3">
@@ -43,24 +42,37 @@ function HistoryPage() {
           </div>
         </MaterialCard>
         <MaterialCard title="Analysis detail" subtitle={selectedId || 'Select a recent analysis'}>
-          <pre className="max-h-80 overflow-auto rounded-[1.25rem] bg-[#f8f8f8] p-4 text-xs">{JSON.stringify(analysis?.prediction_json ?? {}, null, 2)}</pre>
+          {loading ? (
+            <div className="rounded-[1.25rem] bg-[#f8f8f8] p-4 text-sm text-[var(--dravix-ink-soft)]">Loading analysis…</div>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-[1.25rem] bg-[#f8f8f8] p-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-[var(--dravix-ink-soft)]">Material</div>
+                <div className="mt-2 text-xl font-light text-[var(--dravix-ink)]">{prediction?.material_name ?? 'n/a'}</div>
+              </div>
+              <div className="rounded-[1.25rem] bg-[#f8f8f8] p-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-[var(--dravix-ink-soft)]">DFRS</div>
+                <div className="mt-2 text-xl font-light text-[var(--dravix-ink)]">{prediction?.DFRS?.toFixed(3) ?? 'n/a'}</div>
+              </div>
+              <div className="rounded-[1.25rem] bg-[#f8f8f8] p-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-[var(--dravix-ink-soft)]">Confidence</div>
+                <div className="mt-2 text-xl font-light text-[var(--dravix-ink)]">
+                  {typeof prediction?.confidence === 'string' ? prediction.confidence : prediction?.confidence?.label ?? 'n/a'}
+                </div>
+              </div>
+              <div className="rounded-[1.25rem] bg-[#f8f8f8] p-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-[var(--dravix-ink-soft)]">Risk score</div>
+                <div className="mt-2 text-xl font-light text-[var(--dravix-ink)]">{prediction?.risk_score?.toFixed(1) ?? 'n/a'}</div>
+              </div>
+              <div className="rounded-[1.25rem] bg-[#f8f8f8] p-4 md:col-span-2">
+                <div className="text-xs uppercase tracking-[0.2em] text-[var(--dravix-ink-soft)]">Summary</div>
+                <div className="mt-2 text-sm leading-7 text-[var(--dravix-ink-soft)]">{prediction?.explanation ?? 'No stored summary available.'}</div>
+              </div>
+            </div>
+          )}
         </MaterialCard>
       </div>
-      <div className="grid gap-6 xl:grid-cols-2">
-        <FeatureImportanceTable drivers={interactive?.top_drivers ?? []} />
-        <MaterialCard title="Interactive panel">
-          <div className="space-y-4 text-sm">
-            <div>
-              <div className="text-[var(--dravix-ink-soft)]">Recommended tests</div>
-              <ul className="mt-2 space-y-1 text-[var(--dravix-ink)]">{(interactive?.recommended_tests ?? []).map((item) => <li key={item}>• {item}</li>)}</ul>
-            </div>
-            <div>
-              <div className="text-[var(--dravix-ink-soft)]">Counterfactual suggestions</div>
-              <ul className="mt-2 space-y-1 text-[var(--dravix-ink)]">{(interactive?.counterfactual_suggestions ?? []).map((item) => <li key={item}>• {item}</li>)}</ul>
-            </div>
-          </div>
-        </MaterialCard>
-      </div>
+      <FeatureImportanceTable drivers={prediction?.top_drivers ?? prediction?.interpretability?.top_3_drivers ?? []} />
     </PageContainer>
   );
 }
