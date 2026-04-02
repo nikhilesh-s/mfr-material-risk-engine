@@ -121,35 +121,58 @@ function AdvisorPage() {
 
   return (
     <PageContainer eyebrow="Advisor" title="Advisor">
-      <MaterialCard title="Advisor chat">
+      <MaterialCard title="Advisor">
         <div className="grid gap-4">
-          <input
-            value={analysisId}
-            onChange={(e) => setAnalysisId(e.target.value)}
-            placeholder="DRX-20260328-1234"
-            className="rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm"
-          />
-          <textarea
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            rows={4}
-            className="rounded-xl border border-[#762123]/10 bg-[#f8f8f8] px-4 py-3 text-sm"
-          />
+          <div className="rounded-[1.5rem] border border-[var(--dravix-border)] bg-[#f8f8f8] p-4">
+            <div className="mb-3 text-xs uppercase tracking-[0.18em] text-[var(--dravix-ink-soft)]">
+              Input analysis ID
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <input
+                value={analysisId}
+                onChange={(e) => setAnalysisId(e.target.value)}
+                placeholder="DRX-20260328-1234"
+                className="min-w-[18rem] flex-1 rounded-xl border border-[#762123]/10 bg-white px-4 py-3 text-sm"
+              />
+              <button
+                onClick={loadAdvisor}
+                disabled={advisorLoading || !analysisId.trim()}
+                className="rounded-full bg-gradient-to-r from-[#784F74] to-[#E8967F] px-4 py-2 text-sm text-white disabled:opacity-60"
+              >
+                {advisorLoading ? 'Opening…' : 'Open analysis'}
+              </button>
+            </div>
+          </div>
+
+          {advisor ? (
+            <div className="rounded-[1.5rem] border border-[var(--dravix-border)] bg-[#f8f8f8] p-4">
+              <div className="mb-3 text-xs uppercase tracking-[0.18em] text-[var(--dravix-ink-soft)]">
+                Ask advisor
+              </div>
+              <textarea
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                rows={4}
+                className="w-full rounded-xl border border-[#762123]/10 bg-white px-4 py-3 text-sm"
+              />
+              <div className="mt-3 flex flex-wrap gap-3">
+                <button
+                  onClick={askQuestion}
+                  disabled={chatLoading || !question.trim()}
+                  className="rounded-full border border-[var(--dravix-border)] px-4 py-2 text-sm text-[var(--dravix-ink)] disabled:opacity-60"
+                >
+                  {chatLoading ? 'Thinking…' : 'Ask'}
+                </button>
+              </div>
+            </div>
+          ) : null}
+
           <div className="flex flex-wrap gap-3">
-            <button
-              onClick={loadAdvisor}
-              disabled={advisorLoading}
-              className="rounded-full bg-gradient-to-r from-[#784F74] to-[#E8967F] px-4 py-2 text-sm text-white disabled:opacity-60"
-            >
-              {advisorLoading ? 'Loading…' : 'Load advisor'}
-            </button>
-            <button
-              onClick={askQuestion}
-              disabled={chatLoading}
-              className="rounded-full border border-[var(--dravix-border)] px-4 py-2 text-sm text-[var(--dravix-ink)] disabled:opacity-60"
-            >
-              {chatLoading ? 'Thinking…' : 'Ask'}
-            </button>
+            {advisor ? (
+              <div className="text-xs uppercase tracking-[0.18em] text-[var(--dravix-ink-soft)]">
+                Analysis loaded: {analysisId}
+              </div>
+            ) : null}
           </div>
           {error ? <div className="text-sm text-[#9E2A2A]">{error}</div> : null}
         </div>
@@ -214,7 +237,7 @@ function AdvisorPage() {
             ))
           ) : (
             <div className="rounded-[1.5rem] bg-[#f8f8f8] px-4 py-6 text-sm text-[var(--dravix-ink-soft)]">
-              Load an analysis, then ask a question.
+              Open an analysis ID to begin the conversation.
             </div>
           )}
           {chatLoading ? (
