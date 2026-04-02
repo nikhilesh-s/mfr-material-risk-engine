@@ -6,6 +6,7 @@ import TopNav from './layout/TopNav';
 import AnalyzePage from './pages/AnalyzePage';
 import AdvisorPage from './pages/AdvisorPage';
 import HistoryPage from './pages/HistoryPage';
+import HomePage from './pages/HomePage';
 import ScreenPage from './pages/ScreenPage';
 
 const ACCESS_KEY = 'dravix-site-unlocked-v0.3.2';
@@ -40,12 +41,12 @@ function App() {
         <main className="dravix-shell min-w-0 flex-1 rounded-[2rem] border border-[#762123]/10 p-4 md:p-6">
           <TopNav onLock={lockSite} />
           <Routes>
-            <Route path="/" element={<Navigate to="/analyze" replace />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/analyze" element={<AnalyzePage />} />
             <Route path="/screen" element={<ScreenPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="/advisor" element={<AdvisorPage />} />
-            <Route path="*" element={<Navigate to="/analyze" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
       </div>
