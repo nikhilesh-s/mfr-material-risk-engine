@@ -4,11 +4,43 @@ import PageContainer from '../layout/PageContainer';
 import { advisorService } from '../services/advisorService';
 import type { AdvisorChatResponse, AdvisorResponse } from '../types/index';
 
+type AssistantPayload = {
+  summary: string;
+  tradeoffs: string[];
+  recommendedTests: string[];
+  propertyTargets: Array<{ key: string; value: string }>;
+  sources?: string[];
+};
+
 type ChatItem = {
   role: 'assistant' | 'user';
-  body: string;
-  meta?: string;
+  body: string | AssistantPayload;
 };
+
+function normalizeStringList(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => (typeof item === 'string' ? item.trim() : String(item ?? '').trim()))
+      .filter(Boolean);
+  }
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    return trimmed ? [trimmed] : [];
+  }
+  return [];
+}
+
+function normalizePropertyTargets(value: unknown): Array<{ key: string; value: string }> {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return [];
+  }
+  return Object.entries(value as Record<string, unknown>)
+    .map(([key, rawValue]) => ({
+      key,
+      value: String(rawValue ?? '').trim(),
+    }))
+    .filter((item) => item.value);
+}
 
 function AdvisorPage() {
   const [analysisId, setAnalysisId] = useState('');
@@ -17,22 +49,23 @@ function AdvisorPage() {
   const [chat, setChat] = useState<AdvisorChatResponse | null>(null);
   const [advisorLoading, setAdvisorLoading] = useState(false);
   const [chatLoading, setChatLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const messages = useMemo<ChatItem[]>(() => {
     const items: ChatItem[] = [];
 
     if (advisor) {
-      const metaParts: string[] = [];
-      if (advisor.design_tradeoffs?.length) {
-        metaParts.push(`Tradeoffs: ${advisor.design_tradeoffs.join(' | ')}`);
-      }
-      if (advisor.recommended_tests?.length) {
-        metaParts.push(`Recommended tests: ${advisor.recommended_tests.join(', ')}`);
-      }
+      const tradeoffs = normalizeStringList(advisor.design_tradeoffs);
+      const recommendedTests = normalizeStringList(advisor.recommended_tests);
+      const propertyTargets = normalizePropertyTargets(advisor.property_targets);
       items.push({
         role: 'assistant',
-        body: advisor.advisor_summary,
-        meta: metaParts.join('\n') || undefined,
+        body: {
+          summary: advisor.advisor_summary,
+          tradeoffs,
+          recommendedTests,
+          propertyTargets,
+        },
       });
     }
 
@@ -43,8 +76,13 @@ function AdvisorPage() {
       });
       items.push({
         role: 'assistant',
-        body: chat.answer,
-        meta: chat.grounded_sources.length ? `Sources: ${chat.grounded_sources.join(', ')}` : undefined,
+        body: {
+          summary: chat.answer,
+          tradeoffs: [],
+          recommendedTests: [],
+          propertyTargets: [],
+          sources: normalizeStringList(chat.grounded_sources),
+        },
       });
     }
 
@@ -53,9 +91,12 @@ function AdvisorPage() {
 
   const loadAdvisor = async () => {
     setAdvisorLoading(true);
+    setError(null);
     try {
       setAdvisor(await advisorService.getAdvisor(analysisId));
       setChat(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load advisor');
     } finally {
       setAdvisorLoading(false);
     }
@@ -63,6 +104,7 @@ function AdvisorPage() {
 
   const askQuestion = async () => {
     setChatLoading(true);
+    setError(null);
     try {
       setChat(
         await advisorService.chatAdvisor({
@@ -70,6 +112,8 @@ function AdvisorPage() {
           user_question: question,
         }),
       );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to get advisor response');
     } finally {
       setChatLoading(false);
     }
@@ -107,6 +151,7 @@ function AdvisorPage() {
               {chatLoading ? 'Thinking…' : 'Ask'}
             </button>
           </div>
+          {error ? <div className="text-sm text-[#9E2A2A]">{error}</div> : null}
         </div>
 
         <div className="mt-6 space-y-4">
@@ -120,16 +165,51 @@ function AdvisorPage() {
                     : 'bg-[#f8f8f8] text-[var(--dravix-ink)]'
                 }`}
               >
-                <div>{message.body}</div>
-                {message.meta ? (
-                  <div
-                    className={`mt-3 whitespace-pre-line text-xs ${
-                      message.role === 'user' ? 'text-white/72' : 'text-[var(--dravix-ink-soft)]'
-                    }`}
-                  >
-                    {message.meta}
+                {typeof message.body === 'string' ? (
+                  <div>{message.body}</div>
+                ) : (
+                  <div className="space-y-4">
+                    <div>{message.body.summary}</div>
+                    {message.body.tradeoffs.length ? (
+                      <div>
+                        <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--dravix-ink-soft)]">Tradeoffs</div>
+                        <ul className="space-y-2">
+                          {message.body.tradeoffs.map((item) => (
+                            <li key={item} className="text-sm leading-6">• {item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+                    {message.body.recommendedTests.length ? (
+                      <div>
+                        <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--dravix-ink-soft)]">Recommended tests</div>
+                        <ul className="space-y-2">
+                          {message.body.recommendedTests.map((item) => (
+                            <li key={item} className="text-sm leading-6">• {item}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+                    {message.body.propertyTargets.length ? (
+                      <div>
+                        <div className="mb-2 text-xs uppercase tracking-[0.18em] text-[var(--dravix-ink-soft)]">Property targets</div>
+                        <div className="grid gap-2 md:grid-cols-2">
+                          {message.body.propertyTargets.map((item) => (
+                            <div key={item.key} className="rounded-[1rem] border border-[#762123]/10 bg-white/60 px-3 py-2 text-sm">
+                              <div className="text-[var(--dravix-ink-soft)]">{item.key}</div>
+                              <div className="mt-1 text-[var(--dravix-ink)]">{item.value}</div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
+                    {message.body.sources?.length ? (
+                      <div className="text-xs text-[var(--dravix-ink-soft)]">
+                        Sources: {message.body.sources.join(', ')}
+                      </div>
+                    ) : null}
                   </div>
-                ) : null}
+                )}
               </div>
             ))
           ) : (
