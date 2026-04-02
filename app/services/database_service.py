@@ -256,10 +256,28 @@ class DatabaseService:
             self.client.table("analysis_runs")
             .select("analysis_id, material_name, created_at")
             .order("created_at", desc=True)
-            .limit(limit)
+            .limit(max(limit * 5, 25))
             .execute()
         ).data or []
-        return [dict(row) for row in rows]
+        filtered: list[dict[str, Any]] = []
+        for row in rows:
+            analysis_id = row.get("analysis_id")
+            if not analysis_id:
+                continue
+            result_rows = (
+                self.client.table("analysis_results")
+                .select("prediction_json")
+                .eq("analysis_id", analysis_id)
+                .limit(1)
+                .execute()
+            ).data or []
+            prediction_json = (result_rows[0] or {}).get("prediction_json") if result_rows else None
+            if not prediction_json:
+                continue
+            filtered.append(dict(row))
+            if len(filtered) >= limit:
+                break
+        return filtered
 
     def get_dataset_materials(self) -> list[dict[str, Any]]:
         rows = self.client.table("dataset_materials").select("*").execute().data or []

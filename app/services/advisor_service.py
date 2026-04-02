@@ -13,6 +13,51 @@ ADVISOR_MODEL = "gpt-4.1-mini"
 logger = get_logger("uvicorn.error")
 
 
+def _normalize_text_list(value: Any) -> list[str]:
+    """Normalize advisor response fields to string lists without exploding strings into characters."""
+    if value is None:
+        return []
+    if isinstance(value, list):
+        normalized: list[str] = []
+        for item in value:
+            if item is None:
+                continue
+            if isinstance(item, str):
+                text = item.strip()
+            else:
+                text = json.dumps(item, default=str) if isinstance(item, (dict, list)) else str(item).strip()
+            if text:
+                normalized.append(text)
+        return normalized
+    if isinstance(value, str):
+        text = value.strip()
+        return [text] if text else []
+    if isinstance(value, dict):
+        return [json.dumps(value, default=str)]
+    text = str(value).strip()
+    return [text] if text else []
+
+
+def _missing_payload_response(analysis_id: str, endpoint: str | None) -> dict[str, Any]:
+    """Return a clear response when an analysis row exists but no usable prediction payload was stored."""
+    endpoint_text = endpoint or "unknown endpoint"
+    return {
+        "advisor_summary": (
+            f"Analysis {analysis_id} does not include a stored prediction payload. "
+            f"It appears to have been created from {endpoint_text} without a persisted analysis result."
+        ),
+        "design_tradeoffs": [],
+        "design_improvement_suggestions": [],
+        "recommended_tests": [],
+        "property_targets": {},
+        "risk_mitigation_strategies": [
+            "Re-run the analysis after persistence fixes so prediction outputs are stored in Supabase.",
+            "Use a /predict analysis ID for advisor review until comparison and ranking history rows include prediction_json.",
+        ],
+        "material_family_recommendations": [],
+    }
+
+
 def _fallback_advisor_response(prediction: dict[str, Any], reason: str) -> dict[str, Any]:
     top_drivers = prediction.get("top_drivers", [])
     sensitivity_summary = prediction.get("sensitivity_summary", [])
@@ -60,9 +105,15 @@ def build_advisor_response(analysis_id: str) -> dict[str, Any]:
         raise KeyError(f"Analysis not found: {analysis_id}")
 
     prediction = (stored.get("result") or {}).get("prediction_json") or {}
+    analysis_row = stored.get("analysis") or {}
+    if not prediction:
+        return _missing_payload_response(
+            analysis_id=analysis_id,
+            endpoint=str(analysis_row.get("additional_properties", {}).get("endpoint") or ""),
+        )
     property_summary = (
         (stored.get("custom_material") or {}).get("descriptor_payload")
-        or (stored.get("analysis") or {}).get("additional_properties")
+        or analysis_row.get("additional_properties")
         or {}
     )
     if not OPENAI_API_KEY:
@@ -121,12 +172,12 @@ def build_advisor_response(analysis_id: str) -> dict[str, Any]:
 
     return {
         "advisor_summary": parsed.get("advisor_summary", ""),
-        "design_tradeoffs": list(parsed.get("design_tradeoffs", [])),
-        "design_improvement_suggestions": list(parsed.get("design_improvement_suggestions", [])),
-        "recommended_tests": list(parsed.get("recommended_tests", prediction.get("recommended_tests", []))),
+        "design_tradeoffs": _normalize_text_list(parsed.get("design_tradeoffs", [])),
+        "design_improvement_suggestions": _normalize_text_list(parsed.get("design_improvement_suggestions", [])),
+        "recommended_tests": _normalize_text_list(parsed.get("recommended_tests", prediction.get("recommended_tests", []))),
         "property_targets": dict(parsed.get("property_targets", {})),
-        "risk_mitigation_strategies": list(parsed.get("risk_mitigation_strategies", [])),
-        "material_family_recommendations": list(parsed.get("material_family_recommendations", [])),
+        "risk_mitigation_strategies": _normalize_text_list(parsed.get("risk_mitigation_strategies", [])),
+        "material_family_recommendations": _normalize_text_list(parsed.get("material_family_recommendations", [])),
     }
 
 
@@ -136,9 +187,21 @@ def build_advisor_chat_response(analysis_id: str, user_question: str) -> dict[st
         raise KeyError(f"Analysis not found: {analysis_id}")
 
     prediction = (stored.get("result") or {}).get("prediction_json") or {}
+    analysis_row = stored.get("analysis") or {}
+    if not prediction:
+        endpoint = str(analysis_row.get("additional_properties", {}).get("endpoint") or "unknown endpoint")
+        return {
+            "analysis_id": analysis_id,
+            "answer": (
+                f"Analysis {analysis_id} does not include a stored prediction payload. "
+                f"It appears to come from {endpoint}. Re-run the analysis after the persistence fix, "
+                "or use a /predict analysis ID for grounded advisor responses."
+            ),
+            "grounded_sources": ["analysis_runs.additional_properties.endpoint"],
+        }
     property_summary = (
         (stored.get("custom_material") or {}).get("descriptor_payload")
-        or (stored.get("analysis") or {}).get("additional_properties")
+        or analysis_row.get("additional_properties")
         or {}
     )
     if not OPENAI_API_KEY:

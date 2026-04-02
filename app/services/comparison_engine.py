@@ -5,7 +5,10 @@ from __future__ import annotations
 from typing import Any
 
 from backend.core.material_input import normalize_material_payload
-from app.services.database import insert_analysis_run
+from app.core.logging import get_logger
+from app.services.database import insert_analysis_result, insert_analysis_run
+
+logger = get_logger("uvicorn.error")
 
 
 def _dominant_property_differences(material_payloads: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -49,6 +52,7 @@ def compare_materials(material_list: list[Any], use_case: str | None = None) -> 
 
     for material in material_list:
         prediction = _predict_response_payload(material, use_case=use_case)
+        analysis_row = None
         materials.append(
             {
                 "material_name": prediction["material_name"],
@@ -63,7 +67,7 @@ def compare_materials(material_list: list[Any], use_case: str | None = None) -> 
         )
         normalized_payloads.append(normalize_material_payload(material))
         try:
-            insert_analysis_run(
+            analysis_row = insert_analysis_run(
                 analysis_id=prediction.get("analysis_id"),
                 endpoint="/compare",
                 material_name=prediction["material_name"],
@@ -72,7 +76,25 @@ def compare_materials(material_list: list[Any], use_case: str | None = None) -> 
                 dataset_version=(prediction.get("dataset") or {}).get("version"),
             )
         except Exception:
-            pass
+            logger.warning("Database logging skipped for /compare analysis_runs.", exc_info=True)
+
+        try:
+            top_drivers = prediction.get("top_drivers") or []
+            top_driver = top_drivers[0].get("feature") if top_drivers else None
+            insert_analysis_result(
+                analysis_id=str(prediction.get("analysis_id")),
+                material_name=str(prediction["material_name"]),
+                resistance_score=prediction.get("DFRS"),
+                risk_score=prediction.get("risk_score"),
+                confidence=prediction.get("confidence"),
+                top_driver=top_driver,
+                dataset_version=(prediction.get("dataset") or {}).get("version"),
+                model_version=prediction.get("model_version"),
+                prediction_output=prediction,
+                analysis_run_id=None if analysis_row is None else analysis_row.get("id"),
+            )
+        except Exception:
+            logger.warning("Database logging skipped for /compare analysis_results.", exc_info=True)
 
     if not materials:
         return {
